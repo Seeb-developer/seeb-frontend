@@ -6,7 +6,7 @@ import ServiceBookingModal from "../components/ServiceBookingModal";
 import AuthModal from "../components/AuthModal";
 import RegistrationModal from "../components/RegistrationModal";
 import { useSelector } from 'react-redux';
-import { Sparkles, HeartHandshake, ShieldCheck, BadgeCheck, Star, CheckCircle, } from "lucide-react";
+import { Sparkles, HeartHandshake, ShieldCheck, BadgeCheck, Star, CheckCircle, ChevronDown } from "lucide-react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 export function ServiceDetail() {
@@ -20,6 +20,8 @@ export function ServiceDetail() {
 
   const [mobile, setMobile] = useState("");
   const [userId, setUserId] = useState(null);
+
+  const [openFaqIndex, setOpenFaqIndex] = useState(null);
 
   const { data: service, isLoading, error } = useGet(`services/${serviceId}`);
   const image = JSON.parse(service?.image || "[]");
@@ -47,6 +49,25 @@ export function ServiceDetail() {
     }
   };
 
+  const faqData = [
+    {
+      question: "What does the service include?",
+      answer: "The service includes all standard installations and fittings based on your selected options. Please refer to the description for specific inclusions."
+    },
+    {
+      question: "How can I reschedule my service?",
+      answer: "You can reschedule your service from your bookings page or contact our support team at least 24 hours in advance."
+    },
+    {
+      question: "Is there any warranty?",
+      answer: "Yes, please check the 'Warranty Details' section above for information related to warranty and support."
+    },
+    {
+      question: "Can I cancel my booking?",
+      answer: "Yes, you can cancel your booking before the service start time. Refer to our cancellation policy for more details."
+    }
+  ];
+
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error loading service</p>;
 
@@ -71,7 +92,7 @@ export function ServiceDetail() {
               {image.map((img, index) => (
                 <div key={index}>
                   <img
-                    src={`${import.meta.env.VITE_BASE_URL}${img}?t=${Date.now()}`} // force refresh
+                    src={`${import.meta.env.VITE_BASE_URL}${img}?t=${Date.now()}`}
                     alt={`Service ${index}`}
                     className="h-60 sm:h-[500px] w-full object-cover"
                   />
@@ -163,6 +184,44 @@ export function ServiceDetail() {
           </div>
         </div>
       )}
+
+      {/* FAQ Section */}
+      <div className="mt-12 max-w-4xl mx-auto">
+        <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Frequently Asked Questions</h2>
+        <div className="space-y-4">
+          {faqData.map((faq, index) => {
+            const isOpen = openFaqIndex === index;
+            return (
+              <div
+                key={index}
+                className="bg-white rounded-xl shadow-md p-4 cursor-pointer transition-all duration-300"
+                onClick={() => setOpenFaqIndex(isOpen ? null : index)}
+              >
+                <div className="flex justify-between items-center">
+                  <h3 className="font-semibold text-gray-800">{faq.question}</h3>
+                  <ChevronDown
+                    className={`w-5 h-5 transform transition-transform duration-300 ${isOpen ? "rotate-180" : ""
+                      }`}
+                  />
+                </div>
+
+                <div
+                  className={`overflow-hidden transition-all duration-500 ease-in-out`}
+                  style={{
+                    maxHeight: isOpen ? "500px" : "0px",
+                    opacity: isOpen ? 1 : 0,
+                    transitionProperty: "max-height, opacity",
+                  }}
+                >
+                  <p className="mt-2 text-gray-700 text-sm leading-relaxed">{faq.answer}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+
 
       {/* Modals */}
       <ServiceBookingModal isOpen={modalOpen} onClose={() => setModalOpen(false)} selectedService={service} roomId={roomId} />

@@ -54,8 +54,8 @@ export default function CouponModal({ userId, cartTotal, appliedCode, onClose, o
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-md relative">
+    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50" onClick={onClose}>
+      <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-md relative" onClick={(e) => e.stopPropagation()}>
         <h3 className="text-lg font-bold mb-4 text-center">Available Offers</h3>
 
         <div className="mb-4">

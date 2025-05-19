@@ -23,13 +23,13 @@ const ServiceBookingModal = ({ isOpen, onClose, selectedService, roomId, editing
     const [selectedAddons, setSelectedAddons] = useState([]);
 
     useEffect(() => {
-  if (selectedService?.addons?.length) {
-    const requiredAddons = selectedService.addons
-      .filter(addon => addon.is_required === "1")
-      .map(addon => addon.id);
-    setSelectedAddons(requiredAddons);
-  }
-}, [selectedService]);
+        if (selectedService?.addons?.length) {
+            const requiredAddons = selectedService.addons
+                .filter(addon => addon.is_required === "1")
+                .map(addon => addon.id);
+            setSelectedAddons(requiredAddons);
+        }
+    }, [selectedService]);
 
 
     useEffect(() => {
@@ -134,6 +134,8 @@ const ServiceBookingModal = ({ isOpen, onClose, selectedService, roomId, editing
                 ? totalSquareFeet
                 : quantity) * selectedService.rate;
 
+            console.log("selectedAddons", selectedAddons)
+
             const bookingData = {
                 user_id: userId,
                 service_id: selectedService.id,
@@ -142,7 +144,14 @@ const ServiceBookingModal = ({ isOpen, onClose, selectedService, roomId, editing
                 rate_type: selectedService.rate_type,
                 value,
                 rate: selectedService.rate,
-                addons: selectedAddons,
+                addons: selectedService.addons
+                    .filter(addon => selectedAddons.includes(addon.id))
+                    .map(addon => ({
+                        id: addon.id,
+                        price: addon.price,
+                        qty: addon.qty,
+                        name: addon.name
+                    })),
                 amount: amount.toFixed(2),
                 ...(referenceImagesJson && { reference_image: referenceImagesJson })
             };
@@ -181,8 +190,8 @@ const ServiceBookingModal = ({ isOpen, onClose, selectedService, roomId, editing
 
 
     return (
-        <div className="fixed inset-0 text-black bg-black bg-opacity-50 flex justify-center items-center z-50 !mt-0">
-            <div className="bg-white rounded-xl w-[90%] max-w-lg p-6 relative">
+        <div className="fixed inset-0 text-black bg-black bg-opacity-50 flex justify-center items-center z-50 !mt-0" onClick={onClose}>
+            <div className="bg-white rounded-xl w-[90%] max-w-lg p-6 relative" onClick={(e) => e.stopPropagation()}>
 
                 <h2 className="text-lg font-bold mb-3">Book {selectedService.name}</h2>
 
@@ -221,7 +230,7 @@ const ServiceBookingModal = ({ isOpen, onClose, selectedService, roomId, editing
                     </>
                 )}
 
-              
+
 
 
                 {/* Value & Amount Preview */}
@@ -234,7 +243,7 @@ const ServiceBookingModal = ({ isOpen, onClose, selectedService, roomId, editing
                         : quantity}
                 </div>
                 <div className="text-sm mb-2">Rate: ₹{selectedService.rate}</div>
-                
+
                 <div className="text-lg font-semibold text-red-600 mb-4">
                     Total: ₹
                     {selectedService.rate_type === "square_feet"
@@ -242,7 +251,7 @@ const ServiceBookingModal = ({ isOpen, onClose, selectedService, roomId, editing
                         : (quantity * selectedService.rate).toFixed(2)}
                 </div>
 
-                  {selectedService?.addons?.length > 0 && (
+                {selectedService?.addons?.length > 0 && (
                     <div className="mb-4">
                         <h3 className="font-semibold mb-2">Select Addons</h3>
 
@@ -296,8 +305,8 @@ const ServiceBookingModal = ({ isOpen, onClose, selectedService, roomId, editing
                     onDragOver={(e) => e.preventDefault()}
                 >
                     <div className="flex justify-center mb-2">
-                        <ImagePlus className="w-6 h-6 text-blue-600"/>
-                      
+                        <ImagePlus className="w-6 h-6 text-blue-600" />
+
                     </div>
                     <span className="text-sm">Tap or Drag & Drop to Upload Reference Images</span>
                     <input

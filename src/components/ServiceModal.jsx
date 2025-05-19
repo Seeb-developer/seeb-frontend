@@ -31,8 +31,8 @@ export function ServiceModal({ isOpen, onClose, service, rooms = [], loading, er
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex items-center justify-center px-4">
-      <div className="bg-white rounded-2xl w-full max-w-2xl h-[650px] p-6 shadow-xl relative flex flex-col">
+    <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex items-center justify-center px-4" onClick={onClose}>
+      <div className="bg-white rounded-2xl w-full max-w-2xl h-[650px] p-6 shadow-xl relative flex flex-col" onClick={(e) => e.stopPropagation()}>
         {/* Close Button */}
         <button
           onClick={onClose}

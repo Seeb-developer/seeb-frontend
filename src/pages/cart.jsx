@@ -62,12 +62,13 @@ export default function CartPage() {
   const dispatch = useDispatch();
   const { items: cartItems, loading, error } = useSelector((state) => state.cart);
 
+  // console.log(cartItems);
+
   const user = useSelector((state) => state.user.userInfo);
   const userId = user?.id;
 
   useEffect(() => {
-    
-    dispatch(fetchCart(userId)); // Replace 16 with actual logged-in user ID
+    dispatch(fetchCart(userId));
   }, [dispatch]);
 
   const handleDelete = async (id) => {

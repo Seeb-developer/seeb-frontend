@@ -65,8 +65,8 @@ const FloorPlan = () => {
           };
         }
 
-        console.log("Base Map:", baseMap);
-        console.log("New Items:", newItems);
+        // console.log("Base Map:", baseMap);
+        // console.log("New Items:", newItems);
 
         setItems(newItems);
         setBaseElements(baseMap);

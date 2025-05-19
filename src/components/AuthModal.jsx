@@ -83,8 +83,8 @@ export default function AuthModal({ onClose, onLoginSuccess, onNeedRegistration 
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-xl max-w-xs sm:max-w-sm relative">
+    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50" onClick={onClose}>
+      <div className="bg-white p-6 rounded-lg shadow-xl max-w-xs sm:max-w-sm relative" onClick={(e) => e.stopPropagation()}>
         <h2 className="text-xl font-bold text-center mb-4">
           {step === "mobile" ? "🔒 Login" : "🔑 Enter OTP"}
         </h2>

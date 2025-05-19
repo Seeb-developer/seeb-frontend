@@ -43,8 +43,8 @@ export default function RegistrationModal({ userId, mobile, onClose, onRegistere
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 !mt-0">
-      <div className="bg-white p-6 rounded-lg shadow-xl max-w-xs sm:max-w-sm relative">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 !mt-0" onClick={onClose}>
+      <div className="bg-white p-6 rounded-lg shadow-xl max-w-xs sm:max-w-sm relative" onClick={(e) => e.stopPropagation()}>
         <h2 className="text-xl font-bold text-center mb-4">📝 Complete Registration</h2>
 
         <input
