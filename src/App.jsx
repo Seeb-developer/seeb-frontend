@@ -7,7 +7,7 @@ import { ServiceDetail } from './pages/ServiceDetail';
 import DesignTips from './pages/tips';
 import ProfilePage from './pages/Profile';
 import Terms from './pages/Terms';
-import Privacy from './pages/privacy';
+import Privacy from './pages/Privacy';
 import Refund from './pages/Refund';
 import FloorPlan from './pages/FloorPlan';
 import CheckoutPage from './pages/Checkout';
