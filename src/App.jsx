@@ -4,7 +4,7 @@ import { Navbar } from './components/NavbarSection';
 import { ServiceList } from './pages/ServiceList';
 import CartPage from './pages/cart';
 import { ServiceDetail } from './pages/ServiceDetail';
-import DesignTips from './pages/Tips';
+import DesignTips from './pages/tips';
 import ProfilePage from './pages/Profile';
 import Terms from './pages/Terms';
 import Privacy from './pages/privacy';
