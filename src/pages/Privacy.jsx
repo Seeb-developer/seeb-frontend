@@ -73,7 +73,7 @@ const Privacy = () => {
           <li>Request data portability</li>
           <li>Restrict data processing in certain cases</li>
         </ul>
-        To exercise your rights, contact us at <strong>[Insert Contact Email]</strong>.
+        To exercise your rights, contact us at <strong>info@seeb.in</strong>.
       </Section>
 
       <Section title="7. Third-Party Links & Services">
@@ -89,7 +89,7 @@ const Privacy = () => {
       </Section>
 
       <Section title="10. Contact Us">
-        For any questions or concerns about this Privacy Policy, contact us at <strong>[Insert Contact Email]</strong>.
+        For any questions or concerns about this Privacy Policy, contact us at <strong>info@seeb.in</strong>.
       </Section>
     </div>
   );

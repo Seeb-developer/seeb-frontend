@@ -48,9 +48,7 @@ export function ServicesGrid() {
             <div
               key={index}
               className="group bg-white rounded-2xl shadow-md p-4 flex flex-col items-center cursor-pointer transform transition duration-300 hover:scale-105 hover:shadow-xl"
-              onClick={() => handleServiceClick(service)}
-              data-aos="fade-up"
-              data-aos-delay={index * 50}
+              onClick={() => handleServiceClick(service)}              
             >
               <img
                 src={`${import.meta.env.VITE_BASE_URL}${service.image}`}

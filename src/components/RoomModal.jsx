@@ -17,7 +17,8 @@ export function RoomModal({ isOpen, onClose, rooms = [], loading, error }) {
   }, [rooms]);
 
   const handleClick = (room) => {
-    window.open(`/floorplan/${room.id}`, '_blank');
+    const roomNameSlug = room.name.toLowerCase().replace(/\s+/g, '-');
+  window.open(`/floorplan/${room.id}/${roomNameSlug}`, '_blank');
   };
   
 

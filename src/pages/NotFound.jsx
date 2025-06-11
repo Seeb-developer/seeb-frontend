@@ -6,7 +6,7 @@ export default function NotFound() {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col items-center justify-center bg-gray-50 px-4 text-center py-12">
+    <div className="flex flex-col items-center justify-center px-4 text-center py-12">
       <img
         src="/not-found.jpg" // optional: use your own illustration
         alt="404 Not Found"

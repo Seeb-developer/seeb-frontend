@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Home, ShoppingCart, BookOpen, CalendarCheck, User, FileText  } from 'lucide-react';
+import { Home, ShoppingCart, BookOpen, CalendarCheck, User, FileText, Book } from 'lucide-react';
 import { useSelector, useDispatch } from "react-redux";
 import AuthModal from '../components/AuthModal';
 import RegistrationModal from '../components/RegistrationModal';
@@ -76,6 +76,8 @@ export function Navbar() {
 
           <Link to="/my-bookings" className={`flex items-center gap-2 ${isActive("/my-bookings") ? "text-yellow-400" : "hover:text-yellow-400"}`}><CalendarCheck className="w-5 h-5" />Bookings</Link>
 
+          <Link to="/blog" className={`flex items-center gap-2 ${isActive("/blog") ? "text-yellow-400" : "hover:text-yellow-400"}`}> <Book className="w-5 h-5" />Blog</Link>
+
           <button onClick={handleProfileClick} className={`flex items-center gap-2 ${isActive("/profile") ? "text-yellow-400" : "hover:text-yellow-400"}`}> <User className='w-5 h-5' /> {token ? (firstName || "User") : "Login"}</button>
 
         </div>
@@ -93,10 +95,10 @@ export function Navbar() {
       {/* Mobile Bottom Navigation */}
       <div className="fixed bottom-0 w-full bg-white border-t border-gray-200 flex justify-around items-center py-2 md:hidden z-50">
 
-        {/* <Link to="/" className={` ${isActive("/") ? "text-yellow-400" : "hover:text-yellow-400"} flex flex-col items-center `}>
+        <Link to="/" className={` ${isActive("/") ? "text-yellow-400" : "hover:text-yellow-400"} flex flex-col items-center `}>
           <Home size={25} />
           <span className="text-xs">Home</span>
-        </Link> */}
+        </Link>
 
         <Link to="/cart" className={`${isActive("/cart") ? "text-yellow-400" : "hover:text-yellow-400"} flex flex-col items-center `}>
           <div className="relative">

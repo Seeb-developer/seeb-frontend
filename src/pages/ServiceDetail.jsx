@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useGet } from '../hooks/useGet';
 import { Carousel } from 'react-responsive-carousel';
@@ -6,7 +6,7 @@ import ServiceBookingModal from "../components/ServiceBookingModal";
 import AuthModal from "../components/AuthModal";
 import RegistrationModal from "../components/RegistrationModal";
 import { useSelector } from 'react-redux';
-import { Sparkles, HeartHandshake, ShieldCheck, BadgeCheck, Star, CheckCircle, ChevronDown } from "lucide-react";
+import { Sparkles, ShieldCheck, Star, CheckCircle, ChevronDown } from "lucide-react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 export function ServiceDetail() {
@@ -29,17 +29,12 @@ export function ServiceDetail() {
 
   const availableTabs = [];
 
+  const { data: faqData, isLoading: faqLoading, error: faqError } = useGet(`faqs/service/${serviceId}`);
+
   if (service?.features) availableTabs.push("features");
   if (service?.care_instructions) availableTabs.push("care");
   if (service?.warranty_details) availableTabs.push("warranty");
   if (service?.quality_promise) availableTabs.push("quality");
-
-  const tabIcons = {
-    features: <Sparkles size={18} className="mr-2" />,
-    care: <HeartHandshake size={18} className="mr-2" />,
-    warranty: <ShieldCheck size={18} className="mr-2" />,
-    quality: <BadgeCheck size={18} className="mr-2" />,
-  };
 
   const handleAction = () => {
     if (!token) {
@@ -48,25 +43,6 @@ export function ServiceDetail() {
       setModalOpen(true);
     }
   };
-
-  const faqData = [
-    {
-      question: "What does the service include?",
-      answer: "The service includes all standard installations and fittings based on your selected options. Please refer to the description for specific inclusions."
-    },
-    {
-      question: "How can I reschedule my service?",
-      answer: "You can reschedule your service from your bookings page or contact our support team at least 24 hours in advance."
-    },
-    {
-      question: "Is there any warranty?",
-      answer: "Yes, please check the 'Warranty Details' section above for information related to warranty and support."
-    },
-    {
-      question: "Can I cancel my booking?",
-      answer: "Yes, you can cancel your booking before the service start time. Refer to our cancellation policy for more details."
-    }
-  ];
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error loading service</p>;
@@ -186,7 +162,9 @@ export function ServiceDetail() {
       )}
 
       {/* FAQ Section */}
-      <div className="mt-12 max-w-4xl mx-auto">
+      {faqLoading && <p>Loading FAQs...</p>}
+      {faqError && <p>Failed to load FAQs</p>}
+      {faqData && faqData.length > 0 && (<div className="mt-12 max-w-4xl mx-auto">
         <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Frequently Asked Questions</h2>
         <div className="space-y-4">
           {faqData.map((faq, index) => {
@@ -219,7 +197,7 @@ export function ServiceDetail() {
             );
           })}
         </div>
-      </div>
+      </div>)}
 
 
 

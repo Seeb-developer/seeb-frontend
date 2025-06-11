@@ -41,6 +41,7 @@ export default function MyBookings() {
             return (
               <div
                 key={booking.id}
+                role="button"
                 onClick={() => navigate("/booking-detail",{
                   state:{
                     id:booking.id
@@ -48,7 +49,7 @@ export default function MyBookings() {
                 })}              
                 className="bg-white border hover:shadow-lg rounded-xl p-5 transition cursor-pointer"
               >
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4" >
                   <div className="flex-1">
                     <h2 className="text-lg font-bold text-gray-800">Booking ID: #{booking.booking_id}</h2>
                     <p className="text-sm mt-1 text-gray-600">

@@ -10,7 +10,7 @@ export const fetchCart = createAsyncThunk('cart/fetchCart', async (userId) => {
         headers: { Authorization: `Bearer ${token}` },
       }
     );
-    // console.log("✅ API Response:", response.data)
+    // console.log("cart slice API Response:", response.data)
     return response.data.data;
   } catch (err) {
     // Return the error message from the response if available

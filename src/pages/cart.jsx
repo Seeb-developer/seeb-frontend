@@ -3,11 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchCart, deleteCartItem } from "../store/cartSlice";
 import { X, Edit2, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import ServiceBookingModal from "../components/ServiceBookingModal";
-
+import EditServiceBookingModal from "../components/EditServiceBookingModal";
+import { useGet } from "../hooks/useGet";
 
 const CartItem = ({ item, onDelete, onEdit }) => {
-  // console.log("items",item);
 
   const imageList = item.service_image?.startsWith("[")
     ? JSON.parse(item.service_image)
@@ -61,8 +60,9 @@ export default function CartPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { items: cartItems, loading, error } = useSelector((state) => state.cart);
-
-  // console.log(cartItems);
+  const { data: service, seriveLoading, serviceError } = useGet(
+    editingItem ? `services/${editingItem.service_id}` : null
+  );
 
   const user = useSelector((state) => state.user.userInfo);
   const userId = user?.id;
@@ -70,6 +70,14 @@ export default function CartPage() {
   useEffect(() => {
     dispatch(fetchCart(userId));
   }, [dispatch]);
+
+  useEffect(() => {
+    if (service && editingItem) {
+      setSelectedService(service);
+      setRoomId(editingItem.room_id);
+      setShowModal(true);
+    }    
+  }, [service, editingItem]);
 
   const handleDelete = async (id) => {
     if (confirm("Are you sure you want to delete this item?")) {
@@ -85,16 +93,7 @@ export default function CartPage() {
 
 
   const handleEdit = (item) => {
-    setSelectedService({
-      id: item.service_id,
-      name: item.service_name,
-      rate: parseFloat(item.rate),
-      rate_type: item.rate_type,
-      service_type_id: item.service_type_id,
-    });
-    setRoomId(item.room_id);
     setEditingItem(item);
-    setShowModal(true);
   };
 
   const totalAmount = cartItems.reduce(
@@ -152,13 +151,13 @@ export default function CartPage() {
         )}
       </div>
 
-      <ServiceBookingModal
+      {selectedService && <EditServiceBookingModal
         isOpen={showModal}
         onClose={handleCloseModal}
-        selectedService={selectedService}
+        serviceItem={selectedService}
         roomId={roomId}
         editingItem={editingItem}
-      />
+      />}
 
     </div>
   );

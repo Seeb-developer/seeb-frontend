@@ -29,6 +29,8 @@ export function ServiceList() {
   const token = useSelector((state) => state.user.token);
 
   const handleAction = (service) => {
+    console.log("service",service);
+    
     if (!token) {
       setShowAuthModal(true);
     } else {

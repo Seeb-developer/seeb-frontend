@@ -24,10 +24,10 @@ export function HeroSection() {
 
       {/* AI Design Box */}
       <div
-        className="relative w-full lg:w-1/2 rounded-2xl h-[540px] sm:h-[500px] lg:h-[540px] overflow-hidden cursor-pointer hover:shadow-2xl transition-shadow duration-300"
+        className="relative w-full lg:w-1/2 rounded-2xl overflow-hidden cursor-pointer hover:shadow-2xl transition-shadow duration-300"
         style={{ backgroundImage: "url('/web-1.jpg')", backgroundSize: 'cover', backgroundPosition: 'top' }}
       >
-        <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-6 rounded-2xl">
+        <div className="flex flex-col justify-center items-center text-center px-6 py-10 sm:py-14 rounded-2xl bg-black/50">
           <img src="/design.png" alt="floorplan" className="w-48 sm:w-48 md:w-56 lg:w-80 mb-4 object-contain" />
           <h1 className="text-white text-xl sm:text-2xl md:text-4xl font-bold mb-3 capitalize">
             Get Interior Designs with AI
@@ -36,19 +36,19 @@ export function HeroSection() {
             Instantly generate design ideas for your home, office, sofa and more with AI-powered creativity.
           </p>
           <button className='btn btn-secondary' onClick={() => {
-            !token ? setShowAuthModal(true) :         
-            navigate('/design-generate')}}>Generate Now</button>
-
+            !token ? setShowAuthModal(true) : navigate('/design-generate')
+          }}>
+            Generate Now
+          </button>
         </div>
       </div>
 
       {/* Floor Plan Box */}
       <div
-        className="relative w-full lg:w-1/2 rounded-2xl h-[540px] sm:h-[500px] lg:h-[540px] overflow-hidden cursor-pointer hover:shadow-2xl transition-shadow duration-300"
+        className="relative w-full lg:w-1/2 rounded-2xl overflow-hidden cursor-pointer hover:shadow-2xl transition-shadow duration-300"
         style={{ backgroundImage: "url('/web-2.jpg')", backgroundSize: 'cover', backgroundPosition: 'top' }}
-
       >
-        <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-6 rounded-2xl">
+        <div className="flex flex-col justify-center items-center text-center px-6 py-10 sm:py-14 rounded-2xl bg-black/50">
           <img src="/floorplan.png" alt="floorplan" className="w-44 sm:w-48 md:w-56 lg:w-60 mb-4 object-contain" />
           <h1 className="text-white text-xl sm:text-2xl md:text-4xl font-bold mb-3 capitalize">
             Create your own floor plan in seeb web/app
@@ -56,7 +56,11 @@ export function HeroSection() {
           <p className="text-gray-200 text-sm sm:text-base max-w-xl mb-4">
             Seeb lets you create floor plans for each room or space individually. Simply draw and input dimensions for your bedroom, living room, Office, Shops, or any space one at a time. This space-wise approach helps you visualize and customize every corner of your home with precision.
           </p>
-          <button className='btn btn-secondary' onClick={() => {!token ? setShowAuthModal(true) : setShowModal(true)}}>Create Now</button>
+          <button className='btn btn-secondary' onClick={() => {
+            !token ? setShowAuthModal(true) : setShowModal(true)
+          }}>
+            Create Now
+          </button>
         </div>
       </div>
 

@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@google/genai": "^1.4.0",
     "@reduxjs/toolkit": "^2.7.0",
     "aos": "^2.3.4",
     "axios": "^1.8.4",
@@ -30,7 +31,8 @@
     "react-slick": "^0.30.3",
     "redux-persist": "^6.0.0",
     "slick-carousel": "^1.8.1",
-    "sweetalert2": "^11.21.0"
+    "sweetalert2": "^11.21.0",
+    "use-image": "^1.1.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",

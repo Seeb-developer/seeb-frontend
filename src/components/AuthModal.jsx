@@ -96,12 +96,13 @@ export default function AuthModal({ onClose, onLoginSuccess, onNeedRegistration 
               placeholder="Enter Mobile Number"
               value={mobile}
               onChange={(e) => setMobile(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSendOtp()}
               className="border border-gray-300 rounded-md w-full px-4 py-2 mb-4 text-sm"
               maxLength="10"
             />
             {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
             <button
-              onClick={handleSendOtp}
+              onClick={handleSendOtp}              
               disabled={loading}
               className=" w-full btn btn-secondary"
             >
@@ -115,6 +116,7 @@ export default function AuthModal({ onClose, onLoginSuccess, onNeedRegistration 
               placeholder="Enter OTP"
               value={otp}
               onChange={(e) => setOtp(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleVerifyOtp()}
               className="border border-gray-300 rounded-md w-full px-4 py-2 mb-4 text-sm"
               maxLength="6"
             />

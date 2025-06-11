@@ -10,7 +10,7 @@ export function usePost(url, token = null) {
     setLoading(true);
     try {
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
-      const res = await axios.post(`${import.meta.env.VITE_BASE_URL}${url}`, payload, { headers });
+      const res = await axios.post(`${import.meta.env.VITE_BASE_URL}${url}`, payload, { headers });     
       setResponse(res.data);
     } catch (err) {
       setError(err);

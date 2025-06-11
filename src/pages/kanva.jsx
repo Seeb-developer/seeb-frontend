@@ -11,7 +11,7 @@ import { Image, util } from 'fabric';
 
 const FT_TO_PX = 40;
 
-const FloorPlan = () => {
+const FloorPlan_2 = () => {
   const { roomId } = useParams();
   const canvasRef = useRef(null);
 
@@ -325,5 +325,5 @@ const FloorPlan = () => {
   );
 };
 
-export default FloorPlan;
+export default FloorPlan_2;
 

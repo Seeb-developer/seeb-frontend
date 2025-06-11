@@ -49,7 +49,7 @@ const Footer = () => {
                 <div className='flex md:justify-center'>
                    <div>
                    <h3 className="text-lg font-semibold mb-2">Contact Us</h3>
-                    <p className="text-base text-gray-300 mb-2">Address: 📍 Pune, Maharashtra</p>
+                    <p className="text-base text-gray-300 mb-2">Address: 📍 S.No 29/13b, Wadachiwadi Road, Jakat Naka, Undri, Pune, Maharashtra Pin: 411060</p>
                     <p className="text-base text-gray-300 mb-2">Tel: 📞 18005703133</p>
                     <p className="text-base text-gray-300 mb-2">Email: 📧 info@seeb.in</p>
                    </div>
