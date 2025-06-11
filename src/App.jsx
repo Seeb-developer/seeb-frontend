@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import { Navbar } from './components/NavbarSection';
 import { ServiceList } from './pages/ServiceList';
 import { ServiceDetail } from './pages/ServiceDetail';
-import DesignTips from './pages/Tips';
 import ProfilePage from './pages/Profile';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
@@ -26,6 +25,7 @@ import {FloorPlan_fabric}  from './pages/fabric';
 import KanvaNew from './pages/kanva-new';
 import GenerateAIItems from './pages/GenerateAiItems';
 import CartPage from './pages/Cart';
+import DesignTips from './pages/tips';
 
 function AppContent() {
   const location = useLocation();
