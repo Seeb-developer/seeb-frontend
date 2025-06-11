@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { Navbar } from './components/NavbarSection';
 import { ServiceList } from './pages/ServiceList';
-import CartPage from './pages/Cart';
 import { ServiceDetail } from './pages/ServiceDetail';
 import DesignTips from './pages/Tips';
 import ProfilePage from './pages/Profile';
@@ -26,6 +25,7 @@ import 'aos/dist/aos.css';
 import {FloorPlan_fabric}  from './pages/fabric';
 import KanvaNew from './pages/kanva-new';
 import GenerateAIItems from './pages/GenerateAiItems';
+import CartPage from './pages/Cart';
 
 function AppContent() {
   const location = useLocation();
