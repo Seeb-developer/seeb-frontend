@@ -24,8 +24,8 @@ import 'aos/dist/aos.css';
 import {FloorPlan_fabric}  from './pages/fabric';
 import KanvaNew from './pages/kanva-new';
 import GenerateAIItems from './pages/GenerateAiItems';
-import CartPage from './pages/Cart';
-import DesignTips from './pages/tips';
+import CartPage from './pages/Cart.jsx';
+import DesignTips from './pages/Tips';
 
 function AppContent() {
   const location = useLocation();
