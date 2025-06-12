@@ -242,6 +242,8 @@ const KanvaNew = ({ roomId = 1 }) => {
 
     const newRotation = (element.rotation + 90) % 360;
     const node = trRef.current?.getStage()?.findOne(`#${elementId}`);
+    console.log("node",node);
+    
 
     if (node) {
       // Apply rotation

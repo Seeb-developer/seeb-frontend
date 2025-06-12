@@ -102,8 +102,8 @@ export default function BookingDetail() {
                       <p className="font-semibold text-indigo-700">{addon.name}</p>
                       <p className="text-sm text-gray-600">{addon.description}</p>
                       <div className="mt-2 text-gray-700 text-sm space-y-1">
-                        <p><span className="font-medium">Type:</span> {addon.price_type === 'unit' ? 'Per Unit' : 'Per Sq. Ft.'}</p>
-                        <p><span className="font-medium">Qty:</span> {addon.qty}</p>
+                        {/* <p><span className="font-medium">Type:</span> </p> */}
+                        <p><span className="font-medium">Qty:</span> {addon.qty} {addon.price_type === 'unit' ? 'Unit' : 'Sq. Ft.'}</p>
                         <p><span className="font-medium">Price:</span> ₹{addon.price}</p>
                         <p><span className="font-medium">Total:</span> <span className="text-green-600 font-semibold">₹{addon.total}</span></p>
                       </div>

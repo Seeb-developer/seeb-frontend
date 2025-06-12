@@ -6,7 +6,7 @@ import jsPDF from "jspdf";
 import { useGet } from '../hooks/useGet';
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { X, Sparkles, Camera } from "lucide-react";
+import { X, Sparkles, RotateCw } from "lucide-react";
 import useImage from 'use-image';
 import { GoogleGenAI, Modality } from "@google/genai";
 
@@ -119,6 +119,7 @@ const FloorPlan = () => {
           ...baseItem,
           x: 150,
           y: 150,
+          rotation: 0,
           ref: React.createRef(),
         },
       }));
@@ -548,30 +549,43 @@ const FloorPlan = () => {
       const getViewPrompt = () => {
         switch (selectedView) {
           case "top-view":
-            return "from a top-down perspective, showing the entire layout from above";
+            return "from a top-down perspective, showing the entire room layout clearly from above";
           case "corner-view":
-            return `from the ${selectedCorner} corner perspective, showing walls ${selectedCorner.split("-").join(" and ")}`;
+            const [wall1, wall2] = selectedCorner.split("-");
+            return `from the inside of the ${selectedCorner} corner, showing both wall ${wall1} and wall ${wall2}, creating a sense of depth`;
           case "eye-level":
-            return "from a natural eye-level perspective, as if standing in the room";
+            return "from a natural human eye-level, as if standing inside the room and looking ahead";
           default:
-            return "from a natural perspective";
+            return "from a realistic interior camera angle";
         }
       };
 
-      const prompt = `Generate a photorealistic interior image of a ${width}ft x ${height}ft ${roomNameFormatted} ${getViewPrompt()}.
-Theme: ${selectedTheme}
-Primary Color: ${primaryColor}
-Secondary Color: ${secondaryColor}
+      const prompt = `Generate a photorealistic 3D interior image of a ${width}ft x ${height}ft ${roomNameFormatted} ${getViewPrompt()}.
 
-Use the attached floorplan as the exact layout reference. Match all furniture positions and spacing precisely.
-Key Requirements:
-- Maintain the exact layout shown in the floorplan
-- Use ${selectedTheme} style elements and decor
-- Apply ${primaryColor} as the primary color and ${secondaryColor} as accents
-- Create realistic lighting and materials
-- Keep the design clean and professional
+      Layout Instructions:
+      - Use the attached floorplan image as the **strict layout reference**
+      - Accurately recreate the furniture positions, proportions, and spacing **as shown in the floorplan**
+      - Do **not** add, remove, or move any furniture — follow the layout exactly
 
-Do not add or remove any elements from the original layout.`;
+      Design Style:
+      - Theme: ${selectedTheme}
+      - Primary Color: ${primaryColor}
+      - Secondary Color: ${secondaryColor}
+
+      Perspective Details:
+      - Render the view from the ${selectedCorner} corner, showing both walls (${selectedCorner.split("-").join(" and ")})
+      - Camera should be placed at ~5–6 ft height, angled for realistic depth
+      - Show two adjacent walls to give a strong corner perspective
+
+      Visual Realism:
+      - Use realistic materials (wood, marble, fabrics, etc.)
+      - Include natural lighting, shadows, and soft reflections
+      - Keep the design clean, elegant, and professionally styled
+
+      Important:
+      - Do not change furniture count, type, or size
+      - Do not use flat, isometric, or bird’s eye view unless top-view is selected
+      - The image must look like a real photograph from inside the room`;
 
       // Prepare content for Gemini
       const contents = [
@@ -645,7 +659,7 @@ Do not add or remove any elements from the original layout.`;
     const fileName = src.split('/').pop();
 
     const [image] = useImage(`${import.meta.env.VITE_BASE_URL}serve-file/${fileName}`, 'anonymous');
-    
+
     const shapeRef = React.useRef();
 
     const constrainElementToBounds = (node) => {
@@ -654,20 +668,28 @@ Do not add or remove any elements from the original layout.`;
       let newY = node.y();
       let wasAdjusted = false;
 
-      if (rotatedBounds.x < 0) {
-        newX -= rotatedBounds.x;
+      const noPadding = id.startsWith('door') || id.startsWith('window');
+      const padding = noPadding ? 0 : 14;
+
+      const minX = padding;
+      const minY = padding;
+      const maxX = floorWidth + 28 - padding;
+      const maxY = floorHeight + 28 - padding;
+
+      if (rotatedBounds.x < minX) {
+        newX -= (rotatedBounds.x - minX);
         wasAdjusted = true;
       }
-      if (rotatedBounds.y < 0) {
-        newY -= rotatedBounds.y;
+      if (rotatedBounds.y < minY) {
+        newY -= (rotatedBounds.y - minY);
         wasAdjusted = true;
       }
-      if (rotatedBounds.x + rotatedBounds.width > floorWidth) {
-        newX -= (rotatedBounds.x + rotatedBounds.width - floorWidth);
+      if (rotatedBounds.x + rotatedBounds.width > maxX) {
+        newX -= (rotatedBounds.x + rotatedBounds.width - maxX);
         wasAdjusted = true;
       }
-      if (rotatedBounds.y + rotatedBounds.height > floorHeight) {
-        newY -= (rotatedBounds.y + rotatedBounds.height - floorHeight);
+      if (rotatedBounds.y + rotatedBounds.height > maxY) {
+        newY -= (rotatedBounds.y + rotatedBounds.height - maxY);
         wasAdjusted = true;
       }
 
@@ -676,6 +698,7 @@ Do not add or remove any elements from the original layout.`;
         node.getLayer()?.batchDraw();
       }
     };
+
 
     React.useEffect(() => {
       if (isSelected && shapeRef.current) {
@@ -686,6 +709,7 @@ Do not add or remove any elements from the original layout.`;
     return (
       <>
         <KonvaImage
+          id={id}
           ref={shapeRef}
           image={image}
           x={x}
@@ -729,7 +753,7 @@ Do not add or remove any elements from the original layout.`;
           <Transformer
             nodes={[shapeRef.current]}
             keepRatio={false}
-            rotateEnabled
+            rotateEnabled={false}
             boundBoxFunc={(oldBox, newBox) => {
               if (newBox.width < 30 || newBox.height < 30) return oldBox;
               return newBox;
@@ -740,21 +764,67 @@ Do not add or remove any elements from the original layout.`;
     );
   };
 
-const updateCameraPosition = (corner) => {
-  const padding = 40; // Distance from the walls
-  switch (corner) {
-    case 'A-C':
-      return { x: width - padding, y: height, rotation: 45 }; // Place at B-D corner
-    case 'C-B':
-      return { x: -padding, y: height, rotation: 130 }; // Place at D-A corner
-    case 'B-D':
-      return { x: -padding, y: -padding, rotation: 230 }; // Place at A-C corner
-    case 'D-A':
-      return { x: width - padding, y: -padding, rotation: 310 }; // Place at C-B corner
-    default:
-      return { x: 0, y: 0, rotation: 0 };
+  const updateCameraPosition = (corner) => {
+    const padding = 40; // Distance from the walls
+    switch (corner) {
+      case 'A-C':
+        return { x: width - padding, y: height, rotation: 45 }; // Place at B-D corner
+      case 'C-B':
+        return { x: -padding, y: height, rotation: 130 }; // Place at D-A corner
+      case 'B-D':
+        return { x: -padding, y: -padding, rotation: 230 }; // Place at A-C corner
+      case 'D-A':
+        return { x: width - padding, y: -padding, rotation: 310 }; // Place at C-B corner
+      default:
+        return { x: 0, y: 0, rotation: 0 };
+    }
+  };
+
+  const handleRotate = (elementId) => {
+  const element = items[elementId];
+  if (!element) return;
+
+  const newRotation = (element.rotation || 0) + 90;
+  const normalizedRotation = newRotation % 360;
+
+  const node = stageRef.current?.findOne(`${elementId}`);
+  console.log("node", node, "rotation", normalizedRotation);
+  
+  if (node) {
+    node.rotation(normalizedRotation);
+
+    // Check bounds after rotation
+    const rotatedBounds = node.getClientRect();
+    const noPadding = elementId.startsWith('door') || elementId.startsWith('window');
+    const padding = noPadding ? 0 : 14;
+
+    const minX = padding;
+    const minY = padding;
+    const maxX = width + 28 - padding;
+    const maxY = height + 28 - padding;
+
+    if (
+      rotatedBounds.x < minX ||
+      rotatedBounds.y < minY ||
+      rotatedBounds.x + rotatedBounds.width > maxX ||
+      rotatedBounds.y + rotatedBounds.height > maxY
+    ) {
+      // Revert rotation if out of bounds
+      node.rotation(element.rotation || 0);
+      return;
+    }
+
+    // Update in state
+    handleDragResize(elementId, {
+      x: node.x(),
+      y: node.y(),
+      rotation: normalizedRotation,
+    });
+
+    node.getLayer()?.batchDraw();
   }
 };
+
 
   return (
     <>
@@ -860,40 +930,17 @@ const updateCameraPosition = (corner) => {
                   <rect x="14" y="14" width={width} height={height} fill="white" />
                 </svg>
 
-                {/* Grid */}
-                <div
-                  className="absolute top-[14px] left-[14px] z-30 overflow-hidden"
-                  style={{
-                    width: `${width}px`,
-                    height: `${height}px`,
-                    display: "grid",
-                    gridTemplateColumns: `repeat(${colCount}, 80px)`,
-                    gridTemplateRows: `repeat(${rowCount}, 80px)`,
-                    pointerEvents: "none",
-                  }}
-                >
-                  {Array.from({ length: colCount * rowCount }).map((_, i) => (
-                    <div
-                      key={i}
-                      style={{
-                        border: "1px solid #F8F8F8",
-                        boxSizing: "border-box",
-                      }}
-                    />
-                  ))}
-                </div>
-
                 {/* Konva Canvas */}
                 <div
-                  className="absolute top-[14px] left-[14px] z-30 "
-                  style={{ width: width, height: height }}
+                  className="absolute top-[0px] left-[0px] z-20"
+                  style={{ width: width + 28, height: height + 28 }}
                 >
                   <Stage
-                    width={floorSize.width}
-                    height={floorSize.height}
+                    width={width + 28}
+                    height={height + 28}
                     ref={stageRef}
                     onMouseDown={handleStageMouseDown}
-                    style={{ position: "absolute", top: 0, left: 0, zIndex: 10 }}
+                    style={{ position: "absolute", top: 0, left: 0 }}
                   >
                     <Layer>
                       {Object.entries(items).map(([id, item]) => (
@@ -916,9 +963,30 @@ const updateCameraPosition = (corner) => {
                         />
                       ))}
                     </Layer>
-
                   </Stage>
+                </div>
 
+                {/* Grid */}
+                <div
+                  className="absolute top-[14px] left-[14px] overflow-hidden"
+                  style={{
+                    width: `${width}px`,
+                    height: `${height}px`,
+                    display: "grid",
+                    gridTemplateColumns: `repeat(${colCount}, 80px)`,
+                    gridTemplateRows: `repeat(${rowCount}, 80px)`,
+                    pointerEvents: "none",
+                  }}
+                >
+                  {Array.from({ length: colCount * rowCount }).map((_, i) => (
+                    <div
+                      key={i}
+                      style={{
+                        border: "1px solid #F8F8F8",
+                        boxSizing: "border-box",
+                      }}
+                    />
+                  ))}
                 </div>
 
                 {/* Dimension Lines */}
@@ -979,6 +1047,8 @@ const updateCameraPosition = (corner) => {
                 {selectedId && items[selectedId] && floorRef.current && !isDragging && (
                   <div
                     style={{
+                      display: "flex",
+                      gap: "5px",
                       position: "absolute",
                       top: items[selectedId].y,
                       left: items[selectedId].x + items[selectedId].width + 30,
@@ -986,12 +1056,20 @@ const updateCameraPosition = (corner) => {
                     }}
                   >
                     <button
+                      className="bg-gray-700 hover:bg-blue-600 text-white rounded-full w-5 h-5 flex items-center justify-center shadow-md transition"
+                      onClick={() => handleRotate(selectedId)}
+                      title="Rotate"
+                    >
+                      <RotateCw width={15} />
+                    </button>
+                    <button
                       className="bg-gray-700 hover:bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center shadow-md transition"
                       onClick={() => handleDeleteElement(selectedId)}
                       title="Delete"
                     >
                       <X width={15} />
                     </button>
+                    
                   </div>
                 )}
               </div>
@@ -1069,8 +1147,8 @@ const updateCameraPosition = (corner) => {
                         <label
                           key={view}
                           className={`flex items-center justify-center p-2 border rounded cursor-pointer ${selectedView === view.toLowerCase().replace(" ", "-")
-                              ? "bg-purple-100 border-purple-500"
-                              : "hover:bg-gray-50"
+                            ? "bg-purple-100 border-purple-500"
+                            : "hover:bg-gray-50"
                             }`}
                         >
                           <input
@@ -1098,8 +1176,8 @@ const updateCameraPosition = (corner) => {
                           <label
                             key={corner}
                             className={`flex items-center justify-center p-2 border rounded cursor-pointer ${selectedCorner === corner
-                                ? "bg-purple-100 border-purple-500"
-                                : "hover:bg-gray-50"
+                              ? "bg-purple-100 border-purple-500"
+                              : "hover:bg-gray-50"
                               }`}
                           >
                             <input
