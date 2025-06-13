@@ -35,7 +35,7 @@ export default function AIDesignGenerator() {
     useEffect(() => {
         const fetchStyles = async () => {
             try {
-                const res = await axios.get(`${import.meta.env.VITE_BASE_URL}styles`);
+                const res = await axios.get(`${import.meta.env.VITE_BASE_URL}styles/by-category`);
                 if (res.data.status === 200) {
                     const styles = res.data.data;
                     setStyleTabs(styles);

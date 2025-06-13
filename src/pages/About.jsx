@@ -14,11 +14,11 @@ export default function AboutUs() {
           </div>
           <div className="w-full lg:w-1/2">
             <h1 className="text-4xl md:text-5xl font-bold text-blue-800 mb-4">About Seeb</h1>
-            <p className="text-lg text-gray-700 leading-relaxed mb-6">
+            <p className="text-lg text-gray-700 leading-relaxed mb-6 text-justify">
               <strong>Designing Dreams. Crafting Spaces.</strong><br />
               At Seeb, we believe that your home is more than just walls — it’s a reflection of who you are. That’s why we built India’s first AI-powered interior design platform to help homeowners design, visualize, and build their dream spaces — all in one place.
             </p>
-            <p className="text-lg text-gray-700 leading-relaxed mb-6">
+            <p className="text-lg text-gray-700 leading-relaxed mb-6 text-justify">
               Whether you’re moving into a new home, renovating an old one, or just refreshing a room, Seeb provides professional-grade interior design tools — without the high costs, delays, or guesswork.
             </p>
           </div>

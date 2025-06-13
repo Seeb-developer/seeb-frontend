@@ -35,8 +35,6 @@ const FloorPlan = () => {
   const [selectedTheme, setSelectedTheme] = useState("");
   const [aiImages, setAiImages] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
-
-  // const [customPrompt, setCustomPrompt] = useState("");
   const [primaryColor, setPrimaryColor] = useState("");
   const [secondaryColor, setSecondaryColor] = useState("");
   const [selectedView, setSelectedView] = useState("corner"); // "top", "corner", "eye"
@@ -46,47 +44,18 @@ const FloorPlan = () => {
   const { data: roomElements } = useGet(`assets/room/${roomId}`);
 
   useEffect(() => {
-
-    // const loadImage = (url) => {
-    //   // return new Promise((resolve, reject) => {
-    //   //   const img = new window.Image();
-    //   //   img.crossOrigin = "anonymous";
-    //   //   img.src = url;
-    //   //   img.onload = () => resolve(img);
-    //   //   img.onerror = reject;
-    //   // });
-    //   const [image] = useImage(url);
-    //   return image;
-    // };
-
     if (roomElements) {
       const loadImages = async () => {
-        // const newItems = {};
         const baseMap = {};
 
         for (const el of roomElements) {
-          // const img = await loadImage(`${import.meta.env.VITE_BASE_URL}${el.file}`);
-          // const [image] = useImage(`${import.meta.env.VITE_BASE_URL}${el.file}`);
           const id = el.title.toLowerCase();
           baseMap[id] = {
             width: parseFloat(el.width) * FT_TO_PX,
             height: parseFloat(el.length) * FT_TO_PX,
-            // image: img,
             imgSrc: el.file,
           };
-
-          // newItems[id] = {
-          //   x: 100,
-          //   y: 100,
-          //   width: parseFloat(el.width) * FT_TO_PX,
-          //   height: parseFloat(el.length) * FT_TO_PX,
-          //   rotation: 0,
-          //   image: img,
-          //   ref: React.createRef(),
-          // };
         }
-
-        // setItems(newItems);
         setBaseElements(baseMap);
       };
 
@@ -139,7 +108,6 @@ const FloorPlan = () => {
     if (selectedId === id) setSelectedId(null);
   };
 
-
   const pxToFt = (px) => (px / FT_TO_PX);
   const width = floorSize.width;
   const height = floorSize.height;
@@ -181,117 +149,117 @@ const FloorPlan = () => {
   //   pdf.save("floorplan.pdf");
   // };
 
-  const uploadCanvasToBackend = async (canvas, token) => {
-    return new Promise((resolve, reject) => {
-      canvas.toBlob(async (blob) => {
-        const formData = new FormData();
-        formData.append("images[]", blob, "floorplan.png");
+  // const uploadCanvasToBackend = async (canvas, token) => {
+  //   return new Promise((resolve, reject) => {
+  //     canvas.toBlob(async (blob) => {
+  //       const formData = new FormData();
+  //       formData.append("images[]", blob, "floorplan.png");
 
-        try {
-          const uploadRes = await fetch(`${import.meta.env.VITE_BASE_URL}seeb-cart/uploadImages`, {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            body: formData,
-          });
+  //       try {
+  //         const uploadRes = await fetch(`${import.meta.env.VITE_BASE_URL}seeb-cart/uploadImages`, {
+  //           method: "POST",
+  //           headers: {
+  //             Authorization: `Bearer ${token}`,
+  //           },
+  //           body: formData,
+  //         });
 
-          const uploadResult = await uploadRes.json();
-          if (!uploadRes.ok || !uploadResult.data) throw new Error("Image upload failed");
+  //         const uploadResult = await uploadRes.json();
+  //         if (!uploadRes.ok || !uploadResult.data) throw new Error("Image upload failed");
 
-          const imageUrl = uploadResult.data?.images?.[0];
-          if (!imageUrl) throw new Error("No image returned");
-          resolve(imageUrl);
-        } catch (error) {
-          reject(error);
-        }
-      }, "image/png");
-    });
-  };
+  //         const imageUrl = uploadResult.data?.images?.[0];
+  //         if (!imageUrl) throw new Error("No image returned");
+  //         resolve(imageUrl);
+  //       } catch (error) {
+  //         reject(error);
+  //       }
+  //     }, "image/png");
+  //   });
+  // };
 
-  const getObjectListFromGPT = async (imageUrl) => {
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: "gpt-4o",
-        messages: [
-          {
-            role: "system",
-            content: "You are a floor plan analysis expert. Your job is to extract a structured JSON layout from floor plan images.",
-          },
-          {
-            role: "user",
-            content: [
-              {
-                type: "text",
-                text: `Analyze the following top-down floor plan image.\nReturn only a JSON array of visible furniture objects, with each object described using:\n- \"type\": the kind of furniture (e.g., \"bed\", \"wardrobe\")\n- \"position\": rough location in the room (e.g., \"top left\", \"bottom center\")\n- \"size\": estimated size in feet, if available (e.g., \"6x6 ft\")\n- \"facing\": direction the object is facing (e.g., \"facing the door\", \"toward the wardrobe\", \"toward bottom\")\n- \"neighbors\": nearby or adjacent objects (e.g., \"next to bed\", \"between table and wardrobe\")\nStrictly follow the visual layout. Only include objects that are clearly visible. Output a valid JSON array. Do not add commentary or explanations.`,
-                // text: `Analyze the following top-down floor plan image.
-                //       Return only a JSON array of visible furniture objects, with each object described using:
-                //       - "type": the kind of furniture (e.g., "bed", "wardrobe")
-                //       - "position": grid-based label using alphabetic rows and numeric columns (e.g., "A1", "B3"), assuming the top-left of the room is A1, and zones increase right and downward like Excel
-                //       - "size": estimated size in feet, if available (e.g., "6x6 ft")
-                //       - "facing": direction the object is facing (e.g., "facing the door", "toward the wardrobe", "toward bottom")
-                //       - "neighbors": nearby or adjacent objects (e.g., "next to bed", "between table and wardrobe")
-                //       Strictly follow the visual layout. Only include objects that are clearly visible. Output a valid JSON array. Do not add commentary or explanations.`,
-              },
-              {
-                type: "image_url",
-                image_url: {
-                  url: `${import.meta.env.VITE_BASE_URL}${imageUrl}`,
-                },
-              },
-            ],
-          },
-        ],
-      }),
-    });
+  // const getObjectListFromGPT = async (imageUrl) => {
+  //   const response = await fetch("https://api.openai.com/v1/chat/completions", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
+  //     },
+  //     body: JSON.stringify({
+  //       model: "gpt-4o",
+  //       messages: [
+  //         {
+  //           role: "system",
+  //           content: "You are a floor plan analysis expert. Your job is to extract a structured JSON layout from floor plan images.",
+  //         },
+  //         {
+  //           role: "user",
+  //           content: [
+  //             {
+  //               type: "text",
+  //               text: `Analyze the following top-down floor plan image.\nReturn only a JSON array of visible furniture objects, with each object described using:\n- \"type\": the kind of furniture (e.g., \"bed\", \"wardrobe\")\n- \"position\": rough location in the room (e.g., \"top left\", \"bottom center\")\n- \"size\": estimated size in feet, if available (e.g., \"6x6 ft\")\n- \"facing\": direction the object is facing (e.g., \"facing the door\", \"toward the wardrobe\", \"toward bottom\")\n- \"neighbors\": nearby or adjacent objects (e.g., \"next to bed\", \"between table and wardrobe\")\nStrictly follow the visual layout. Only include objects that are clearly visible. Output a valid JSON array. Do not add commentary or explanations.`,
+  //               // text: `Analyze the following top-down floor plan image.
+  //               //       Return only a JSON array of visible furniture objects, with each object described using:
+  //               //       - "type": the kind of furniture (e.g., "bed", "wardrobe")
+  //               //       - "position": grid-based label using alphabetic rows and numeric columns (e.g., "A1", "B3"), assuming the top-left of the room is A1, and zones increase right and downward like Excel
+  //               //       - "size": estimated size in feet, if available (e.g., "6x6 ft")
+  //               //       - "facing": direction the object is facing (e.g., "facing the door", "toward the wardrobe", "toward bottom")
+  //               //       - "neighbors": nearby or adjacent objects (e.g., "next to bed", "between table and wardrobe")
+  //               //       Strictly follow the visual layout. Only include objects that are clearly visible. Output a valid JSON array. Do not add commentary or explanations.`,
+  //             },
+  //             {
+  //               type: "image_url",
+  //               image_url: {
+  //                 url: `${import.meta.env.VITE_BASE_URL}${imageUrl}`,
+  //               },
+  //             },
+  //           ],
+  //         },
+  //       ],
+  //     }),
+  //   });
 
-    const result = await response.json();
-    let gptMessage = result.choices[0].message.content;
+  //   const result = await response.json();
+  //   let gptMessage = result.choices[0].message.content;
 
-    // Remove markdown code block wrapper if present
-    if (gptMessage.startsWith("```json")) {
-      gptMessage = gptMessage.replace(/^```json\s*|\s*```$/g, "");
-    }
+  //   // Remove markdown code block wrapper if present
+  //   if (gptMessage.startsWith("```json")) {
+  //     gptMessage = gptMessage.replace(/^```json\s*|\s*```$/g, "");
+  //   }
 
-    try {
-      const objects = JSON.parse(gptMessage.trim());
-      console.log("🧠 GPT Object List:", objects);
-      return objects;
-    } catch (err) {
-      console.error("❌ Failed to parse GPT JSON:", gptMessage);
-      return [];
-    }
-  };
+  //   try {
+  //     const objects = JSON.parse(gptMessage.trim());
+  //     console.log("🧠 GPT Object List:", objects);
+  //     return objects;
+  //   } catch (err) {
+  //     console.error("❌ Failed to parse GPT JSON:", gptMessage);
+  //     return [];
+  //   }
+  // };
 
-  const buildPrompt = (objects, theme) => {
-    const objectDescriptions = objects.map(obj => {
-      const size = obj.size || "unknown size";
-      const type = obj.type || "object";
-      const position = obj.position || "unknown position";
-      const facing = obj.facing ? `, facing ${obj.facing}` : "";
+  // const buildPrompt = (objects, theme) => {
+  //   const objectDescriptions = objects.map(obj => {
+  //     const size = obj.size || "unknown size";
+  //     const type = obj.type || "object";
+  //     const position = obj.position || "unknown position";
+  //     const facing = obj.facing ? `, facing ${obj.facing}` : "";
 
-      let neighbors = "";
-      if (Array.isArray(obj.neighbors) && obj.neighbors.length > 0) {
-        neighbors = `, near ${obj.neighbors.join(" and ")}`;
-      } else if (typeof obj.neighbors === "string") {
-        neighbors = `, near ${obj.neighbors}`;
-      }
+  //     let neighbors = "";
+  //     if (Array.isArray(obj.neighbors) && obj.neighbors.length > 0) {
+  //       neighbors = `, near ${obj.neighbors.join(" and ")}`;
+  //     } else if (typeof obj.neighbors === "string") {
+  //       neighbors = `, near ${obj.neighbors}`;
+  //     }
 
-      return `${size} ${type} placed at the ${position}${facing}${neighbors}`;
-    }).join(", ");
+  //     return `${size} ${type} placed at the ${position}${facing}${neighbors}`;
+  //   }).join(", ");
 
-    return (
-      `Generate a photorealistic 3D interior render of a ${roomNameFormatted} from a corner perspective. ` +
-      `The room should reflect a "${theme}" style with appropriate colors, textures, lighting, and furniture design. ` +
-      `Include only the following objects in the specified configuration: ${objectDescriptions}. ` +
-      `Ensure all object sizes, positions, and orientations are accurate. Do not add extra items or decorations beyond those described.`
-    );
-  };
+  //   return (
+  //     `Generate a photorealistic 3D interior render of a ${roomNameFormatted} from a corner perspective. ` +
+  //     `The room should reflect a "${theme}" style with appropriate colors, textures, lighting, and furniture design. ` +
+  //     `Include only the following objects in the specified configuration: ${objectDescriptions}. ` +
+  //     `Ensure all object sizes, positions, and orientations are accurate. Do not add extra items or decorations beyond those described.`
+  //   );
+  // };
 
   const handleDownloadFloorplan = async () => {
     setIsDownloading(true);
@@ -311,7 +279,7 @@ const FloorPlan = () => {
       const pageHeight = 210;
       const margin = 10;
       const footerHeight = 35;
-      const availableHeight = pageHeight - footerHeight - 35; 
+      const availableHeight = pageHeight - footerHeight - 35;
 
       // 🖼️ PAGE 1 – FLOORPLAN IMAGE
       pdf.setFontSize(18);
@@ -476,201 +444,201 @@ const FloorPlan = () => {
     }
   };
 
-  const handleGenerateAIImages = async (theme) => {
-    // if (!selectedTheme) return;
-    setIsGenerating(true);
-    try {
-      // Initialize Gemini AI
-      const ai = new GoogleGenAI({
-        apiKey: import.meta.env.VITE_GEMINI_API_KEY
-      });
+  // const handleGenerateAIImages = async (theme) => {
+  //   // if (!selectedTheme) return;
+  //   setIsGenerating(true);
+  //   try {
+  //     // Initialize Gemini AI
+  //     const ai = new GoogleGenAI({
+  //       apiKey: import.meta.env.VITE_GEMINI_API_KEY
+  //     });
 
-      // Capture current floor plan as canvas
-      const canvas = await html2canvas(floorRef.current, {
-        backgroundColor: null,
-        useCORS: true,
-        scale: 2,
-      });
+  //     // Capture current floor plan as canvas
+  //     const canvas = await html2canvas(floorRef.current, {
+  //       backgroundColor: null,
+  //       useCORS: true,
+  //       scale: 2,
+  //     });
 
-      // Convert canvas to base64
-      const base64Image = canvas.toDataURL("image/png").split(",")[1];
+  //     // Convert canvas to base64
+  //     const base64Image = canvas.toDataURL("image/png").split(",")[1];
 
-      // Get layout analysis from GPT
-      // const uploadedImageUrl = await uploadCanvasToBackend(canvas, token);
-      // const objects = await getObjectListFromGPT(uploadedImageUrl);
-      // const prompt = buildPrompt(objects, selectedTheme);
-      // const prompt = `Generate a photorealistic 3D interior design image using the following layout, room parameters, and element placement. Follow the exact wall assignments and design inputs provided by the user — with no changes or assumptions allowed.
-      //     ROOM DIMENSIONS:
-      //     Room Size: ${pxToFt(floorSize.width)}ft x ${pxToFt(floorSize.height)}ft
+  //     // Get layout analysis from GPT
+  //     // const uploadedImageUrl = await uploadCanvasToBackend(canvas, token);
+  //     // const objects = await getObjectListFromGPT(uploadedImageUrl);
+  //     // const prompt = buildPrompt(objects, selectedTheme);
+  //     // const prompt = `Generate a photorealistic 3D interior design image using the following layout, room parameters, and element placement. Follow the exact wall assignments and design inputs provided by the user — with no changes or assumptions allowed.
+  //     //     ROOM DIMENSIONS:
+  //     //     Room Size: ${pxToFt(floorSize.width)}ft x ${pxToFt(floorSize.height)}ft
 
-      //     Room Height: [e.g., 10ft to 12ft]
+  //     //     Room Height: [e.g., 10ft to 12ft]
 
-      //     Room Type: ${roomNameFormatted}
+  //     //     Room Type: ${roomNameFormatted}
 
-      //     WALL ORIENTATION SYSTEM (Fixed Logic):
-      //     Treat the floor plan like a phone held vertically:
+  //     //     WALL ORIENTATION SYSTEM (Fixed Logic):
+  //     //     Treat the floor plan like a phone held vertically:
 
-      //     Wall A = Left side
+  //     //     Wall A = Left side
 
-      //     Wall B = Right side
+  //     //     Wall B = Right side
 
-      //     Wall C = Top wall (Head side)
+  //     //     Wall C = Top wall (Head side)
 
-      //     Wall D = Bottom wall (Foot side)
+  //     //     Wall D = Bottom wall (Foot side)
 
-      //     USER-DEFINED ELEMENT PLACEMENT (Dynamic — follow strictly):
-      //     Place the [Main Element] (e.g., Bed, TV Unit, Kitchen Counter) exactly on Wall [X]
+  //     //     USER-DEFINED ELEMENT PLACEMENT (Dynamic — follow strictly):
+  //     //     Place the [Main Element] (e.g., Bed, TV Unit, Kitchen Counter) exactly on Wall [X]
 
-      //     Place the [Secondary Element] (e.g., Wardrobe, Entry Door) exactly on Wall [Y]
+  //     //     Place the [Secondary Element] (e.g., Wardrobe, Entry Door) exactly on Wall [Y]
 
-      //     Window/Door must be placed on Wall [Z], as per user selection
+  //     //     Window/Door must be placed on Wall [Z], as per user selection
 
-      //     Window element is in blue rectangle box, please check the placement in the provided image
+  //     //     Window element is in blue rectangle box, please check the placement in the provided image
 
-      //     Do not guess or rotate any placement — follow user-selected wall sides exactly
+  //     //     Do not guess or rotate any placement — follow user-selected wall sides exactly
 
-      //     DESIGN STYLE, MATERIAL & COLOR (User Input):
-      //     Style Theme: ${theme}
+  //     //     DESIGN STYLE, MATERIAL & COLOR (User Input):
+  //     //     Style Theme: ${theme}
 
-      //     Material Palette: [e.g., Walnut wood, White laminate, Tinted Glass]
+  //     //     Material Palette: [e.g., Walnut wood, White laminate, Tinted Glass]
 
-      //     Finish Type:
+  //     //     Finish Type:
 
-      //     Laminate
+  //     //     Laminate
 
-      //     Veneer
+  //     //     Veneer
 
-      //     PU (Glossy or Matte)
+  //     //     PU (Glossy or Matte)
 
-      //     Pure Wood
-      //     (Use only what the user selects)
+  //     //     Pure Wood
+  //     //     (Use only what the user selects)
 
-      //     Color Code:
+  //     //     Color Code:
 
-      //     Primary Color: [e.g., #FFFFFF for white]
+  //     //     Primary Color: [e.g., #FFFFFF for white]
 
-      //     Accent Color: [e.g., #FF0000 for red]
+  //     //     Accent Color: [e.g., #FF0000 for red]
 
-      //     Lighting Type: [e.g., recessed ceiling lights, pendant, strip LED]
+  //     //     Lighting Type: [e.g., recessed ceiling lights, pendant, strip LED]
 
-      //     CAMERA VIEW (User Input):
-      //     Show [Wall X + Wall Y] if corner view selected
+  //     //     CAMERA VIEW (User Input):
+  //     //     Show [Wall X + Wall Y] if corner view selected
 
-      //     Or show [Wall A to B] or [Wall D to C] if straight view selected
+  //     //     Or show [Wall A to B] or [Wall D to C] if straight view selected
 
-      //     Match the view logic and show only the requested walls
+  //     //     Match the view logic and show only the requested walls
 
-      //     Render from realistic eye-level perspective
+  //     //     Render from realistic eye-level perspective
 
-      //     HARD RESTRICTIONS:
-      //     Do NOT reposition any furniture
+  //     //     HARD RESTRICTIONS:
+  //     //     Do NOT reposition any furniture
 
-      //     Do NOT add people, extra objects, or random decor
+  //     //     Do NOT add people, extra objects, or random decor
 
-      //     Do NOT apply default finishes — only use user-specified finish
+  //     //     Do NOT apply default finishes — only use user-specified finish
 
-      //     Layout must match user input line-to-line, 100% accurately`;
+  //     //     Layout must match user input line-to-line, 100% accurately`;
 
-      // const prompt = `Generate a photorealistic 3D interior image of a Living Room using this exact layout logic:
-      // Read the layout with this phone-orientation logic:
-      // - Top wall = head side (usually for bed or main element)
-      // - Bottom wall = foot side (usually for wardrobe or exit)
-      // - Left and right = as seen while facing the floor plan
+  //     // const prompt = `Generate a photorealistic 3D interior image of a Living Room using this exact layout logic:
+  //     // Read the layout with this phone-orientation logic:
+  //     // - Top wall = head side (usually for bed or main element)
+  //     // - Bottom wall = foot side (usually for wardrobe or exit)
+  //     // - Left and right = as seen while facing the floor plan
 
-      // - Room height = [X] feet\n- Layout should be locked — no changes in furniture position allowed.
-      // Style: [MODERN / MINIMAL / LUXURY]\nMaterial Palette: [WALNUT WOOD / BEIGE FABRIC / WHITE LAMINATE / etc.]
-      // Color Palette: [Primary Color], [Accent Color]\nLighting: [Recessed ceiling lights / under-cabinet strip / etc.]
-      // Camera Angle: From corner view showing [X WALL] and [Y WALL] both clearly
-      // Do not add any people, objects, or walls not mentioned.
-      // The layout must match 100% — not approximate. Match all placements line to line.`;
+  //     // - Room height = [X] feet\n- Layout should be locked — no changes in furniture position allowed.
+  //     // Style: [MODERN / MINIMAL / LUXURY]\nMaterial Palette: [WALNUT WOOD / BEIGE FABRIC / WHITE LAMINATE / etc.]
+  //     // Color Palette: [Primary Color], [Accent Color]\nLighting: [Recessed ceiling lights / under-cabinet strip / etc.]
+  //     // Camera Angle: From corner view showing [X WALL] and [Y WALL] both clearly
+  //     // Do not add any people, objects, or walls not mentioned.
+  //     // The layout must match 100% — not approximate. Match all placements line to line.`;
 
-      const width = pxToFt(floorSize.width);
-      const height = pxToFt(floorSize.height);
+  //     const width = pxToFt(floorSize.width);
+  //     const height = pxToFt(floorSize.height);
 
-      const getViewPrompt = () => {
-        switch (selectedView) {
-          case "top-view":
-            return "from a top-down perspective, showing the entire room layout clearly from above";
-          case "corner-view":
-            const [wall1, wall2] = selectedCorner.split("-");
-            return `from the inside of the ${selectedCorner} corner, showing both wall ${wall1} and wall ${wall2}, creating a sense of depth`;
-          case "eye-level":
-            return "from a natural human eye-level, as if standing inside the room and looking ahead";
-          default:
-            return "from a realistic interior camera angle";
-        }
-      };
+  //     const getViewPrompt = () => {
+  //       switch (selectedView) {
+  //         case "top-view":
+  //           return "from a top-down perspective, showing the entire room layout clearly from above";
+  //         case "corner-view":
+  //           const [wall1, wall2] = selectedCorner.split("-");
+  //           return `from the inside of the ${selectedCorner} corner, showing both wall ${wall1} and wall ${wall2}, creating a sense of depth`;
+  //         case "eye-level":
+  //           return "from a natural human eye-level, as if standing inside the room and looking ahead";
+  //         default:
+  //           return "from a realistic interior camera angle";
+  //       }
+  //     };
 
-      const prompt = `Generate a photorealistic 3D interior image of a ${width}ft x ${height}ft ${roomNameFormatted} ${getViewPrompt()}.
+  //     const prompt = `Generate a photorealistic 3D interior image of a ${width}ft x ${height}ft ${roomNameFormatted} ${getViewPrompt()}.
 
-      Layout Instructions:
-      - Use the attached floorplan image as the **strict layout reference**
-      - Accurately recreate the furniture positions, proportions, and spacing **as shown in the floorplan**
-      - Do **not** add, remove, or move any furniture — follow the layout exactly
+  //     Layout Instructions:
+  //     - Use the attached floorplan image as the **strict layout reference**
+  //     - Accurately recreate the furniture positions, proportions, and spacing **as shown in the floorplan**
+  //     - Do **not** add, remove, or move any furniture — follow the layout exactly
 
-      Design Style:
-      - Theme: ${selectedTheme}
-      - Primary Color: ${primaryColor}
-      - Secondary Color: ${secondaryColor}
+  //     Design Style:
+  //     - Theme: ${selectedTheme}
+  //     - Primary Color: ${primaryColor}
+  //     - Secondary Color: ${secondaryColor}
 
-      Perspective Details:
-      - Render the view from the ${selectedCorner} corner, showing both walls (${selectedCorner.split("-").join(" and ")})
-      - Camera should be placed at ~5–6 ft height, angled for realistic depth
-      - Show two adjacent walls to give a strong corner perspective
+  //     Perspective Details:
+  //     - Render the view from the ${selectedCorner} corner, showing both walls (${selectedCorner.split("-").join(" and ")})
+  //     - Camera should be placed at ~5–6 ft height, angled for realistic depth
+  //     - Show two adjacent walls to give a strong corner perspective
 
-      Visual Realism:
-      - Use realistic materials (wood, marble, fabrics, etc.)
-      - Include natural lighting, shadows, and soft reflections
-      - Keep the design clean, elegant, and professionally styled
+  //     Visual Realism:
+  //     - Use realistic materials (wood, marble, fabrics, etc.)
+  //     - Include natural lighting, shadows, and soft reflections
+  //     - Keep the design clean, elegant, and professionally styled
 
-      Important:
-      - Do not change furniture count, type, or size
-      - Do not use flat, isometric, or bird’s eye view unless top-view is selected
-      - The image must look like a real photograph from inside the room`;
+  //     Important:
+  //     - Do not change furniture count, type, or size
+  //     - Do not use flat, isometric, or bird’s eye view unless top-view is selected
+  //     - The image must look like a real photograph from inside the room`;
 
-      // Prepare content for Gemini
-      const contents = [
-        { text: prompt },
-        {
-          inlineData: {
-            mimeType: "image/png",
-            data: base64Image,
-          },
-        },
-      ];
+  //     // Prepare content for Gemini
+  //     const contents = [
+  //       { text: prompt },
+  //       {
+  //         inlineData: {
+  //           mimeType: "image/png",
+  //           data: base64Image,
+  //         },
+  //       },
+  //     ];
 
-      // Generate images using Gemini
-      const response = await ai.models.generateContent({
-        model: "gemini-2.0-flash-preview-image-generation",
-        contents: contents,
-        config: {
-          responseModalities: [Modality.TEXT, Modality.IMAGE],
-          numImages: 1, // Request 1 image
-        },
-      });
+  //     // Generate images using Gemini
+  //     const response = await ai.models.generateContent({
+  //       model: "gemini-2.0-flash-preview-image-generation",
+  //       contents: contents,
+  //       config: {
+  //         responseModalities: [Modality.TEXT, Modality.IMAGE],
+  //         numImages: 1, // Request 1 image
+  //       },
+  //     });
 
-      // Process and store generated images
-      const generatedImages = [];
+  //     // Process and store generated images
+  //     const generatedImages = [];
 
-      if (response.candidates[0]?.content?.parts) {
-        for (const part of response.candidates[0].content.parts) {
-          if (part.inlineData) {
-            const imageUrl = `data:${part.inlineData.mimeType || 'image/png'};base64,${part.inlineData.data}`;
-            generatedImages.push(imageUrl);
-            break; // Only take the first image
-          }
-        }
-      }
-      console.log("generatedImages:", generatedImages);
+  //     if (response.candidates[0]?.content?.parts) {
+  //       for (const part of response.candidates[0].content.parts) {
+  //         if (part.inlineData) {
+  //           const imageUrl = `data:${part.inlineData.mimeType || 'image/png'};base64,${part.inlineData.data}`;
+  //           generatedImages.push(imageUrl);
+  //           break; // Only take the first image
+  //         }
+  //       }
+  //     }
+  //     console.log("generatedImages:", generatedImages);
 
-      setAiImages(generatedImages);
+  //     setAiImages(generatedImages);
 
-    } catch (err) {
-      console.error("AI generation error:", err);
-    } finally {
-      setIsGenerating(false);
-    }
-  };
+  //   } catch (err) {
+  //     console.error("AI generation error:", err);
+  //   } finally {
+  //     setIsGenerating(false);
+  //   }
+  // };
 
   const handleStageMouseDown = (e) => {
     if (e.target === e.target.getStage()) {
@@ -678,18 +646,17 @@ const FloorPlan = () => {
     }
   };
 
-  // const handleGenratedObjects = async () => {
-
-  //     const canvas = await html2canvas(floorRef.current, {
-  //       backgroundColor: null,
-  //       useCORS: true,
-  //       scale: 2,
-  //     });
-  //     const uploadedImageUrl = await uploadCanvasToBackend(canvas, token);
-  //     const objects = await getObjectListFromGPT(uploadedImageUrl);
-  //     localStorage.setItem('ai-items', JSON.stringify(objects));
-  //     window.open('/generate-ai-items', '_blank');
-  // }
+  const handleGenratedObjects = async () => {
+    const canvas = await html2canvas(floorRef.current, {
+      backgroundColor: null,
+      useCORS: true,
+      scale: 2,
+    });
+    const base64Image = canvas.toDataURL("image/png");
+    sessionStorage.setItem('ai-items', JSON.stringify(items));
+    sessionStorage.setItem('ai-image', base64Image);
+    window.open('/generate-ai-items', '_blank');
+  }
 
   const searchFilteredItems = Object.entries(baseElements).filter(([id]) =>
     id.toLowerCase().includes(searchTerm.toLowerCase())
@@ -884,7 +851,7 @@ const FloorPlan = () => {
       </nav>
 
       <div className="flex flex-col md:flex-row gap-4 p-4 bg-gray-100">
-        <div className="w-80 h-[90vh] overflow-y-scroll bg-white shadow-lg rounded-xl p-4 mr-4">
+        <div className="w-80 h-[85vh] overflow-y-scroll bg-white shadow-lg rounded-xl p-4 mr-4">
           <input
             type="text"
             placeholder="Search elements..."
@@ -914,9 +881,9 @@ const FloorPlan = () => {
             <div className="flex gap-2">
               <button
                 className="bg-purple-600 text-white px-4 py-2 rounded-xl hover:bg-purple-700 flex items-center gap-2 transition"
-                onClick={handleGenerateAIImages}
+                onClick={handleGenratedObjects}
               >
-                <Sparkles /> Design AI Generated Items
+                <Sparkles /> Generated Design With AI
               </button>
 
               <button
@@ -1143,15 +1110,7 @@ const FloorPlan = () => {
                 </button>
               </div> */}
 
-              <div className="w-full max-w-2xl bg-white p-4 rounded-xl shadow mt-6 mb-6">
-                {/* <h2 className="text-lg font-semibold text-gray-800 mb-3">Custom Generation Prompt</h2>
-                <textarea
-                  className="w-full p-2 border rounded-lg mb-4 min-h-[100px]"
-                  placeholder="Enter your custom prompt for AI image generation..."
-                  value={customPrompt}
-                  onChange={(e) => setCustomPrompt(e.target.value)}
-                /> */}
-
+              {/* <div className="w-full max-w-2xl bg-white p-4 rounded-xl shadow mt-6 mb-6">
                 <h2 className="text-lg font-semibold text-gray-800 mb-3">Color Scheme</h2>
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <div>
@@ -1182,7 +1141,6 @@ const FloorPlan = () => {
 
                 <h2 className="text-lg font-semibold text-gray-800 mb-3">View Settings</h2>
                 <div className="space-y-4 mb-4">
-                  {/* View Type Selection */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       View Type
@@ -1210,7 +1168,6 @@ const FloorPlan = () => {
                     </div>
                   </div>
 
-                  {/* Corner Selection - Only show if Corner View is selected */}
                   {selectedView === "corner-view" && (
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -1270,10 +1227,10 @@ const FloorPlan = () => {
                 >
                   {isGenerating ? "Generating..." : "Generate AI Room Design"}
                 </button>
-              </div>
+              </div> */}
 
               {/* Display Generated Images */}
-              {aiImages.length > 0 && (
+              {/* {aiImages.length > 0 && (
                 <div className="w-full ">
                   {aiImages.map((img, index) => (
                     <div key={index} className="rounded-xl shadow border overflow-hidden">
@@ -1281,7 +1238,7 @@ const FloorPlan = () => {
                     </div>
                   ))}
                 </div>
-              )}
+              )} */}
             </div>
           </div>
 
