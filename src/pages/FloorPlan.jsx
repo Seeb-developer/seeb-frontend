@@ -309,68 +309,45 @@ const FloorPlan = () => {
 
       const pageWidth = 297;
       const pageHeight = 210;
-      const leftColWidth = 90;
-      const marginTop = 20;
+      const margin = 10;
+      const footerHeight = 35;
+      const availableHeight = pageHeight - footerHeight - 35; 
 
-      // Title
+      // 🖼️ PAGE 1 – FLOORPLAN IMAGE
       pdf.setFontSize(18);
       pdf.text("FLOOR PLAN REPORT", pageWidth / 2, 15, { align: "center" });
 
-      // Compass Image
-      pdf.addImage(compassBase64, "PNG", pageWidth - 30, 10, 20, 20);
+      // Compass
+      pdf.addImage(compassBase64, "JPEG", pageWidth - 30, 10, 20, 20);
 
-      // Element List with thumbnails
-      let currentY = marginTop;
-      const maxImgW = 15;
-      const maxImgH = 15;
+      // Get original canvas dimensions
+      const originalW = actualCanvas.width;
+      const originalH = actualCanvas.height;
+      const aspectRatio = originalW / originalH;
 
-      Object.entries(items).forEach(([key, el]) => {
-        if (currentY > pageHeight - 30) return;
+      // Define max width and height available on PDF page
+      const maxW = pageWidth - 2 * margin;
+      const maxH = availableHeight;
 
-        const fileName = el.imgSrc.split('/').pop();
+      // Scale while preserving aspect ratio
+      let imageW = maxW;
+      let imageH = imageW / aspectRatio;
 
-        const img = new Image();
-        img.src = `${import.meta.env.VITE_BASE_URL}serve-file/${fileName}`;
+      if (imageH > maxH) {
+        imageH = maxH;
+        imageW = imageH * aspectRatio;
+      }
 
-        pdf.addImage(img.src, "PNG", 10, currentY, maxImgW, maxImgH);
+      // Centered placement
+      const imageX = (pageWidth - imageW) / 2;
+      const imageY = 25;
 
-        const labelX = 10 + maxImgW + 3;
-        const feetW = pxToFeet(el.width || 0);
-        const feetH = pxToFeet(el.height || 0);
-        const inchW = feetToInches(feetW);
-        const inchH = feetToInches(feetH);
+      pdf.addImage(actualImgData, "PNG", imageX, imageY, imageW, imageH);
 
-        pdf.setFontSize(11);
-        pdf.text(key.replace(/-\d+$/, ""), labelX, currentY + 6); // clean name
-        pdf.setFontSize(10);
-        pdf.text(`${inchW}in x ${inchH}in`, labelX, currentY + 12);
 
-        currentY += maxImgH + 10;
-      });
-
-      const dividerX = 90;
-      const dividerY = 165; // Adjust as needed (bottom margin)
-
-      pdf.setDrawColor(0);
-      pdf.setLineWidth(0.2);
-
-      // Vertical line between left column and floorplan
-      pdf.line(dividerX, 20, dividerX, dividerY);
-
-      // Horizontal line at bottom across full page
-      pdf.line(10, dividerY, pageWidth - 10, dividerY);
-
-      // Floorplan Image
-      const imageX = leftColWidth + 10;
-      const imageW = pageWidth - imageX - 15;
-      const imageH = imageW * 0.75;
-      pdf.addImage(actualImgData, "PNG", imageX, marginTop + 5, imageW, imageH);
-
-      // Footer
-      const footerY = pageHeight - 30;
+      // 📄 Footer
       const now = new Date();
       const dateTimeStr = now.toLocaleString();
-
       const companyDetails = {
         name: "SEEB DESIGN PVT LTD",
         address: "S.No 29/13b, Wadachiwadi Road, Jakat Naka,\nUndri, Pune, Maharashtra - 411060",
@@ -378,54 +355,118 @@ const FloorPlan = () => {
         email: "info@seeb.in"
       };
 
-      // Set spacing and alignment
-      const labelWidth = 30;           // width reserved for label
-      const leftX = 10;                // left column X
-      const rightX = pageWidth / 2 + 10; // right column X (more spaced)
-      const valueXLeft = leftX + labelWidth;
-      const valueXRight = rightX + labelWidth;
       const lineHeight = 5;
+      const leftX = 10;
+      const rightX = pageWidth / 2 + 10;
+      let footerY = pageHeight - footerHeight + 10;
+      const formattedRoomName = roomNameFormatted
+        ? roomNameFormatted.charAt(0).toUpperCase() + roomNameFormatted.slice(1)
+        : "N/A";
 
-      let y = footerY;
 
+      // Draw horizontal border line above the footer
+      const footerLineY = pageHeight - footerHeight;
+      pdf.setDrawColor(0);         // Black color
+      pdf.setLineWidth(0.3);       // Thin line
+      pdf.line(margin, footerLineY, pageWidth - margin, footerLineY);
+
+
+      // Left Column (Company)
       pdf.setFontSize(10);
+      pdf.setFont("helvetica", "bold");
+      pdf.text("Company:", leftX, footerY);
+      pdf.setFont("helvetica", "normal");
+      pdf.text(companyDetails.name, leftX + 30, footerY);
 
-      // 🏢 Left: Company Info
-      pdf.text("Company:", leftX, y);
-      pdf.text(companyDetails.name, valueXLeft, y);
+      pdf.setFont("helvetica", "bold");
+      pdf.text("Email:", leftX, footerY + lineHeight);
+      pdf.setFont("helvetica", "normal");
+      pdf.text(companyDetails.email, leftX + 30, footerY + lineHeight);
 
-      y += lineHeight;
-      pdf.text("Email:", leftX, y);
-      pdf.text(companyDetails.email, valueXLeft, y);
+      pdf.setFont("helvetica", "bold");
+      pdf.text("Contact:", leftX, footerY + 2 * lineHeight);
+      pdf.setFont("helvetica", "normal");
+      pdf.text(companyDetails.contact, leftX + 30, footerY + 2 * lineHeight);
 
-      y += lineHeight;
-      pdf.text("Contact:", leftX, y);
-      pdf.text(companyDetails.contact, valueXLeft, y);
-
-      y += lineHeight;
-      pdf.text("Address:", leftX, y);
+      pdf.setFont("helvetica", "bold");
       pdf.setFontSize(8);
-      pdf.text(companyDetails.address.split("\n")[0], valueXLeft, y);
-      pdf.text(companyDetails.address.split("\n")[1], valueXLeft, y + lineHeight);
+      pdf.text("Address:", leftX, footerY + 3 * lineHeight);
+      pdf.setFont("helvetica", "normal");
+      pdf.text(companyDetails.address.split("\n")[0], leftX + 30, footerY + 3 * lineHeight);
+      pdf.text(companyDetails.address.split("\n")[1], leftX + 30, footerY + 4 * lineHeight);
 
-      // 👤 Right: User Info
-      y = footerY;
+      // Right Column (User Info)
+      footerY = pageHeight - footerHeight + 10;
+      pdf.setFont("helvetica", "bold");
       pdf.setFontSize(10);
-      pdf.text("Space Name:", rightX, y);
-      pdf.text(roomNameFormatted || "N/A", valueXRight, y);
+      pdf.text("Room Name:", rightX, footerY);
+      pdf.setFont("helvetica", "normal");
+      pdf.text(formattedRoomName, rightX + 30, footerY);
 
-      y += lineHeight;
-      pdf.text("Generated By:", rightX, y);
-      pdf.text(userDetail?.name || "User", valueXRight, y);
+      pdf.setFont("helvetica", "bold");
+      pdf.text("Generated By:", rightX, footerY + lineHeight);
+      pdf.setFont("helvetica", "normal");
+      pdf.text(userDetail?.name || "User", rightX + 30, footerY + lineHeight);
 
-      y += lineHeight;
-      pdf.text("Mobile:", rightX, y);
-      pdf.text(userDetail?.mobile_no || "N/A", valueXRight, y);
+      pdf.setFont("helvetica", "bold");
+      pdf.text("Mobile:", rightX, footerY + 2 * lineHeight);
+      pdf.setFont("helvetica", "normal");
+      pdf.text(userDetail?.mobile_no || "N/A", rightX + 30, footerY + 2 * lineHeight);
 
-      y += lineHeight;
-      pdf.text("Date:", rightX, y);
-      pdf.text(dateTimeStr, valueXRight, y);
+      pdf.setFont("helvetica", "bold");
+      pdf.text("Date:", rightX, footerY + 3 * lineHeight);
+      pdf.setFont("helvetica", "normal");
+      pdf.text(dateTimeStr, rightX + 30, footerY + 3 * lineHeight);
 
+      // ➕ PAGE 2 – ELEMENT DETAILS (IN ROWS)
+      pdf.addPage();
+      pdf.setFontSize(16);
+      pdf.text("Element List", pageWidth / 2, 15, { align: "center" });
+
+      let startX = 15;
+      let startY = 30;
+      const boxWidth = 130;  // width of each block
+      const boxHeight = 30;
+      const maxImgW = 15;
+      const maxImgH = 15;
+
+      let colCount = 0;
+      const maxCols = 2;
+
+      Object.entries(items).forEach(([key, el], i) => {
+        if (startY + boxHeight > pageHeight - 20) {
+          pdf.addPage();
+          startY = 30;
+          startX = 15;
+          colCount = 0;
+        }
+
+        const fileName = el.imgSrc.split('/').pop();
+        const img = new Image();
+        img.src = `${import.meta.env.VITE_BASE_URL}serve-file/${fileName}`;
+
+        pdf.addImage(img.src, "PNG", startX, startY, maxImgW, maxImgH);
+
+        const labelX = startX + maxImgW + 5;
+        const feetW = pxToFeet(el.width || 0);
+        const feetH = pxToFeet(el.height || 0);
+        const inchW = feetToInches(feetW);
+        const inchH = feetToInches(feetH);
+
+        pdf.setFontSize(11);
+        pdf.text(key.replace(/-\d+$/, ""), labelX, startY + 6);
+        pdf.setFontSize(10);
+        pdf.text(`${inchW}in x ${inchH}in`, labelX, startY + 12);
+
+        colCount++;
+        if (colCount >= maxCols) {
+          colCount = 0;
+          startX = 15;
+          startY += boxHeight + 5;
+        } else {
+          startX += boxWidth + 10;
+        }
+      });
 
       pdf.save("floorplan.pdf");
     } catch (err) {
@@ -716,6 +757,8 @@ const FloorPlan = () => {
           y={y}
           width={width}
           height={height}
+          offsetX={width / 2}
+          offsetY={height / 2}
           rotation={rotation}
           draggable
           onClick={onSelect}
@@ -734,8 +777,8 @@ const FloorPlan = () => {
             node.scaleX(1);
             node.scaleY(1);
 
-            let newWidth = Math.max(30, node.width() * scaleX);
-            let newHeight = Math.max(30, node.height() * scaleY);
+            let newWidth = Math.max(5, node.width() * scaleX);
+            let newHeight = Math.max(5, node.height() * scaleY);
 
             node.size({ width: newWidth, height: newHeight });
             constrainElementToBounds(node);
@@ -755,7 +798,7 @@ const FloorPlan = () => {
             keepRatio={false}
             rotateEnabled={false}
             boundBoxFunc={(oldBox, newBox) => {
-              if (newBox.width < 30 || newBox.height < 30) return oldBox;
+              if (newBox.width < 5 || newBox.height < 5) return oldBox;
               return newBox;
             }}
           />
@@ -781,49 +824,51 @@ const FloorPlan = () => {
   };
 
   const handleRotate = (elementId) => {
-  const element = items[elementId];
-  if (!element) return;
+    const element = items[elementId];
+    if (!element) return;
 
-  const newRotation = (element.rotation || 0) + 90;
-  const normalizedRotation = newRotation % 360;
+    const newRotation = (element.rotation || 0) + 90;
+    const normalizedRotation = newRotation % 360;
 
-  const node = stageRef.current?.findOne(`${elementId}`);
-  console.log("node", node, "rotation", normalizedRotation);
-  
-  if (node) {
-    node.rotation(normalizedRotation);
+    const allImages = stageRef.current?.find(`Image`);
+    const node = allImages.find(n => n.id() === elementId);
 
-    // Check bounds after rotation
-    const rotatedBounds = node.getClientRect();
-    const noPadding = elementId.startsWith('door') || elementId.startsWith('window');
-    const padding = noPadding ? 0 : 14;
+    console.log("node", node, "rotation", normalizedRotation);
 
-    const minX = padding;
-    const minY = padding;
-    const maxX = width + 28 - padding;
-    const maxY = height + 28 - padding;
+    if (node) {
+      node.rotation(normalizedRotation);
 
-    if (
-      rotatedBounds.x < minX ||
-      rotatedBounds.y < minY ||
-      rotatedBounds.x + rotatedBounds.width > maxX ||
-      rotatedBounds.y + rotatedBounds.height > maxY
-    ) {
-      // Revert rotation if out of bounds
-      node.rotation(element.rotation || 0);
-      return;
+      // Check bounds after rotation
+      const rotatedBounds = node.getClientRect();
+      const noPadding = elementId.startsWith('door') || elementId.startsWith('window');
+      const padding = noPadding ? 0 : 14;
+
+      const minX = padding;
+      const minY = padding;
+      const maxX = width + 28 - padding;
+      const maxY = height + 28 - padding;
+
+      if (
+        rotatedBounds.x < minX ||
+        rotatedBounds.y < minY ||
+        rotatedBounds.x + rotatedBounds.width > maxX ||
+        rotatedBounds.y + rotatedBounds.height > maxY
+      ) {
+        // Revert rotation if out of bounds
+        node.rotation(element.rotation || 0);
+        return;
+      }
+
+      // Update in state
+      handleDragResize(elementId, {
+        x: node.x(),
+        y: node.y(),
+        rotation: normalizedRotation,
+      });
+
+      node.getLayer()?.batchDraw();
     }
-
-    // Update in state
-    handleDragResize(elementId, {
-      x: node.x(),
-      y: node.y(),
-      rotation: normalizedRotation,
-    });
-
-    node.getLayer()?.batchDraw();
-  }
-};
+  };
 
 
   return (
@@ -910,7 +955,7 @@ const FloorPlan = () => {
 
           <div className="flex flex-col xl:flex-row gap-6 mb-4">
 
-            <div ref={floorRef} className="flex flex-col items-center gap-3" style={{ width: floorSize.width + 100, height: floorSize.height + 110 }}>
+            <div ref={floorRef} className="flex flex-col items-center gap-3" style={{ width: floorSize.width + 120, height: floorSize.height + 130 }}>
 
               <div className="text-base font-bold text-gray-600 mb-5">
                 Floor Plan: {pxToFt(floorSize.width)}ft x {pxToFt(floorSize.height)}ft
@@ -1043,7 +1088,7 @@ const FloorPlan = () => {
                   </div>
                 )}
 
-                {/* Delete Icon */}
+                {/* Rotation and Delete Icon */}
                 {selectedId && items[selectedId] && floorRef.current && !isDragging && (
                   <div
                     style={{
@@ -1051,7 +1096,7 @@ const FloorPlan = () => {
                       gap: "5px",
                       position: "absolute",
                       top: items[selectedId].y,
-                      left: items[selectedId].x + items[selectedId].width + 30,
+                      left: items[selectedId].x + items[selectedId].width / 2 + 10,
                       zIndex: 30,
                     }}
                   >
@@ -1069,7 +1114,7 @@ const FloorPlan = () => {
                     >
                       <X width={15} />
                     </button>
-                    
+
                   </div>
                 )}
               </div>
