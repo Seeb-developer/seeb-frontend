@@ -22,7 +22,7 @@ export default function AuthModal({ onClose, onLoginSuccess, onNeedRegistration 
     setError("");
 
     try {
-      await axios.post(`${import.meta.env.VITE_BASE_URL}customer/send-otp`, {
+      await axios.post(`${import.meta.env.VITE_BASE_URL}customer/new-send-otp`, {
         mobile_no: mobile,
       });
       setStep("otp");

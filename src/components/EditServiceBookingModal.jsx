@@ -21,9 +21,11 @@ const EditServiceBookingModal = ({ isOpen, onClose, serviceItem, editingItem, ro
     const [addonTotal, setAddonTotal] = useState(0);
     const [total, setTotal] = useState(0);
 
-    
+
     useEffect(() => {
         if (editingItem && serviceItem) {
+
+            console.log("edit service", editingItem, "service item", serviceItem)
 
             let widthVal = 0;
             let heightVal = 0;
@@ -97,13 +99,15 @@ const EditServiceBookingModal = ({ isOpen, onClose, serviceItem, editingItem, ro
 
                 const baseQty = addon.qty ? Number(addon.qty) : 1;
                 const calculatedQty = addon.price_type === "square_feet"
-                    ? Math.max(1, Math.floor((baseQty / 100) * (width * height)))
+                    ? Math.ceil((parseFloat(baseQty / 100)) * (width * height))
                     : selectedAddons[addon.id] || baseQty;
 
                 const price = addon.price || 0;
-                const addonAmount = addon.price_type === "square_feet"
-                    ? ((calculatedQty / 100) * (width * height)) * price
-                    : calculatedQty * price;
+                // const addonAmount = addon.price_type === "square_feet"
+                //     ? ((calculatedQty / 100) * (width * height)) * price
+                //     : calculatedQty * price;
+                console.log("calculated Qty",calculatedQty,"price",price)
+                const addonAmount = calculatedQty * price;
 
                 return sum + addonAmount;
             }, 0);
@@ -131,79 +135,79 @@ const EditServiceBookingModal = ({ isOpen, onClose, serviceItem, editingItem, ro
         return JSON.stringify(data.data?.images || []);
     };
 
-   const handleSubmit = async () => {
-    try {
-        const isSqFt = serviceItem.rate_type === "square_feet";
-        const sqft = isSqFt ? width * height : 0;
-        const value = isSqFt ? `${width}X${height}` : quantity;
+    const handleSubmit = async () => {
+        try {
+            const isSqFt = serviceItem.rate_type === "square_feet";
+            const sqft = isSqFt ? width * height : 0;
+            const value = isSqFt ? `${width}X${height}` : quantity;
 
-        const baseQty = isSqFt ? sqft : quantity;
-        const baseAmount = baseQty * serviceItem.rate;
+            const baseQty = isSqFt ? sqft : quantity;
+            const baseAmount = baseQty * serviceItem.rate;
 
-        // Recalculate addons
-        const addonDetails = serviceItem.addons.map(addon => {
-            const isChecked = selectedAddons.hasOwnProperty(addon.id);
-            if (!isChecked && addon.is_required !== "1") return null;
+            // Recalculate addons
+            const addonDetails = serviceItem.addons.map(addon => {
+                const isChecked = selectedAddons.hasOwnProperty(addon.id);
+                if (!isChecked && addon.is_required !== "1") return null;
 
-            let addonQty = selectedAddons[addon.id] || 1;
+                let addonQty = selectedAddons[addon.id] || 1;
 
-            // If price type is square_feet, calculate qty based on sqft
-            if (addon.price_type === "square_feet") {
-                const baseQty = addon.qty ? Number(addon.qty) : 1;
-                addonQty = Math.max(1, Math.floor((baseQty / 100) * sqft));
-            }
+                // If price type is square_feet, calculate qty based on sqft
+                if (addon.price_type === "square_feet") {
+                    const baseQty = addon.qty ? Number(addon.qty) : 1;
+                    addonQty = Math.max(1, Math.floor((baseQty / 100) * sqft));
+                }
 
-            const addonPrice = addon.price_type === "square_feet"
-                ? ((addonQty / 100) * sqft) * addon.price
-                : addonQty * addon.price;
+                const addonPrice = addon.price_type === "square_feet"
+                    ? ((addonQty / 100) * sqft) * addon.price
+                    : addonQty * addon.price;
 
-            return {
-                ...addon,
-                isChecked: true,
-                qty: addonQty,
-                total: Number(addonPrice).toFixed(2),
+                return {
+                    ...addon,
+                    isChecked: true,
+                    qty: addonQty,
+                    total: Number(addonPrice).toFixed(2),
+                };
+            }).filter(Boolean);
+
+            const addonAmount = addonDetails.reduce((sum, a) => sum + Number(a.total), 0);
+            const totalAmount = baseAmount + addonAmount;
+
+            // Upload reference images if any
+            const refImageJson = await handleImageUpload();
+
+            // Build payload
+            const payload = {
+                user_id: userId,
+                service_id: serviceItem.id,
+                service_type_id: serviceItem.service_type_id,
+                room_id: roomId,
+                rate_type: serviceItem.rate_type,
+                value,
+                rate: serviceItem.rate,
+                addons: JSON.stringify(addonDetails),
+                amount: totalAmount.toFixed(2),
+                ...(refImageJson && { reference_image: refImageJson }),
             };
-        }).filter(Boolean);
 
-        const addonAmount = addonDetails.reduce((sum, a) => sum + Number(a.total), 0);
-        const totalAmount = baseAmount + addonAmount;
+            console.log("payload", payload);
 
-        // Upload reference images if any
-        const refImageJson = await handleImageUpload();
 
-        // Build payload
-        const payload = {
-            user_id: userId,
-            service_id: serviceItem.id,
-            service_type_id: serviceItem.service_type_id,
-            room_id: roomId,
-            rate_type: serviceItem.rate_type,
-            value,
-            rate: serviceItem.rate,
-            addons: JSON.stringify(addonDetails),
-            amount: totalAmount.toFixed(2),
-            ...(refImageJson && { reference_image: refImageJson }),
-        };
+            await fetch(`${import.meta.env.VITE_BASE_URL}seeb-cart/update/${editingItem.id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(payload),
+            });
 
-        console.log("payload",payload);
-        
-
-        await fetch(`${import.meta.env.VITE_BASE_URL}seeb-cart/update/${editingItem.id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(payload),
-        });
-
-        dispatch(fetchCart(userId));
-        onClose();
-    } catch (error) {
-        alert("Failed to update booking.");
-        console.error(error);
-    }
-};
+            dispatch(fetchCart(userId));
+            onClose();
+        } catch (error) {
+            alert("Failed to update booking.");
+            console.error(error);
+        }
+    };
 
 
     const handleAddonToggle = (addonId, isChecked, addonQty) => {
@@ -248,8 +252,6 @@ const EditServiceBookingModal = ({ isOpen, onClose, serviceItem, editingItem, ro
         setImages((prev) => prev.filter((img) => img.id !== id));
     };
 
-    console.log("SelectedAddons", selectedAddons);
-
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={onClose}>
             <div className="bg-white rounded-xl w-[90%] max-w-lg p-6 relative" onClick={e => e.stopPropagation()}>
@@ -277,105 +279,107 @@ const EditServiceBookingModal = ({ isOpen, onClose, serviceItem, editingItem, ro
 
 
                 {serviceItem.addons.length > 0 && (
-                    <div className="mb-4">
+                    <>
                         <h3 className="font-semibold mb-2">Select Addons</h3>
-                        {serviceItem.addons.reduce((acc, addon) => {
-                            const group = acc.find(g => g.name === addon.group_name);
-                            if (group) {
-                                group.addons.push(addon);
-                            } else {
-                                acc.push({ name: addon.group_name, addons: [addon] });
-                            }
-                            return acc;
-                        }, []).map((group, index) => {
-                            const isOpen = openGroup === index;
-                            return (
-                                <div key={group.name} className="mb-3 border rounded-lg">
-                                    <button
-                                        type="button"
-                                        onClick={() => setOpenGroup(isOpen ? null : index)}
-                                        className="w-full text-left px-4 py-3 bg-gray-100 hover:bg-gray-200 font-semibold flex justify-between items-center"
-                                    >
-                                        <span className="text-blue-600">{group.name}</span>
-                                        <ChevronDown
-                                            className={`w-5 h-5 transform transition-transform duration-300 ${isOpen ? "rotate-180" : ""
-                                                }`}
-                                        />
-                                    </button>
+                        <div className="mb-4  h-[300px] overflow-y-scroll">
+                            {serviceItem.addons.reduce((acc, addon) => {
+                                const group = acc.find(g => g.name === addon.group_name);
+                                if (group) {
+                                    group.addons.push(addon);
+                                } else {
+                                    acc.push({ name: addon.group_name, addons: [addon] });
+                                }
+                                return acc;
+                            }, []).map((group, index) => {
+                                const isOpen = openGroup === index;
+                                return (
+                                    <div key={group.name} className="mb-3 border rounded-lg">
+                                        <button
+                                            type="button"
+                                            onClick={() => setOpenGroup(isOpen ? null : index)}
+                                            className="w-full text-left px-4 py-3 bg-gray-100 hover:bg-gray-200 font-semibold flex justify-between items-center"
+                                        >
+                                            <span className="text-blue-600">{group.name}</span>
+                                            <ChevronDown
+                                                className={`w-5 h-5 transform transition-transform duration-300 ${isOpen ? "rotate-180" : ""
+                                                    }`}
+                                            />
+                                        </button>
 
-                                    {isOpen && (<div className="p-4 bg-white overflow-hidden transition-all duration-500 ease-in-out">
-                                        {group.addons.map((addon) => {
-                                            const isRequired = addon.is_required === "1";
-                                            const isChecked = selectedAddons.hasOwnProperty(addon.id);
-                                            const baseQty = addon.qty ? Number(addon.qty) : 1;
-                                            const calculatedQty = addon.price_type === "square_feet"
-                                                ? Math.max(1, Math.floor((baseQty / 100) * (width * height)))
-                                                : baseQty;
+                                        {isOpen && (<div className="p-4 bg-white overflow-hidden transition-all duration-500 ease-in-out">
+                                            {group.addons.map((addon) => {
+                                                const isRequired = addon.is_required === "1";
+                                                const isChecked = selectedAddons.hasOwnProperty(addon.id);
+                                                const baseQty = addon.qty ? Number(addon.qty) : 1;
+                                                const calculatedQty = addon.price_type === "square_feet"
+                                                    ? Math.ceil((parseFloat(baseQty||0) / 100) * (width * height))
+                                                    : baseQty;
 
-                                            const addonQty = Math.floor(isChecked ? selectedAddons[addon.id] : calculatedQty);
-                                            return (
-                                                <label
-                                                    key={addon.id}
-                                                    className="flex justify-between items-start mb-2 border rounded-md p-3 cursor-pointer hover:bg-gray-50"
-                                                >
-                                                    <div className="flex items-start">
-                                                        <input
-                                                            type="checkbox"
-                                                            className="mt-1 mr-3"
-                                                            checked={isRequired || isChecked}
-                                                            onChange={() => handleAddonToggle(addon.id, isChecked, addonQty)}
-                                                            disabled={isRequired}
-                                                        />
-                                                        <div className="text-sm">
-                                                            <div className="font-semibold">{addon.name}</div>
-                                                            <div className="text-gray-600">{addon.description}</div>
-                                                            <div className="text-xs mt-1 flex items-center gap-2 flex-wrap">
-                                                                {(addon.price_type === "unit" && isChecked) ? (
-                                                                    <>
-                                                                        <button
-                                                                            type="button"
-                                                                            onClick={() => handleQtyChange(addon.id, -1)}
-                                                                            className="bg-gray-200 px-2 rounded"
-                                                                        >
-                                                                            −
-                                                                        </button>
-                                                                        <span>{addonQty}</span>
-                                                                        <button
-                                                                            type="button"
-                                                                            onClick={() => handleQtyChange(addon.id, 1)}
-                                                                            className="bg-gray-200 px-2 rounded"
-                                                                        >
-                                                                            +
-                                                                        </button>
-                                                                        <span className="ml-2">
-                                                                            | ₹{addon.price} per {addon.price_type.replace("_", " ")}
+                                                const addonQty = isChecked ? selectedAddons[addon.id] : calculatedQty;
+                                                return (
+                                                    <label
+                                                        key={addon.id}
+                                                        className="flex justify-between items-start mb-2 border rounded-md p-3 cursor-pointer hover:bg-gray-50"
+                                                    >
+                                                        <div className="flex items-start">
+                                                            <input
+                                                                type="checkbox"
+                                                                className="mt-1 mr-3"
+                                                                checked={isRequired || isChecked}
+                                                                onChange={() => handleAddonToggle(addon.id, isChecked, addonQty)}
+                                                                disabled={isRequired}
+                                                            />
+                                                            <div className="text-sm">
+                                                                <div className="font-semibold">{addon.name}</div>
+                                                                <div className="text-gray-600">{addon.description}</div>
+                                                                <div className="text-xs mt-1 flex items-center gap-2 flex-wrap">
+                                                                    {(addon.price_type === "unit" && isChecked) ? (
+                                                                        <>
+                                                                            <button
+                                                                                type="button"
+                                                                                onClick={() => handleQtyChange(addon.id, -1)}
+                                                                                className="bg-gray-200 px-2 rounded"
+                                                                            >
+                                                                                −
+                                                                            </button>
+                                                                            <span>{addonQty}</span>
+                                                                            <button
+                                                                                type="button"
+                                                                                onClick={() => handleQtyChange(addon.id, 1)}
+                                                                                className="bg-gray-200 px-2 rounded"
+                                                                            >
+                                                                                +
+                                                                            </button>
+                                                                            <span className="ml-2">
+                                                                                | ₹{addon.price} per {addon.price_type.replace("_", " ")}
+                                                                            </span>
+                                                                        </>
+                                                                    ) : (
+                                                                        <span>
+                                                                            Qty: {addonQty} | ₹{addon.price} per {addon.price_type.replace("_", " ")}
                                                                         </span>
-                                                                    </>
-                                                                ) : (
-                                                                    <span>
-                                                                        Qty: {addonQty} | ₹{addon.price} per {addon.price_type.replace("_", " ")}
-                                                                    </span>
-                                                                )}
-                                                                {isRequired && (
-                                                                    <span className="ml-2 text-red-500 font-medium">(Required)</span>
-                                                                )}
+                                                                    )}
+                                                                    {isRequired && (
+                                                                        <span className="ml-2 text-red-500 font-medium">(Required)</span>
+                                                                    )}
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
 
-                                                    <div className="text-sm font-semibold text-right text-gray-700 whitespace-nowrap ml-4">
-                                                        ₹{(addonQty * addon.price).toFixed(2)}
-                                                    </div>
-                                                </label>
-                                            );
-                                        })}
+                                                        <div className="text-sm font-semibold text-right text-gray-700 whitespace-nowrap ml-4">
+                                                            ₹{(addonQty * addon.price).toFixed(2)}
+                                                        </div>
+                                                    </label>
+                                                );
+                                            })}
+                                        </div>
+                                        )}
                                     </div>
-                                    )}
-                                </div>
-                            );
-                        }
-                        )}
-                    </div>
+                                );
+                            }
+                            )}
+                        </div>
+                    </>
                 )}
 
                 <div className="text-sm text-gray-600 mb-1">

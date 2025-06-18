@@ -14,26 +14,55 @@ const CartItem = ({ item, onDelete, onEdit }) => {
 
   return (
     <div className="bg-white rounded-xl shadow p-4 mb-6 flex flex-col lg:flex-row justify-between items-start lg:items-center">
-      <div className="flex gap-4 items-start">
+      <div className="flex gap-5 items-start bg-white">
         <img
           src={`${import.meta.env.VITE_BASE_URL}/${imageList[0] || "placeholder.png"}`}
           alt={item.service_name}
-          className="w-24 h-24 object-cover rounded-lg"
+          className="w-24 h-24 object-cover rounded-lg border border-gray-100"
         />
-        <div>
-          <h3 className="font-semibold text-base lg:text-lg">{item.service_name}</h3>
-          <div className="flex gap-2 mt-2 flex-wrap">
-            <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded-md capitalize">
-              {item.rate_type.replace("_", " ")}
-            </span>
-            <span className="bg-yellow-400 text-white text-xs px-2 py-1 rounded-md">
+
+        <div className="flex flex-col gap-1 text-sm text-gray-700 w-full">
+          <h3 className="text-base lg:text-lg font-semibold text-gray-900">
+            {item.service_name}
+          </h3>
+
+          <div>
+            <span className="font-medium text-gray-600">Addons:</span>{' '}
+            {item.addons && JSON.parse(item.addons).length > 0 ? (
+              <div className="flex flex-wrap gap-2 mt-1">
+                {JSON.parse(item.addons).map((addon, index) => (
+                  <span
+                    key={index}
+                    className="bg-purple-100 text-purple-700 px-2 py-1 rounded-full text-xs"
+                  >
+                    {addon.name} ({addon.qty} {addon.price_type === "square_feet"
+                ? `sq ft`
+                : `unit(s)`})
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <span className="text-gray-500">None</span>
+            )}
+          </div>
+
+          <p>
+            <span className="font-medium text-gray-600">Type:</span>{' '}            
+            <span className="text-gray-800 font-medium">
               {item.rate_type === "square_feet"
                 ? `${item.value} sq ft`
                 : `${item.value} unit(s)`}
             </span>
-          </div>
-          <p className="text-sm mt-2">Rate: ₹{item.rate} x {item.value}</p>
-          <p className="text-red-600 font-bold mt-1 text-sm">Total: ₹{item.amount}</p>
+          </p>
+
+          <p>
+            <span className="font-medium text-gray-600">Rate:</span>{' '}
+            ₹{item.rate}
+          </p>
+
+          <p className="text-sm text-red-600 font-bold mt-1">
+            Total: ₹{item.amount}
+          </p>
         </div>
       </div>
 
@@ -56,13 +85,14 @@ export default function CartPage() {
   const [selectedService, setSelectedService] = useState(null);
   const [editingItem, setEditingItem] = useState(null);
 
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { items: cartItems, loading, error } = useSelector((state) => state.cart);
   const { data: service, seriveLoading, serviceError } = useGet(
     editingItem ? `services/${editingItem.service_id}` : null
   );
+
+  // console.log("cartitems",cartItems);
 
   const user = useSelector((state) => state.user.userInfo);
   const userId = user?.id;
@@ -76,7 +106,7 @@ export default function CartPage() {
       setSelectedService(service);
       setRoomId(editingItem.room_id);
       setShowModal(true);
-    }    
+    }
   }, [service, editingItem]);
 
   const handleDelete = async (id) => {

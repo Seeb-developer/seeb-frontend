@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import FloorPlan from './FloorPlan';
 
 export default function GenerateAIItems() {
   const [items, setItems] = useState([]);
@@ -13,11 +14,13 @@ export default function GenerateAIItems() {
   const [selectedCorner, setSelectedCorner] = useState("A-B"); // "A-B", "B-C", "C-D", "D-A"
   const [activeCategoryId, setActiveCategoryId] = useState(null);
 
+  const savedItems = sessionStorage.getItem('ai-items');
+  const fpsize = sessionStorage.getItem('floorplan-size');
+  const fpname = sessionStorage.getItem('floorplan-name');
+  const fpImage = sessionStorage.getItem('ai-image');
+
   useEffect(() => {
-    const savedItems = sessionStorage.getItem('ai-items');
-
     const baseItems = [];
-
     if (savedItems) {
       const parsed = JSON.parse(savedItems);
       const seen = new Set();
@@ -60,10 +63,10 @@ export default function GenerateAIItems() {
   };
 
   const generateItemImages = async (itemName) => {
-    if (!selectedStyle) {
-      alert('Please select a style before generating AI images.');
-      return;
-    }
+    // if (!selectedStyle) {
+    //   alert('Please select a style before generating AI images.');
+    //   return;
+    // }
 
     setLoadingItem(itemName);
 
@@ -83,16 +86,12 @@ export default function GenerateAIItems() {
             },
             {
               role: "user",
-              content: `Generate a short, vivid prompt to design a household interior item using the details below:
-                        - Item: ${itemName}
-                        - Style: ${selectedStyle?.name}
-                        - Category: ${categoryName}
-                        - Primary Color: ${themeColors.color1}
-                        - Secondary Color: ${themeColors.color2}
-                        - Design Notes: ${designInstruction}
-
-                        Keep it brief and suitable for an AI image generation tool. Highlight the item, style, and category usage naturally.`,
-
+             content: `Generate a photorealistic, isolated image of a ${itemName} in ${selectedStyle?.name} style, designed for a ${fpsize}ft ${fpname} with a room height of 10-12 ft.
+            The ${itemName} should appear alone on a plain white background — no walls, no floor, no windows, and no surrounding decor or context. Focus entirely on the item itself.
+            Use primary color ${themeColors.color1} and secondary color ${themeColors.color2}. Apply realistic proportions, material finishes, and design details that reflect the ${selectedStyle?.name} aesthetic.
+            Category: ${categoryName}  
+            Design Notes: ${designInstruction}
+            Keep it brief, clean, and suitable for AI image generation. Emphasize the item's style and function without adding any background elements.`
             }
           ],
           temperature: 0.7,
@@ -102,7 +101,7 @@ export default function GenerateAIItems() {
 
       const chatData = await promptResponse.json();
       const prompt = chatData.choices?.[0]?.message?.content?.trim();
-      console.log("Prompt Response:", chatData);
+      // console.log("Prompt Response:", chatData);
       console.log("Generated Prompt:", prompt);
 
       if (!prompt) {
@@ -110,38 +109,69 @@ export default function GenerateAIItems() {
         return;
       }
 
-      const response = await fetch("https://cloud.leonardo.ai/api/rest/v1/generations", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${import.meta.env.VITE_LEONARDO_API_KEY}`,
-        },
-        body: JSON.stringify({
-          prompt,
-          modelId: "b24e16ff-06e3-43eb-8d33-4416c2d75876",
-          num_images: 2,
-          width: 1024,
-          height: 1024,
-          guidance_scale: 7,
-        }),
+
+      const res = await axios.post(`${import.meta.env.VITE_BASE_URL}freepik-api/image-generate`, {
+        user_id: 150,
+        prompt,
       });
 
-      const data = await response.json();
-      const generationId = data.sdGenerationJob.generationId;
-      const statusUrl = `https://cloud.leonardo.ai/api/rest/v1/generations/${generationId}`;
+      const imageUrls = res.data.data?.images?.map((img) =>
+        `${import.meta.env.VITE_BASE_URL}${img}`
+      ) || [];
 
-      let imageUrls = [];
-      let tries = 0;
 
-      while (imageUrls.length === 0 && tries < 10) {
-        tries++;
-        const res = await fetch(statusUrl, {
-          headers: { Authorization: `Bearer ${import.meta.env.VITE_LEONARDO_API_KEY}` },
-        });
-        const result = await res.json();
-        imageUrls = result.generations_by_pk?.generated_images?.map(img => img.url) || [];
-        if (!imageUrls.length) await new Promise(res => setTimeout(res, 3000));
-      }
+      // const res = await fetch("https://api.openai.com/v1/images/generations", {
+      //   method: "POST",
+      //   headers: {
+      //     Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({
+      //     prompt,
+      //     n: 1,
+      //     size: "1024x1024",
+      //     model: "dall-e-3",
+      //   }),
+      // });
+      // const data = await res.json();
+      // const imageUrls = data.data?.map((img) => img.url) || [];
+
+      // console.log(imageUrls);
+
+
+
+      // const response = await fetch("https://cloud.leonardo.ai/api/rest/v1/generations", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     "Authorization": `Bearer ${import.meta.env.VITE_LEONARDO_API_KEY}`,
+      //   },
+      //   body: JSON.stringify({
+      //     prompt,
+      //     modelId: "b24e16ff-06e3-43eb-8d33-4416c2d75876",
+      //     num_images: 2,
+      //     width: 1024,
+      //     height: 1024,
+      //     guidance_scale: 7,
+      //   }),
+      // });
+
+      // const data = await response.json();
+      // const generationId = data.sdGenerationJob.generationId;
+      // const statusUrl = `https://cloud.leonardo.ai/api/rest/v1/generations/${generationId}`;
+
+      // let imageUrls = [];
+      // let tries = 0;
+
+      // while (imageUrls.length === 0 && tries < 10) {
+      //   tries++;
+      //   const res = await fetch(statusUrl, {
+      //     headers: { Authorization: `Bearer ${import.meta.env.VITE_LEONARDO_API_KEY}` },
+      //   });
+      //   const result = await res.json();
+      //   imageUrls = result.generations_by_pk?.generated_images?.map(img => img.url) || [];
+      //   if (!imageUrls.length) await new Promise(res => setTimeout(res, 3000));
+      // }
 
       if (!imageUrls.length) throw new Error("No images generated.");
       setGeneratedImages((prev) => ({ ...prev, [itemName]: imageUrls }));
@@ -152,17 +182,19 @@ export default function GenerateAIItems() {
     }
   };
 
-      const selectedCategory = styles.find(cat => cat.id === activeCategoryId);
-    const categoryName = selectedCategory?.name || "";
+  const selectedCategory = styles.find(cat => cat.id === activeCategoryId);
+  const categoryName = selectedCategory?.name || "";
 
   const generateFinalRoomImage = async () => {
 
-    if (!selectedStyle || !activeCategoryId) {
-      alert("Please select a style first.");
-      return;
-    }
+    // if (!selectedStyle || !activeCategoryId) {
+    //   alert("Please select a style first.");
+    //   return;
+    // }
 
     setLoadingItem("final-room");
+
+const base64Only = fpImage.split(',')[1];
 
     try {
 
@@ -177,21 +209,48 @@ export default function GenerateAIItems() {
           messages: [
             {
               role: "system",
-              content: "You are a prompt generator for AI interior design tools. Create a single-room design prompt that combines multiple furniture items, a ceiling, and curtains. Keep it under 1500 characters."
+              content: "You are a prompt generator for AI interior design tools. Create a single-room design prompt that combines multiple furniture items, a ceiling, and curtains."
             },
             {
               role: "user",
-             content: `Generate a room interior image prompt using ALL of the following items. Each item must be explicitly mentioned in the prompt (do not skip or generalize):
-                      - Items: ${items.map((i) => i.name).join(', ')}
-                      - Style: ${selectedStyle?.name}
-                      - Category: ${categoryName}
-                      - View: ${selectedView.replace("-", " ")} ${selectedView === "corner-view" ? `from corner ${selectedCorner}` : ""}
-                      - Primary Color: ${themeColors.color1}
-                      - Secondary Color: ${themeColors.color2}
-                      - Design Notes: ${designInstruction}
+              content: [
+                {
+                type: "text",
+                text: `Generate a detailed prompt for a photorealistic interior image of a ${fpsize}ft ${fpname} using the attached floorplan as a strict layout reference.
 
-                      The prompt should be short, creative, under 1500 characters, and suitable for AI image generation.`,
+              Layout Orientation (IMPORTANT):
+              - Top of the image = North wall
+              - Bottom = South wall
+              - Left = West wall
+              - Right = East wall
 
+              Instructions:
+              - Use the exact placement of each furniture item as shown in the floorplan image.
+              - Mention the orientation and wall alignment of each item explicitly.
+              - Describe the relative positions between items (e.g., "the sofa faces the TV", "the book rack is placed against the west wall").
+              - Do NOT rearrange, skip, or generalize any furniture item.
+              - Focus on spatial relationships and layout accuracy.
+
+              Room Details:
+              - Room Name: ${fpname}
+              - Style: ${selectedStyle?.name}
+              - Category: ${categoryName}
+              - View: ${selectedView.replace("-", " ")}${selectedView === "corner-view" ? ` from corner ${selectedCorner}` : ""}
+              - Primary Color: ${themeColors.color1}
+              - Secondary Color: ${themeColors.color2}
+              - Design Notes: ${designInstruction}
+              - Items: ${items.map((i) => i.name).join(', ')}
+
+              Ensure the prompt is creative, under 1500 characters, and suitable for AI-based interior image generation.`
+              },
+
+                {
+                  type: "image_url",
+                  image_url: {
+                    url: `data:image/png;base64,${base64Only}`
+                  }
+                }
+              ]
             }
           ],
           temperature: 0.7,
@@ -206,38 +265,72 @@ export default function GenerateAIItems() {
 
       if (!finalPrompt) throw new Error("Prompt generation failed");
 
-      const response = await fetch("https://cloud.leonardo.ai/api/rest/v1/generations", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${import.meta.env.VITE_LEONARDO_API_KEY}`,
-        },
-        body: JSON.stringify({
-          prompt: finalPrompt,
-          modelId: "b24e16ff-06e3-43eb-8d33-4416c2d75876",
-          num_images: 2,
-          width: 1024,
-          height: 1024,
-          guidance_scale: 7,
-        }),
+
+      // freepik.ai
+
+      const res = await axios.post(`${import.meta.env.VITE_BASE_URL}freepik-api/image-generate`, {
+        user_id: 150,
+        prompt: finalPrompt,
       });
 
-      const data = await response.json();
-      const generationId = data.sdGenerationJob.generationId;
-      const statusUrl = `https://cloud.leonardo.ai/api/rest/v1/generations/${generationId}`;
+      const imageUrls = res.data.data?.images?.map((img) =>
+        `${import.meta.env.VITE_BASE_URL}${img}`
+      ) || [];
 
-      let imageUrls = [];
-      let tries = 0;
+      // chatgpt.ai
 
-      while (imageUrls.length === 0 && tries < 10) {
-        tries++;
-        const res = await fetch(statusUrl, {
-          headers: { Authorization: `Bearer ${import.meta.env.VITE_LEONARDO_API_KEY}` },
-        });
-        const result = await res.json();
-        imageUrls = result.generations_by_pk?.generated_images?.map(img => img.url) || [];
-        if (!imageUrls.length) await new Promise(res => setTimeout(res, 3000));
-      }
+      // const res = await fetch("https://api.openai.com/v1/images/generations", {
+      //   method: "POST",
+      //   headers: {
+      //     Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({
+      //     prompt: finalPrompt,
+      //     n: 1,
+      //     size: "1024x1024",
+      //     model: "dall-e-3",
+      //   }),
+      // });
+      // const data = await res.json();
+      // const imageUrls = data.data?.map((img) => img.url) || [];
+
+      // console.log(imageUrls);
+
+      // leonardi.ai
+
+      // const response = await fetch("https://cloud.leonardo.ai/api/rest/v1/generations", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     "Authorization": `Bearer ${import.meta.env.VITE_LEONARDO_API_KEY}`,
+      //   },
+      //   body: JSON.stringify({
+      //     prompt: finalPrompt,
+      //     modelId: "b24e16ff-06e3-43eb-8d33-4416c2d75876",
+      //     num_images: 2,
+      //     width: 1024,
+      //     height: 1024,
+      //     guidance_scale: 7,
+      //   }),
+      // });
+
+      // const data = await response.json();
+      // const generationId = data.sdGenerationJob.generationId;
+      // const statusUrl = `https://cloud.leonardo.ai/api/rest/v1/generations/${generationId}`;
+
+      // let imageUrls = [];
+      // let tries = 0;
+
+      // while (imageUrls.length === 0 && tries < 10) {
+      //   tries++;
+      //   const res = await fetch(statusUrl, {
+      //     headers: { Authorization: `Bearer ${import.meta.env.VITE_LEONARDO_API_KEY}` },
+      //   });
+      //   const result = await res.json();
+      //   imageUrls = result.generations_by_pk?.generated_images?.map(img => img.url) || [];
+      //   if (!imageUrls.length) await new Promise(res => setTimeout(res, 3000));
+      // }
 
       if (!imageUrls.length) throw new Error("No final room image generated.");
       setGeneratedImages((prev) => ({ ...prev, ["final-room"]: imageUrls }));
@@ -259,18 +352,22 @@ export default function GenerateAIItems() {
 
         {/* Category Buttons */}
         <div className="flex flex-wrap gap-2 mb-4">
-          {styles.map((category) => (
-            <button
-              key={category.id}
-              onClick={() => toggleCategory(category.id)}
-              className={`px-4 py-2 rounded border text-sm font-medium transition ${activeCategoryId === category.id
-                ? "bg-purple-100 border-purple-500 text-purple-700"
-                : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
-                }`}
-            >
-              {category.name}
-            </button>
-          ))}
+          <div className="flex flex-wrap gap-2 mb-4 border-b pb-2">
+            {styles.map((category) => (
+              <button
+                key={category.id}
+                onClick={() => toggleCategory(category.id)}
+                className={`px-5 py-2 rounded-t-md text-sm font-semibold transition border-b-2
+        ${activeCategoryId === category.id
+                    ? "border-purple-600 text-purple-700 bg-purple-50"
+                    : "border-transparent text-gray-500 hover:text-purple-600 hover:bg-gray-50"
+                  }`}
+              >
+                {category.name}
+              </button>
+            ))}
+          </div>
+
         </div>
 
         {/* Styles List (shown only for active category) */}
@@ -278,13 +375,14 @@ export default function GenerateAIItems() {
           .filter((cat) => cat.id === activeCategoryId)
           .map((category) => (
             <div key={category.id} className="mb-4">
-              <div className="flex flex-wrap gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
                 {category.styles.map((style) => (
                   <label
                     key={style.id}
-                    className={`flex items-center justify-center px-4 py-2 border rounded cursor-pointer transition text-sm ${selectedStyle?.id === style.id
-                      ? "bg-purple-100 border-purple-500"
-                      : "bg-white hover:bg-gray-50"
+                    className={`p-3 border rounded-lg shadow-sm cursor-pointer transition-all text-center text-sm
+              ${selectedStyle?.id === style.id
+                        ? "bg-purple-100 border-purple-500 ring-2 ring-purple-300"
+                        : "bg-white hover:bg-gray-50"
                       }`}
                   >
                     <input
@@ -295,7 +393,7 @@ export default function GenerateAIItems() {
                       checked={selectedStyle?.id === style.id}
                       className="hidden"
                     />
-                    <span className="capitalize text-gray-700 font-medium">
+                    <span className="capitalize text-gray-800 font-medium block">
                       {style.name}
                     </span>
                   </label>
@@ -303,6 +401,7 @@ export default function GenerateAIItems() {
               </div>
             </div>
           ))}
+
       </div>
 
       {/* Theme Colors */}
@@ -403,6 +502,20 @@ export default function GenerateAIItems() {
           className="w-full border px-4 py-3 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
         ></textarea>
       </div>
+
+      {/* prompt */}
+      {/* <div>
+        <label className="block text-sm font-medium mb-1">Custom Prompt</label>
+        <textarea
+          rows={4}
+          placeholder="Create Your Prompt here..."
+          value={customPrompt}
+          onChange={(e) => setCustomPrompt(e.target.value)}
+          className="w-full border px-4 py-3 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+        ></textarea>
+      </div> */}
+
+
 
       {/* Final Room Look Section */}
       <div className="border p-5 rounded-xl shadow-md bg-white hover:shadow-xl transition mt-16">

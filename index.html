@@ -1,16 +1,35 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="facebook-domain-verification" content="k4y6lgsy87ad6d0vbtw01cdk8la1xl" />
-    <link rel="icon" type="image/png" href="logo.png" />
-    <title>Seeb</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="facebook-domain-verification" content="k4y6lgsy87ad6d0vbtw01cdk8la1xl" />
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="facebook-domain-verification" content="k4y6lgsy87ad6d0vbtw01cdk8la1xl" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <title>Seeb</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="facebook-domain-verification" content="k4y6lgsy87ad6d0vbtw01cdk8la1xl" />
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <!-- MailerLite Universal -->
+  <script>
+    (function (w, d, e, u, f, l, n) {
+      w[f] = w[f] || function () {
+        (w[f].q = w[f].q || [])
+          .push(arguments);
+      }, l = d.createElement(e), l.async = 1, l.src = u,
+        n = d.getElementsByTagName(e)[0], n.parentNode.insertBefore(l, n);
+    })
+      (window, document, 'script', 'https://assets.mailerlite.com/js/universal.js', 'ml');
+    ml('account', '1554771');
+  </script>
+  <!-- End MailerLite Universal -->
+</head>
+
+<body>
+  <!-- <button class="ml-onclick-form btn btn-secondary my-2" onclick="ml('show', 'bO8stZ', true)">Click here to show
+    form</button> -->
+
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>  
+</body>
+
 </html>

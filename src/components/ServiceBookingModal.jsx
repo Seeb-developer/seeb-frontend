@@ -25,7 +25,7 @@ const ServiceBookingModal = ({ isOpen, onClose, selectedService, roomId }) => {
             const area = width * height; // in square feet
             const updatedAddons = {};
 
-            console.log("selectedService.addons", selectedService.addons);
+            // console.log("selectedService.addons", selectedService.addons);
 
             selectedService.addons.forEach((addon) => {
                 const isRequired = addon.is_required === "1";
@@ -103,22 +103,26 @@ const ServiceBookingModal = ({ isOpen, onClose, selectedService, roomId }) => {
             // 🧾 Booking payload
             let value;
             if (selectedService.rate_type === "square_feet") {
-                value = `${width}X${height}`; // Save as "widthXheight" string
+                value = `${width}X${height}`; 
             } else {
-                value = quantity; // Save number directly
+                value = quantity;
             }
 
+            // console.log("selectedService.addons",selectedService.addons);
+            // console.log("selectedAddons",selectedAddons);            
+            
             const selectedAddonDetails = (selectedService.addons || [])
                 .filter(addon => addon.is_required === "1" || selectedAddons.hasOwnProperty(addon.id))
                 .map(addon => {
-                    const addonQty = selectedAddons[addon.id]
-                        ?? (addon.qty ? Number(addon.qty) : 1);
+                    const addonQty = selectedAddons[addon.id] ?? (addon.qty ? Number(addon.qty) : 1);
 
+                    // console.log("addonQty",addonQty);
+                    
                     let totalQty = addonQty;
-                    if (addon.price_type === "square_feet") {
-                        const totalSqFt = width * height;
-                        totalQty = (addonQty / 100) * totalSqFt;
-                    }
+                    // if (addon.price_type === "square_feet") {
+                    //     const totalSqFt = width * height;
+                    //     totalQty = (addonQty / 100) * totalSqFt;
+                    // }
 
                     const totalPrice = totalQty * addon.price;
 
@@ -134,6 +138,8 @@ const ServiceBookingModal = ({ isOpen, onClose, selectedService, roomId }) => {
                         total: totalPrice.toFixed(2),
                     };
                 });
+
+                // console.log("AddonDetail",selectedAddonDetails);
 
             const bookingData = {
                 user_id: userId,
@@ -184,25 +190,30 @@ const ServiceBookingModal = ({ isOpen, onClose, selectedService, roomId }) => {
     };
 
     // console.log("SelectedAddons",selectedAddons);
-    
+
     // Calculate base price
     const baseTotal = selectedService.rate_type === "square_feet"
         ? width * height * selectedService.rate
         : quantity * selectedService.rate;
 
     // Calculate addon total
+
+    // console.log("selected addon", selectedAddons);
+
     const addonTotal = Object.entries(selectedAddons).reduce((sum, [addonId, addonQty]) => {
         const addon = selectedService.addons.find(a => a.id === addonId);
         if (!addon) return sum;
 
-        const qty = Number(addonQty) || 1;
+        const qty = addonQty || 1;
         const price = Number(addon.price) || 0;
 
-        if (addon.price_type === "square_feet") {
-            return sum + ((qty / 100) * (width * height)) * price;
-        } else {
+        // console.log("addonTotal qty", qty, "area", width * height, "price", price, "sum",)
+
+        // if (addon.price_type === "square_feet") {
+        //     return sum + (Math.ceil((parseFloat(qty || 0) / 100) * (width * height)) * price);
+        // } else {
             return sum + qty * price;
-        }
+        // }
     }, 0);
 
     // Final total
@@ -262,8 +273,9 @@ const ServiceBookingModal = ({ isOpen, onClose, selectedService, roomId }) => {
 
                 {selectedService?.addons.length > 0 && (
                     <>
-                        <div className="mb-4">
-                            <h3 className="font-semibold mb-2">Select Addons</h3>
+                        <h3 className="font-semibold mb-2">Select Addons</h3>
+
+                        <div className="mb-4 h-[300px] overflow-y-scroll">
 
                             {selectedService.addons.reduce((acc, addon) => {
                                 const group = acc.find(g => g.name === addon.group_name);
@@ -296,12 +308,12 @@ const ServiceBookingModal = ({ isOpen, onClose, selectedService, roomId }) => {
                                                     const isChecked = selectedAddons.hasOwnProperty(addon.id);
                                                     const baseQty = addon.qty ? Number(addon.qty) : 1;
                                                     const calculatedQty = addon.price_type === "square_feet"
-                                                        ? Math.max(1, Math.floor((baseQty / 100) * (width * height)))
+                                                        ? Math.ceil((parseFloat(baseQty || 0) / 100) * (width * height))
                                                         : baseQty;
 
                                                     const addonQty = isChecked ? selectedAddons[addon.id] : calculatedQty;
 
-                                                    console.log("addon", addon, "addonQty", addonQty,"||", width, height);
+                                                    // console.log( "addonQty", addonQty, "area", width * height, "selectedAddon", selectedAddons[addon.id]);
 
                                                     return (
                                                         <label
@@ -343,7 +355,7 @@ const ServiceBookingModal = ({ isOpen, onClose, selectedService, roomId }) => {
                                                                             </>
                                                                         ) : (
                                                                             <span>
-                                                                                Qty: {addonQty} | ₹{addon.price} per {addon.price_type.replace("_", " ")}
+                                                                                {addon.price_type.replace("_", " ").replace(/^./, c => c.toUpperCase())}: {addonQty} | Rate: ₹{addon.price}
                                                                             </span>
                                                                         )}
                                                                         {isRequired && (

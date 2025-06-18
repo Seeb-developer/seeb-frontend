@@ -3,13 +3,20 @@ import { Download, ArrowRight } from 'lucide-react';
 import axios from 'axios';
 import Modal from 'react-modal';
 import { useSelector } from 'react-redux';
+import {
+  Facebook,
+  Twitter,
+  Linkedin,
+  Dribbble,
+  ArrowLeftCircle,
+} from "lucide-react";
 
 export default function AIDesignGenerator() {
     const [activeTab, setActiveTab] = useState("Prompt");
     const [selectedSubTab, setSelectedSubTab] = useState("Modern");
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [styleTabs, setStyleTabs] = useState([]);
-    const [selectedStyleId, setSelectedStyleId] = useState(null);
+    const [stylesCategoryTabs, setstylesCategoryTabs] = useState([]);
+    const [selectedStylesCategoryId, setSelectedStylesCategoryId] = useState(null);
     const [promptData, setPromptData] = useState([]);
     const [prompt, setPrompt] = useState('');
     const [generatedImages, setGeneratedImages] = useState([]);
@@ -37,11 +44,11 @@ export default function AIDesignGenerator() {
             try {
                 const res = await axios.get(`${import.meta.env.VITE_BASE_URL}styles/by-category`);
                 if (res.data.status === 200) {
-                    const styles = res.data.data;
-                    setStyleTabs(styles);
-                    if (styles.length > 0) {
-                        setSelectedSubTab(styles[0].name);
-                        setSelectedStyleId(styles[0].id);
+                    const stylesCategory = res.data.data;
+                    setstylesCategoryTabs(stylesCategory);
+                    if (stylesCategory.length > 0) {
+                        setSelectedSubTab(stylesCategory[0].name);
+                        setSelectedStylesCategoryId(stylesCategory[0].id);
                     }
                 }
             } catch (error) {
@@ -54,10 +61,10 @@ export default function AIDesignGenerator() {
 
     useEffect(() => {
         const fetchPrompts = async () => {
-            if (!selectedStyleId) return;
+            if (!selectedStylesCategoryId) return;
 
             try {
-                const res = await axios.get(`${import.meta.env.VITE_BASE_URL}prompts/style/${selectedStyleId}`);
+                const res = await axios.get(`${import.meta.env.VITE_BASE_URL}prompts/style/${selectedStylesCategoryId}`);
                 if (res.data.status === 200) {
                     setPromptData(res.data.data);
                 } else {
@@ -104,7 +111,7 @@ export default function AIDesignGenerator() {
         if (activeTab === "Prompt") {
             fetchPrompts();
         }
-    }, [selectedStyleId, activeTab]);
+    }, [selectedStylesCategoryId, activeTab]);
 
     const handleDownload = (url) => {
         const link = document.createElement("a");
@@ -214,12 +221,13 @@ export default function AIDesignGenerator() {
             {activeTab === "Prompt" && (
                 <>
                     <div className="flex flex-wrap gap-3 mb-8">
-                        {styleTabs.map((subTab) => (
+                        {stylesCategoryTabs.map((subTab) => (
                             <button
                                 key={subTab.id}
                                 onClick={() => {
                                     setSelectedSubTab(subTab.name);
-                                    setSelectedStyleId(subTab.id);
+                                    setSelectedStylesCategoryId(subTab.id);
+
                                 }}
                                 className={`px-4 py-1 rounded-full text-sm capitalize transition-all font-semibold ${selectedSubTab === subTab.name
                                     ? "bg-yellow-500 text-white"
@@ -229,6 +237,20 @@ export default function AIDesignGenerator() {
                                 {subTab.name}
                             </button>
                         ))}
+                    </div>
+
+                    {/* Show styles based on selected category */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-4 mb-4">
+                        {stylesCategoryTabs
+                            .find((cat) => cat.id === selectedStylesCategoryId)
+                            ?.styles?.map((style) => (
+                                <div
+                                    key={style.id}
+                                    className="border rounded-lg overflow-hidden shadow hover:shadow-md transition-all"
+                                >                                   
+                                    <div className="p-2 text-center font-medium">{style.name}</div>
+                                </div>
+                            ))}
                     </div>
 
                     {/* Section Heading */}

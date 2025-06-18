@@ -180,22 +180,47 @@ export default function CheckoutPage() {
                     alt={item.service_name}
                     className="w-24 h-24 object-cover rounded-lg"
                   />
-                  <div>
-                    <h2 className="text-lg font-semibold text-gray-800 mb-1">{item.service_name}</h2>
-                    <div className="flex flex-wrap gap-2 text-sm text-gray-600">
-                      <span>📐 {item.rate_type.replace("_", " ")}</span>
-                      <span>📏 {item.value}</span>
-                      <span className="text-blue-600 font-medium">
-                        Total Sq Ft: {item.rate_type === "square_feet" ? eval(item.value.replace("X", "*")) : item.value}
-                      </span>
-                    </div>
-                    <p className="text-sm mt-2 text-gray-600">
-                      Rate: ₹{item.rate} x {item.value}
-                    </p>
-                    <p className="text-red-600 font-bold mt-1 text-base">
-                      Total: ₹{parseFloat(item.amount).toLocaleString()}
-                    </p>
-                  </div>
+                         <div className="flex flex-col gap-1 text-sm text-gray-700 w-full">
+          <h3 className="text-base lg:text-lg font-semibold text-gray-900">
+            {item.service_name}
+          </h3>
+
+          <div className="flex items-center gap-1">
+            <span className="font-medium text-gray-600">Addons:</span>
+            {item.addons && JSON.parse(item.addons).length > 0 ? (
+              <div className="flex flex-wrap gap-2 mt-1">
+                {JSON.parse(item.addons).map((addon, index) => (
+                  <span
+                    key={index}
+                    className="bg-purple-100 text-purple-700 px-2 py-1 rounded-full text-xs"
+                  >
+                    {addon.name} ({addon.qty} {addon.price_type})
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <span className="text-gray-500">None</span>
+            )}
+          </div>
+
+          <p>
+            <span className="font-medium text-gray-600">Type:</span>{' '}            
+            <span className="text-gray-800 font-medium">
+              {item.rate_type === "square_feet"
+                ? `${item.value} sq ft`
+                : `${item.value} unit(s)`}
+            </span>
+          </p>
+
+          <p>
+            <span className="font-medium text-gray-600">Rate:</span>{' '}
+            ₹{item.rate}
+          </p>
+
+          <p className="text-sm text-red-600 font-bold mt-1">
+            Total: ₹{item.amount}
+          </p>
+        </div>
                 </div>
 
 

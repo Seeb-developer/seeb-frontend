@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { X, Sparkles, RotateCw } from "lucide-react";
 import useImage from 'use-image';
-import { GoogleGenAI, Modality } from "@google/genai";
+// import { GoogleGenAI, Modality } from "@google/genai";
 
 const FT_TO_PX = 40;
 const pxToFeet = (px) => (px / FT_TO_PX).toFixed(2); // PX ➝ FT
@@ -18,7 +18,7 @@ const pxToInches = (px) => feetToInches(pxToFeet(px)); // PX ➝ INCH directly (
 const FloorPlan = () => {
   const { roomId, roomName } = useParams();
   const navigate = useNavigate();
-  const roomNameFormatted = roomName ? roomName.replace(/-/g, ' ') : '';
+  const roomNameFormatted = roomName ? roomName.replace(/-/g, ' ').replace(/^./, c => c.toUpperCase()) : 'N/A';
   const floorRef = useRef(null);
   const stageRef = useRef(null);
   const token = useSelector((state) => state.user.token);
@@ -327,9 +327,7 @@ const FloorPlan = () => {
       const leftX = 10;
       const rightX = pageWidth / 2 + 10;
       let footerY = pageHeight - footerHeight + 10;
-      const formattedRoomName = roomNameFormatted
-        ? roomNameFormatted.charAt(0).toUpperCase() + roomNameFormatted.slice(1)
-        : "N/A";
+      const formattedRoomName = roomNameFormatted;
 
 
       // Draw horizontal border line above the footer
@@ -655,6 +653,8 @@ const FloorPlan = () => {
     const base64Image = canvas.toDataURL("image/png");
     sessionStorage.setItem('ai-items', JSON.stringify(items));
     sessionStorage.setItem('ai-image', base64Image);
+    sessionStorage.setItem('floorplan-size',`${pxToFt(floorSize.width)}X${pxToFt(floorSize.height)}`)
+    sessionStorage.setItem('floorplan-name',roomNameFormatted)
     window.open('/generate-ai-items', '_blank');
   }
 
@@ -877,7 +877,7 @@ const FloorPlan = () => {
 
         <div className=" w-full">
           <div className="flex flex-row items-center justify-between mb-6">
-            <h1 className="text-3xl sm:text-4xl font-bold text-gray-800">Interior Floor Planner </h1>
+            <h1 className="text-3xl sm:text-4xl font-bold text-gray-800">{roomNameFormatted} Floor Planner </h1>
             <div className="flex gap-2">
               <button
                 className="bg-purple-600 text-white px-4 py-2 rounded-xl hover:bg-purple-700 flex items-center gap-2 transition"

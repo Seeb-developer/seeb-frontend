@@ -26,6 +26,7 @@ import KanvaNew from './pages/kanva-new';
 import GenerateAIItems from './pages/GenerateAiItems';
 import CartPage from './pages/cart';
 import DesignTips from './pages/tips';
+import ImageGeneratorPage from './pages/ImageGenerator';
 
 function AppContent() {
   const location = useLocation();
@@ -60,6 +61,8 @@ function AppContent() {
           <Route path="*" element={<NotFound />} />
           <Route path="/fabric" element={<FloorPlan_fabric />} />
           <Route path="/kanva" element={<KanvaNew />} />
+          <Route path="/ai-images" element={<ImageGeneratorPage />} />
+
 
         </Routes>
       </div>
