@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import FloorPlan from './FloorPlan';
+import { Save, Check } from 'lucide-react';
+import { useSelector } from "react-redux";
 
 export default function GenerateAIItems() {
   const [items, setItems] = useState([]);
@@ -13,30 +14,27 @@ export default function GenerateAIItems() {
   const [selectedView, setSelectedView] = useState("corner"); // "top", "corner", "eye"
   const [selectedCorner, setSelectedCorner] = useState("A-B"); // "A-B", "B-C", "C-D", "D-A"
   const [activeCategoryId, setActiveCategoryId] = useState(null);
+  const [isSaved, setIsSaved] = useState(false);
 
-  const savedItems = sessionStorage.getItem('ai-items');
+
+  const savedItems = sessionStorage.getItem('floorplan-items');
   const fpsize = sessionStorage.getItem('floorplan-size');
   const fpname = sessionStorage.getItem('floorplan-name');
-  const fpImage = sessionStorage.getItem('ai-image');
+  const fpImage = sessionStorage.getItem('floorplan-image');
+  const userDetail = useSelector((state) => state.user.userInfo);
 
   useEffect(() => {
     const baseItems = [];
     if (savedItems) {
       const parsed = JSON.parse(savedItems);
-      const seen = new Set();
-
-      const formatted = Object.entries(parsed).reduce((acc, [key, value]) => {
-        const baseName = key.split('-')[0].trim().toLowerCase();
-        if (!seen.has(baseName)) {
-          seen.add(baseName);
-          acc.push({
-            id: key,
-            name: baseName,
-            img: `${import.meta.env.VITE_BASE_URL}${value.imgSrc}`,
-          });
-        }
-        return acc;
-      }, []);
+      const formatted = Object.entries(parsed).map(([id, data]) => {
+        const baseName = data.name.split('-')[0].trim().toLowerCase();
+        return {
+          id,
+          name: baseName,
+          img: `${import.meta.env.VITE_BASE_URL}${data.image}`
+        };
+      });
 
       baseItems.push(...formatted);
     }
@@ -51,8 +49,6 @@ export default function GenerateAIItems() {
 
     axios.get(`${import.meta.env.VITE_BASE_URL}styles/by-category`).then((res) => {
       if (res.data.status === 200) {
-        console.log("style", res.data.data);
-
         setStyles(res.data.data);
       }
     });
@@ -112,7 +108,7 @@ export default function GenerateAIItems() {
       const res = await axios.post(`${import.meta.env.VITE_BASE_URL}freepik-api/image-generate`, {
         user_id: 150,
         prompt,
-        type:"floorplan"
+        type: "floorplan"
       });
 
       const imageUrls = res.data.data?.images?.map((img) =>
@@ -342,10 +338,109 @@ export default function GenerateAIItems() {
     }
   };
 
+  const handleSaveDesign = async () => {
+    try {
+      const uploadedURLs = {};
+
+      const uploadSingleImage = async (base64Data) => {
+        try {
+          const blob = await (await fetch(base64Data)).blob();
+          const formData = new FormData();
+          formData.append("file", blob, "upload.png");
+
+          const uploadRes = await axios.post(
+            `${import.meta.env.VITE_BASE_URL}floor-plans/upload-image`,
+            formData,
+            { headers: { "Content-Type": "multipart/form-data" } }
+          );
+
+          return uploadRes.data?.file_path || "";
+        } catch (err) {
+          console.error("Image upload failed:", err);
+          return "";
+        }
+      };
+
+
+      // Upload floorplan image
+      const floorplanImageUrl = await uploadSingleImage(fpImage);
+      uploadedURLs.floorplan_image = floorplanImageUrl;
+      // Upload floor3d image (take the first from generatedImages['final-room'])
+      // const finalRoomImage = generatedImages["final-room"];
+
+      const finalRoomImages = (generatedImages["final-room"] || []).map(img =>
+        img.replace("https://backend.seeb.in/", "")
+      );
+      uploadedURLs.floor3d_image = finalRoomImages;
+
+      // Upload all item images
+      const elements = [];
+
+      for (const item of items) {
+        const name = item.name;
+        const genImages = generatedImages[name] || [];
+
+        if (genImages.length > 0) {
+          const cleanedImages = genImages.map(img =>
+            img.replace("https://backend.seeb.in/", "")
+          );
+
+          elements.push({
+            name,
+            image: cleanedImages, // Now holds cleaned relative URLs
+          });
+        }
+      }
+
+
+
+
+      const payload = {
+        user_id: userDetail.id,
+        room_name: fpname,
+        room_size: fpsize,
+        name: designInstruction,
+        primary_color: themeColors.color1,
+        accent_color: themeColors.color2,
+        style_name: selectedStyle?.name,
+        floorplan_image: uploadedURLs.floorplan_image,
+        floor3d_image: JSON.stringify(uploadedURLs.floor3d_image),
+        elements_json: JSON.stringify(elements),
+      };
+
+      await axios.post(
+        `${import.meta.env.VITE_BASE_URL}floor-plans`,
+        payload
+      );
+      setIsSaved(true);
+      setTimeout(() => setIsSaved(false), 1000);
+      // alert("Design saved successfully!");
+    } catch (error) {
+      console.error("Error saving design:", error);
+    }
+  };
+
+
   return (
     <div className="px-12 py-10 space-y-10 bg-gradient-to-br from-gray-50 to-white min-h-screen">
-      <h1 className="text-4xl font-bold text-gray-800">🎨 AI Generated Interior Items</h1>
+      <div className="flex flex-row items-center justify-between mb-6">
+        <h1 className="text-3xl sm:text-4xl font-bold text-gray-800">🎨 AI Generated Interior Items</h1>
+        <div className="flex gap-2">
+          {isSaved ? (
+            <button className="bg-green-600 text-white font-medium px-4 py-2 rounded-xl flex items-center gap-2 transition">
+              <Check /> Saved Design
+            </button>
+          ) : (
+            <button
+              onClick={handleSaveDesign}
+              className="bg-purple-600 text-white font-medium px-4 py-2 rounded-xl hover:bg-purple-700 flex items-center gap-2 transition"
+            >
+              <Save /> Save Design
+            </button>
+          )}
 
+        </div>
+      </div>
       {/* Style Selection */}
       <div>
         <h2 className="text-lg font-semibold text-gray-800 mb-3">Choose a Style</h2>
@@ -366,7 +461,6 @@ export default function GenerateAIItems() {
               </button>
             ))}
           </div>
-
         </div>
 
         {/* Styles List (shown only for active category) */}
@@ -405,28 +499,28 @@ export default function GenerateAIItems() {
       {/* Theme Colors */}
       <div>
         <h2 className='text-lg font-semibold text-gray-800 mb-3 capitalize'>choose a theme color</h2>
-      <div className="flex flex-wrap gap-6">
-        <div>
-          <label className="block text-sm font-medium mb-1">Primary Color</label>
-          <input
-            type="text"
-            placeholder="e.g., white"
-            value={themeColors.color1}
-            onChange={(e) => setThemeColors({ ...themeColors, color1: e.target.value })}
-            className="border px-4 py-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
+        <div className="flex flex-wrap gap-6">
+          <div>
+            <label className="block text-sm font-medium mb-1">Primary Color</label>
+            <input
+              type="text"
+              placeholder="e.g., white"
+              value={themeColors.color1}
+              onChange={(e) => setThemeColors({ ...themeColors, color1: e.target.value })}
+              className="border px-4 py-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Secondary Color</label>
+            <input
+              type="text"
+              placeholder="e.g., gold"
+              value={themeColors.color2}
+              onChange={(e) => setThemeColors({ ...themeColors, color2: e.target.value })}
+              className="border px-4 py-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </div>
         </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Secondary Color</label>
-          <input
-            type="text"
-            placeholder="e.g., gold"
-            value={themeColors.color2}
-            onChange={(e) => setThemeColors({ ...themeColors, color2: e.target.value })}
-            className="border px-4 py-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-        </div>
-      </div>
       </div>
 
       <div>
@@ -504,20 +598,6 @@ export default function GenerateAIItems() {
         ></textarea>
       </div>
 
-      {/* prompt */}
-      {/* <div>
-        <label className="block text-sm font-medium mb-1">Custom Prompt</label>
-        <textarea
-          rows={4}
-          placeholder="Create Your Prompt here..."
-          value={customPrompt}
-          onChange={(e) => setCustomPrompt(e.target.value)}
-          className="w-full border px-4 py-3 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-        ></textarea>
-      </div> */}
-
-
-
       {/* Final Room Look Section */}
       <div className="border p-5 rounded-xl shadow-md bg-white hover:shadow-xl transition mt-16">
         <h2 className="text-2xl font-bold mb-4 text-gray-800">🏠 Room Look</h2>
@@ -527,9 +607,9 @@ export default function GenerateAIItems() {
 
         <div className="flex flex-col md:flex-row gap-6 items-start">
           {/* Floorplan Image (left side) */}
-          {sessionStorage.getItem('ai-image') && (
+          {fpImage && (
             <img
-              src={sessionStorage.getItem('ai-image')}
+              src={fpImage}
               alt="Floorplan Preview"
               className="w-[500px] h-[500px] object-contain border rounded shadow-sm"
             />

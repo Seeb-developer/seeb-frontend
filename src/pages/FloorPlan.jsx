@@ -6,7 +6,7 @@ import jsPDF from "jspdf";
 import { useGet } from '../hooks/useGet';
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { X, Sparkles, RotateCw } from "lucide-react";
+import { X, Sparkles, RotateCw, Download } from "lucide-react";
 import useImage from 'use-image';
 // import { GoogleGenAI, Modality } from "@google/genai";
 
@@ -651,8 +651,15 @@ const FloorPlan = () => {
       scale: 2,
     });
     const base64Image = canvas.toDataURL("image/png");
-    sessionStorage.setItem('ai-items', JSON.stringify(items));
-    sessionStorage.setItem('ai-image', base64Image);
+
+    const selectedItem = Object.entries(items).map(([name, data]) => ({
+      name,
+      image: data.imgSrc
+    }));
+    const selectedItemJson = JSON.stringify(selectedItem);
+
+    sessionStorage.setItem('floorplan-items', selectedItemJson);
+    sessionStorage.setItem('floorplan-image', base64Image);
     sessionStorage.setItem('floorplan-size',`${pxToFt(floorSize.width)}X${pxToFt(floorSize.height)}`)
     sessionStorage.setItem('floorplan-name',roomNameFormatted)
     window.open('/generate-ai-items', '_blank');
@@ -889,9 +896,9 @@ const FloorPlan = () => {
               <button
                 onClick={handleDownloadFloorplan}
                 disabled={isDownloading}
-                className={`${isDownloading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'} text-white px-5 py-2 rounded-xl transition`}
+                className={`${isDownloading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'} text-white flex items-center gap-2 px-5 py-2 rounded-xl transition`}
               >
-                {isDownloading ? "Downloading..." : "Download Floor Plan PDF"}
+                <Download /> {isDownloading ? "Downloading..." : "Download Floor Plan PDF"}
               </button>
             </div>
           </div>

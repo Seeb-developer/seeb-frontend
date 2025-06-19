@@ -16,17 +16,18 @@ import Footer from './components/FooterSection';
 import Home from './pages/Home';
 import AboutUs from './pages/About';
 import AIDesignGenerator from './pages/AIDesignGenerator';
-import BlogList from './pages/BlogList'; 
-import BlogDetail from './pages/BlogDetail'; 
+import BlogList from './pages/BlogList';
+import BlogDetail from './pages/BlogDetail';
 import NotFound from './pages/NotFound';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import {FloorPlan_fabric}  from './pages/fabric';
+import { FloorPlan_fabric } from './pages/fabric';
 import KanvaNew from './pages/kanva-new';
 import GenerateAIItems from './pages/GenerateAiItems';
 import CartPage from './pages/cart';
 import DesignTips from './pages/tips';
 import ImageGeneratorPage from './pages/ImageGenerator';
+import FloorPlanDetail from './components/FloorPlanDetail';
 
 function AppContent() {
   const location = useLocation();
@@ -62,7 +63,7 @@ function AppContent() {
           <Route path="/fabric" element={<FloorPlan_fabric />} />
           <Route path="/kanva" element={<KanvaNew />} />
           <Route path="/ai-images" element={<ImageGeneratorPage />} />
-
+          <Route path="/saved-floorplan/:id" element={<FloorPlanDetail />} />
 
         </Routes>
       </div>

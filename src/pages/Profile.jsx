@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LogOut, UserCog, Headphones, FileText } from 'lucide-react';
+import { LogOut, UserCog, Headphones, FileText, Save } from 'lucide-react';
 import ProfileSettings from '../components/ProfileSettings';
 import PoliciesList from '../components/Policies';
 import { Support } from '../components/Support';
@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../store/userSlice";
 import { clearCart } from "../store/cartSlice";
 import { persistor } from "../store";
+import FloorPlanList from '../components/FloorplanList';
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState(null); // default null on mobile
@@ -49,6 +50,8 @@ export default function ProfilePage() {
       case 'profile': return <ProfileSettings />;
       case 'support': return <Support />;
       case 'terms': return <PoliciesList />;
+      case 'savedFloorplan': return <FloorPlanList />;
+
       default: return null;
     }
   };
@@ -68,6 +71,8 @@ export default function ProfilePage() {
       <SidebarItem icon={<UserCog />} label="Profile Settings" onClick={() => setActiveTab('profile')} />
       <SidebarItem icon={<Headphones />} label="Support & Contact Us" onClick={() => setActiveTab('support')} />
       <SidebarItem icon={<FileText />} label="Terms & Policies" onClick={() => setActiveTab('terms')} />
+      <SidebarItem icon={<Save />} label="Saved Floorplan" onClick={() => setActiveTab('savedFloorplan')} />
+
 
       <div className="pt-4">
         <button onClick={handleLogout} className="w-full flex justify-center items-center gap-2 text-red-600 bg-red-100 hover:bg-red-200 font-semibold py-3 rounded-md">
