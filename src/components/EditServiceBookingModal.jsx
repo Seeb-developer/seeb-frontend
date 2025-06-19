@@ -15,7 +15,6 @@ const EditServiceBookingModal = ({ isOpen, onClose, serviceItem, editingItem, ro
     const [quantity, setQuantity] = useState(1);
     const [images, setImages] = useState([]);
     const [selectedAddons, setSelectedAddons] = useState({});
-    const [parsedAddons, setParsedAddons] = useState([]);
     const [openGroup, setOpenGroup] = useState(null);
     const [baseTotal, setBaseTotal] = useState(0);
     const [addonTotal, setAddonTotal] = useState(0);
@@ -24,9 +23,6 @@ const EditServiceBookingModal = ({ isOpen, onClose, serviceItem, editingItem, ro
 
     useEffect(() => {
         if (editingItem && serviceItem) {
-
-            console.log("edit service", editingItem, "service item", serviceItem)
-
             let widthVal = 0;
             let heightVal = 0;
             let quantityVal = 0;
@@ -88,12 +84,12 @@ const EditServiceBookingModal = ({ isOpen, onClose, serviceItem, editingItem, ro
         } else {
             baseQty = quantity;
         }
-
+        
         const newBaseTotal = baseQty * serviceItem.rate;
 
         let newAddonTotal = 0;
         if (serviceItem.addons && serviceItem.addons.length > 0) {
-            newAddonTotal = serviceItem.addons.reduce((sum, addon) => {
+            newAddonTotal = serviceItem.addons.reduce((sum, addon) => {                                
                 const isChecked = selectedAddons.hasOwnProperty(addon.id);
                 if (!isChecked && addon.is_required !== "1") return sum;
 
@@ -102,11 +98,8 @@ const EditServiceBookingModal = ({ isOpen, onClose, serviceItem, editingItem, ro
                     ? Math.ceil((parseFloat(baseQty / 100)) * (width * height))
                     : selectedAddons[addon.id] || baseQty;
 
+                selectedAddons[addon.id] = calculatedQty
                 const price = addon.price || 0;
-                // const addonAmount = addon.price_type === "square_feet"
-                //     ? ((calculatedQty / 100) * (width * height)) * price
-                //     : calculatedQty * price;
-                console.log("calculated Qty",calculatedQty,"price",price)
                 const addonAmount = calculatedQty * price;
 
                 return sum + addonAmount;
@@ -149,25 +142,15 @@ const EditServiceBookingModal = ({ isOpen, onClose, serviceItem, editingItem, ro
                 const isChecked = selectedAddons.hasOwnProperty(addon.id);
                 if (!isChecked && addon.is_required !== "1") return null;
 
-                let addonQty = selectedAddons[addon.id] || 1;
-
-                // If price type is square_feet, calculate qty based on sqft
-                if (addon.price_type === "square_feet") {
-                    const baseQty = addon.qty ? Number(addon.qty) : 1;
-                    addonQty = Math.max(1, Math.floor((baseQty / 100) * sqft));
-                }
-
-                const addonPrice = addon.price_type === "square_feet"
-                    ? ((addonQty / 100) * sqft) * addon.price
-                    : addonQty * addon.price;
+                let addonQty = selectedAddons[addon.id];
+                const addonPrice = addonQty * addon.price;
 
                 return {
                     ...addon,
-                    isChecked: true,
                     qty: addonQty,
                     total: Number(addonPrice).toFixed(2),
                 };
-            }).filter(Boolean);
+            }).filter(Boolean);            
 
             const addonAmount = addonDetails.reduce((sum, a) => sum + Number(a.total), 0);
             const totalAmount = baseAmount + addonAmount;
@@ -189,9 +172,6 @@ const EditServiceBookingModal = ({ isOpen, onClose, serviceItem, editingItem, ro
                 ...(refImageJson && { reference_image: refImageJson }),
             };
 
-            console.log("payload", payload);
-
-
             await fetch(`${import.meta.env.VITE_BASE_URL}seeb-cart/update/${editingItem.id}`, {
                 method: "PUT",
                 headers: {
@@ -211,7 +191,6 @@ const EditServiceBookingModal = ({ isOpen, onClose, serviceItem, editingItem, ro
 
 
     const handleAddonToggle = (addonId, isChecked, addonQty) => {
-        console.log("addonId, isChecked, addonQty", addonId, isChecked, addonQty)
         setSelectedAddons(prev => {
             if (prev[addonId]) {
                 const updated = { ...prev };
@@ -225,8 +204,6 @@ const EditServiceBookingModal = ({ isOpen, onClose, serviceItem, editingItem, ro
     };
 
     const handleQtyChange = (addonId, delta) => {
-        console.log("addonId, delta", addonId, delta);
-
         setSelectedAddons(prev => {
             const currentQty = prev[addonId] || 0;
             const newQty = Math.max(1, currentQty + delta); // minimum qty = 1
@@ -314,8 +291,8 @@ const EditServiceBookingModal = ({ isOpen, onClose, serviceItem, editingItem, ro
                                                 const calculatedQty = addon.price_type === "square_feet"
                                                     ? Math.ceil((parseFloat(baseQty||0) / 100) * (width * height))
                                                     : baseQty;
-
                                                 const addonQty = isChecked ? selectedAddons[addon.id] : calculatedQty;
+
                                                 return (
                                                     <label
                                                         key={addon.id}

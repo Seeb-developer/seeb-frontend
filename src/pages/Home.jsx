@@ -5,15 +5,15 @@ import { HeroSection } from '../components/HeroSection';
 import { ServicesGrid } from '../components/ServicesGridSection';
 
 const Home = () => {
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (typeof ml === 'function') {
-        ml('show', 'bO8stZ', true);
-      }
-    }, 5000);
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     if (typeof ml === 'function') {
+  //       ml('show', 'bO8stZ', true);
+  //     }
+  //   }, 5000);
 
-    return () => clearTimeout(timer); // Cleanup on unmount
-  }, []);
+  //   return () => clearTimeout(timer); // Cleanup on unmount
+  // }, []);
 
   return (
     <>

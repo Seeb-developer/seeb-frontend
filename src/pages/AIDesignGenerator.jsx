@@ -4,11 +4,11 @@ import axios from 'axios';
 import Modal from 'react-modal';
 import { useSelector } from 'react-redux';
 import {
-  Facebook,
-  Twitter,
-  Linkedin,
-  Dribbble,
-  ArrowLeftCircle,
+    Facebook,
+    Twitter,
+    Linkedin,
+    Dribbble,
+    ArrowLeftCircle,
 } from "lucide-react";
 
 export default function AIDesignGenerator() {
@@ -80,7 +80,8 @@ export default function AIDesignGenerator() {
             try {
                 const res = await axios.get(`${import.meta.env.VITE_BASE_URL}freepik-api/user/${userId}`);
                 if (res.data?.data) {
-                    setHistoryData(res.data.data);
+                    const filtered = res.data.data.filter(item => item.type === "search");
+                    setHistoryData(filtered);
                 }
             } catch (err) {
                 console.error("Failed to fetch history", err);
@@ -247,7 +248,7 @@ export default function AIDesignGenerator() {
                                 <div
                                     key={style.id}
                                     className="border rounded-lg overflow-hidden shadow hover:shadow-md transition-all"
-                                >                                   
+                                >
                                     <div className="p-2 text-center font-medium">{style.name}</div>
                                 </div>
                             ))}
