@@ -86,7 +86,7 @@ export default function GenerateAIItems() {
             },
             {
               role: "user",
-             content: `Generate a photorealistic, isolated image of a ${itemName} in ${selectedStyle?.name} style, designed for a ${fpsize}ft ${fpname} with a room height of 10-12 ft.
+              content: `Generate a photorealistic, isolated image of a ${itemName} in ${selectedStyle?.name} style, designed for a ${fpsize}ft ${fpname} with a room height of 10-12 ft.
             The ${itemName} should appear alone on a plain white background — no walls, no floor, no windows, and no surrounding decor or context. Focus entirely on the item itself.
             Use primary color ${themeColors.color1} and secondary color ${themeColors.color2}. Apply realistic proportions, material finishes, and design details that reflect the ${selectedStyle?.name} aesthetic.
             Category: ${categoryName}  
@@ -101,7 +101,6 @@ export default function GenerateAIItems() {
 
       const chatData = await promptResponse.json();
       const prompt = chatData.choices?.[0]?.message?.content?.trim();
-      // console.log("Prompt Response:", chatData);
       console.log("Generated Prompt:", prompt);
 
       if (!prompt) {
@@ -113,6 +112,7 @@ export default function GenerateAIItems() {
       const res = await axios.post(`${import.meta.env.VITE_BASE_URL}freepik-api/image-generate`, {
         user_id: 150,
         prompt,
+        type:"floorplan"
       });
 
       const imageUrls = res.data.data?.images?.map((img) =>
@@ -194,7 +194,7 @@ export default function GenerateAIItems() {
 
     setLoadingItem("final-room");
 
-const base64Only = fpImage.split(',')[1];
+    const base64Only = fpImage.split(',')[1];
 
     try {
 
@@ -215,8 +215,8 @@ const base64Only = fpImage.split(',')[1];
               role: "user",
               content: [
                 {
-                type: "text",
-                text: `Generate a detailed prompt for a photorealistic interior image of a ${fpsize}ft ${fpname} using the attached floorplan as a strict layout reference.
+                  type: "text",
+                  text: `Generate a detailed prompt for a photorealistic interior image of a ${fpsize}ft ${fpname} using the attached floorplan as a strict layout reference.
 
               Layout Orientation (IMPORTANT):
               - Top of the image = North wall
@@ -242,7 +242,7 @@ const base64Only = fpImage.split(',')[1];
               - Items: ${items.map((i) => i.name).join(', ')}
 
               Ensure the prompt is creative, under 1500 characters, and suitable for AI-based interior image generation.`
-              },
+                },
 
                 {
                   type: "image_url",
@@ -260,7 +260,6 @@ const base64Only = fpImage.split(',')[1];
 
       const chatData = await finalPromptResponse.json();
       const finalPrompt = chatData.choices?.[0]?.message?.content?.trim();
-      console.log("Final Prompt Response:", chatData);
       console.log("Final Prompt:", finalPrompt);
 
       if (!finalPrompt) throw new Error("Prompt generation failed");
@@ -271,6 +270,7 @@ const base64Only = fpImage.split(',')[1];
       const res = await axios.post(`${import.meta.env.VITE_BASE_URL}freepik-api/image-generate`, {
         user_id: 150,
         prompt: finalPrompt,
+        type: "floorplan"
       });
 
       const imageUrls = res.data.data?.images?.map((img) =>
@@ -349,10 +349,9 @@ const base64Only = fpImage.split(',')[1];
       {/* Style Selection */}
       <div>
         <h2 className="text-lg font-semibold text-gray-800 mb-3">Choose a Style</h2>
-
         {/* Category Buttons */}
         <div className="flex flex-wrap gap-2 mb-4">
-          <div className="flex flex-wrap gap-2 mb-4 border-b pb-2">
+          <div className="flex flex-wrap gap-2 border-b pb-2">
             {styles.map((category) => (
               <button
                 key={category.id}
@@ -401,10 +400,11 @@ const base64Only = fpImage.split(',')[1];
               </div>
             </div>
           ))}
-
       </div>
 
       {/* Theme Colors */}
+      <div>
+        <h2 className='text-lg font-semibold text-gray-800 mb-3 capitalize'>choose a theme color</h2>
       <div className="flex flex-wrap gap-6">
         <div>
           <label className="block text-sm font-medium mb-1">Primary Color</label>
@@ -427,6 +427,7 @@ const base64Only = fpImage.split(',')[1];
           />
         </div>
       </div>
+      </div>
 
       <div>
         <h2 className="text-lg font-semibold text-gray-800 mb-3">View Settings</h2>
@@ -436,7 +437,7 @@ const base64Only = fpImage.split(',')[1];
               View Type
             </label>
             <div className="flex flex-wrap gap-2">
-              {["Top View", "Corner View", "Eye Level"].map((view) => (
+              {["Top View", "Corner View"].map((view) => (
                 <label
                   key={view}
                   className={`flex items-center justify-center px-4 py-2 border rounded cursor-pointer ${selectedView === view.toLowerCase().replace(" ", "-")
@@ -458,7 +459,7 @@ const base64Only = fpImage.split(',')[1];
             </div>
           </div>
 
-          {selectedView === "corner-view" && (
+          {/* {selectedView === "corner-view" && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Select Corner
@@ -487,7 +488,7 @@ const base64Only = fpImage.split(',')[1];
                 ))}
               </div>
             </div>
-          )}
+          )} */}
         </div>
       </div>
 
