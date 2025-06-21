@@ -65,7 +65,7 @@ function AppContent() {
           {/* <Route path="/kanva" element={<KanvaNew />} /> */}
           <Route path="/ai-images" element={<ImageGeneratorPage />} />
           <Route path="/saved-floorplan/:id" element={<FloorPlanDetail />} />
-          <Route path="/lp" element={<LandingPage />} />
+          <Route path="/landing-page" element={<LandingPage />} />
 
 
         </Routes>
