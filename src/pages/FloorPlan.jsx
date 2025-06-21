@@ -847,18 +847,18 @@ const FloorPlan = () => {
 
   return (
     <>
-      <nav className="bg-black text-white px-6 py-2 md:flex justify-between items-center hidden sticky top-0 w-full z-50">
+      <nav className="bg-black text-white px-6 py-2 sticky top-0 w-full z-50">
         <div className="flex items-center space-x-3">
-          <Link to='/'><img src="/logo.png" alt="Logo" className="h-20 w-20" /></Link>
+          <Link to='/'><img src="/logo_name.png" alt="Logo" className="h-20" /></Link>
           <div>
-            <span className="font-bold text-2xl">SEEB</span>
-            <span className="block text-gray-300 text-sm">Pune, Maharashtra</span>
+            {/* <span className="font-bold text-2xl">SEEB</span>
+            <span className="block text-gray-300 text-sm">Pune, Maharashtra</span> */}
           </div>
         </div>
       </nav>
 
-      <div className="flex flex-col md:flex-row gap-4 p-4 bg-gray-100">
-        <div className="w-80 h-[85vh] overflow-y-scroll bg-white shadow-lg rounded-xl p-4 mr-4">
+      <div className="flex flex-col md:flex-row gap-4 p-4 bg-white">
+        <div className="flex-none overflow-y-auto w-80 h-[85vh] bg-white shadow-lg rounded-xl p-4 mr-4">
           <input
             type="text"
             placeholder="Search elements..."
@@ -882,10 +882,10 @@ const FloorPlan = () => {
           </div>
         </div>
 
-        <div className=" w-full">
-          <div className="flex flex-row items-center justify-between mb-6">
+        <div className="flex-1">
+          <div className="flex items-center justify-between mb-6">
             <h1 className="text-3xl sm:text-4xl font-bold text-gray-800">{roomNameFormatted} Floor Planner </h1>
-            <div className="flex gap-2">
+            <div className="flex flex-col md:flex-row  gap-2">
               <button
                 className="bg-purple-600 text-white px-4 py-2 rounded-xl hover:bg-purple-700 flex items-center gap-2 transition"
                 onClick={handleGenratedObjects}
@@ -929,7 +929,7 @@ const FloorPlan = () => {
 
           <div className="flex flex-col xl:flex-row gap-6 mb-4">
 
-            <div ref={floorRef} className="flex flex-col items-center gap-3" style={{ width: floorSize.width + 120, height: floorSize.height + 130 }}>
+            <div ref={floorRef} className="flex flex-col items-center gap-3" style={{ width: floorSize.width + 140, height: floorSize.height + 150 }}>
 
               <div className="text-base font-bold text-gray-600 mb-5">
                 Floor Plan: {pxToFt(floorSize.width)}ft x {pxToFt(floorSize.height)}ft
@@ -1015,7 +1015,7 @@ const FloorPlan = () => {
                 >
                   <div className="relative w-full h-6 flex items-center justify-center">
                     <div className="border-t border-black w-full" />
-                    <div className="absolute left-1/2 -translate-x-1/2 text-sm font-bold bg-gray-100 px-1">
+                    <div className="absolute left-1/2 top-[15px] -translate-x-1/2 text-sm font-bold bg-white px-1">
                       {pxToFt(width)} ft
                     </div>
                   </div>
@@ -1026,7 +1026,7 @@ const FloorPlan = () => {
                 >
                   <div className="relative w-6 h-full flex items-center justify-center">
                     <div className="border-l border-black h-full mx-auto" />
-                    <div className="absolute w-[55px] top-1/2 -translate-y-1/2 rotate-90 text-sm font-bold bg-gray-100 px-1">
+                    <div className="absolute w-[55px] top-1/2 left-[0px] -translate-y-1/2 rotate-90 text-sm font-bold bg-white px-1">
                       {pxToFt(height)} ft
                     </div>
                   </div>

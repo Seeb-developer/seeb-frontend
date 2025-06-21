@@ -461,7 +461,7 @@ const LandingPage = () => {
                             {[
                                 { icon: <Phone className='h-8 w-8' />, title: 'Toll-Free', description: '18005703133', action: 'Call Now', url: 'tel:18005703133' },
                                 { icon: <MessageCircle className='h-8 w-8' />, title: 'WhatsApp', description: 'Chat Now', action: 'Start Chat', url: 'https://wa.me/918005703133' },
-                                { icon: <MapPin className='h-8 w-8' />, title: 'Visit Us', description: 'WTC Tower 2, Floor 2, Shop 217, Pune', action: 'Get Directions', url: 'https://www.google.com/maps/place/WTC+Tower+2,+Floor+2,+Shop+217,+Pune' }
+                                { icon: <MapPin className='h-8 w-8' />, title: 'Visit Us', description: 'S.No 29/13b, Wadachiwadi Road, Jakat Naka, Undri, Pune, Maharashtra Pin: 411060', action: 'Get Directions', url: 'https://maps.app.goo.gl/ywxA2kr2kLzz2PLW7' }
                             ].map((option, index) => (
                                 <div
                                     key={index}

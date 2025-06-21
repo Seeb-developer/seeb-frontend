@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchCart } from "../store/cartSlice";
 import { ImagePlus, ChevronDown } from "lucide-react";
+import axios from "axios";
+
 
 const EditServiceBookingModal = ({ isOpen, onClose, serviceItem, editingItem, roomId }) => {
     const dispatch = useDispatch();
@@ -66,7 +68,12 @@ const EditServiceBookingModal = ({ isOpen, onClose, serviceItem, editingItem, ro
             if (editingItem.reference_image) {
                 try {
                     const imgs = JSON.parse(editingItem.reference_image);
-                    setImages(imgs || []);
+                    const formattedImages = imgs.map((imgPath) => ({
+                        id: imgPath,
+                        file: null,
+                        url: `${import.meta.env.VITE_BASE_URL}${imgPath}`,
+                    }));
+                    setImages(formattedImages);
                 } catch (e) {
                     console.error("Invalid reference_image:", editingItem.reference_image);
                 }
@@ -84,12 +91,12 @@ const EditServiceBookingModal = ({ isOpen, onClose, serviceItem, editingItem, ro
         } else {
             baseQty = quantity;
         }
-        
+
         const newBaseTotal = baseQty * serviceItem.rate;
 
         let newAddonTotal = 0;
         if (serviceItem.addons && serviceItem.addons.length > 0) {
-            newAddonTotal = serviceItem.addons.reduce((sum, addon) => {                                
+            newAddonTotal = serviceItem.addons.reduce((sum, addon) => {
                 const isChecked = selectedAddons.hasOwnProperty(addon.id);
                 if (!isChecked && addon.is_required !== "1") return sum;
 
@@ -113,20 +120,37 @@ const EditServiceBookingModal = ({ isOpen, onClose, serviceItem, editingItem, ro
 
 
     const handleImageUpload = async () => {
-        if (!images.some(img => img.file)) return null;
+        const newImages = images.filter(img => img.file);
+        if (newImages.length === 0) return JSON.stringify(images.map(img => img.id)); // keep old images
 
         const formData = new FormData();
-        images.forEach(img => img.file && formData.append("images[]", img.file));
+        newImages.forEach((img) => formData.append("images[]", img.file));
 
-        const res = await fetch(`${import.meta.env.VITE_BASE_URL}seeb-cart/uploadImages`, {
-            method: "POST",
-            headers: { Authorization: `Bearer ${token}` },
-            body: formData,
-        });
+        try {
+            const res = await axios.post(`${import.meta.env.VITE_BASE_URL}seeb-cart/uploadImages`,
+                formData,
+                {
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "multipart/form-data",
+                    },
+                }
+            );
 
-        const data = await res.json();
-        return JSON.stringify(data.data?.images || []);
+            const uploadedPaths = res.data?.data?.images || [];
+
+            const allPaths = [
+                ...images.filter(img => !img.file).map(img => img.id), // existing
+                ...uploadedPaths, // new
+            ];
+
+            return JSON.stringify(allPaths);
+        } catch (error) {
+            console.error("Image upload failed:", error);
+            return null;
+        }
     };
+
 
     const handleSubmit = async () => {
         try {
@@ -150,7 +174,7 @@ const EditServiceBookingModal = ({ isOpen, onClose, serviceItem, editingItem, ro
                     qty: addonQty,
                     total: Number(addonPrice).toFixed(2),
                 };
-            }).filter(Boolean);            
+            }).filter(Boolean);
 
             const addonAmount = addonDetails.reduce((sum, a) => sum + Number(a.total), 0);
             const totalAmount = baseAmount + addonAmount;
@@ -188,7 +212,6 @@ const EditServiceBookingModal = ({ isOpen, onClose, serviceItem, editingItem, ro
             console.error(error);
         }
     };
-
 
     const handleAddonToggle = (addonId, isChecked, addonQty) => {
         setSelectedAddons(prev => {
@@ -289,7 +312,7 @@ const EditServiceBookingModal = ({ isOpen, onClose, serviceItem, editingItem, ro
                                                 const isChecked = selectedAddons.hasOwnProperty(addon.id);
                                                 const baseQty = addon.qty ? Number(addon.qty) : 1;
                                                 const calculatedQty = addon.price_type === "square_feet"
-                                                    ? Math.ceil((parseFloat(baseQty||0) / 100) * (width * height))
+                                                    ? Math.ceil((parseFloat(baseQty || 0) / 100) * (width * height))
                                                     : baseQty;
                                                 const addonQty = isChecked ? selectedAddons[addon.id] : calculatedQty;
 
@@ -391,7 +414,7 @@ const EditServiceBookingModal = ({ isOpen, onClose, serviceItem, editingItem, ro
 
                 {images.length > 0 && (
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
-                        {images.map(img => (
+                        {images.map((img) => (
                             <div key={img.id} className="relative group">
                                 <img src={img.url || img.id} alt="preview" className="w-full h-32 object-cover rounded-lg" />
                                 <button onClick={() => removeImage(img.id)} className="absolute top-1 right-1 h-6 w-6 bg-red-600 text-white p-1 rounded-full text-xs">✕</button>

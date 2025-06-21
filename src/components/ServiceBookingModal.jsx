@@ -189,7 +189,7 @@ const ServiceBookingModal = ({ isOpen, onClose, selectedService, roomId }) => {
         });
     };
 
-    // console.log("SelectedAddons",selectedAddons);
+    console.log("images",images);
 
     // Calculate base price
     const baseTotal = selectedService.rate_type === "square_feet"
