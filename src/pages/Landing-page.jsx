@@ -91,11 +91,11 @@ const LandingPage = () => {
                         Create your floor plan → Select your style → View 3D designs → Book only the services you need.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-10">
-                        <button className="bg-[#facc15] text-black font-semibold px-8 py-4 rounded-full text-lg hover:bg-[#facc15]/90 transition-all duration-300 hover:scale-105 flex items-center"
+                        {/* <button className="bg-[#facc15] text-black font-semibold px-8 py-4 rounded-full text-lg hover:bg-[#facc15]/90 transition-all duration-300 hover:scale-105 flex items-center"
                             onClick={() => window.open('https://play.google.com/store/apps/details?id=your.android.app', '_blank')}
                         >
                             <Download className="mr-2 h-5 w-5" /> Download App (Android)
-                        </button>
+                        </button> */}
                         <button className="border border-[#facc15] text-[#facc15] px-8 py-4 rounded-full text-lg hover:bg-[#facc15] hover:text-black transition-all duration-300 hover:scale-105 flex items-center"
                             onClick={() => window.open('https://apps.apple.com/us/app/seeb-desgin/id6747076134', '_blank')}
                         >
@@ -430,12 +430,12 @@ const LandingPage = () => {
                             ))}
                         </div>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                            <button
+                            {/* <button
                                 className="bg-[#facc15] text-black hover:bg-[#facc15]/90 px-8 py-4 text-lg font-semibold rounded-full transition-all duration-300 hover:scale-105 flex items-center"
                                 onClick={() => window.open('https://play.google.com/store/apps/details?id=your.android.app', '_blank')}
                             >
                                 <Download className="mr-2 h-5 w-5" /> Download Android
-                            </button>
+                            </button> */}
 
                             <button
                                 className="border border-[#facc15] text-[#facc15] hover:bg-[#facc15] hover:text-black px-8 py-4 text-lg font-semibold rounded-full transition-all duration-300 hover:scale-105 flex items-center"
