@@ -28,12 +28,13 @@ import CartPage from './pages/cart';
 import DesignTips from './pages/tips';
 import ImageGeneratorPage from './pages/ImageGenerator';
 import FloorPlanDetail from './components/FloorPlanDetail';
+import LandingPage from './pages/Landing-page';
 
 function AppContent() {
   const location = useLocation();
 
   // Hide Navbar and Footer for floorplan routes
-  const hideLayout = location.pathname.startsWith('/floorplan') || location.pathname.startsWith('/fabric') || location.pathname.startsWith('/kanva');
+  const hideLayout = location.pathname.startsWith('/floorplan') || location.pathname.startsWith('/lp');
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
@@ -60,10 +61,12 @@ function AppContent() {
           <Route path="/blog" element={<BlogList />} />
           <Route path="/blog/:blogId" element={<BlogDetail />} />
           <Route path="*" element={<NotFound />} />
-          <Route path="/fabric" element={<FloorPlan_fabric />} />
-          <Route path="/kanva" element={<KanvaNew />} />
+          {/* <Route path="/fabric" element={<FloorPlan_fabric />} /> */}
+          {/* <Route path="/kanva" element={<KanvaNew />} /> */}
           <Route path="/ai-images" element={<ImageGeneratorPage />} />
           <Route path="/saved-floorplan/:id" element={<FloorPlanDetail />} />
+          <Route path="/lp" element={<LandingPage />} />
+
 
         </Routes>
       </div>

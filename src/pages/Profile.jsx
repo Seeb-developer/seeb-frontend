@@ -20,16 +20,26 @@ export default function ProfilePage() {
       const isMobileScreen = window.innerWidth < 768;
       setIsMobile(isMobileScreen);
 
-      // ✅ On desktop, set default tab to 'profile'
+      const storedTab = localStorage.getItem('activeTab');
+
+      // On desktop, fallback to 'profile' if no tab in storage
       if (!isMobileScreen) {
-        setActiveTab('profile');
+        setActiveTab(storedTab || 'profile');
+      } else {
+        setActiveTab(storedTab || null); // On mobile, default to null if none
       }
     };
+
 
     checkScreen();
     window.addEventListener('resize', checkScreen);
     return () => window.removeEventListener('resize', checkScreen);
   }, []);
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    localStorage.setItem('activeTab', tab);
+  };
 
 
   const handleLogout = () => {
@@ -68,11 +78,10 @@ export default function ProfilePage() {
       </div>
       <hr className="mb-4" />
       {/* Sidebar Items */}
-      <SidebarItem icon={<UserCog />} label="Profile Settings" onClick={() => setActiveTab('profile')} />
-      <SidebarItem icon={<Headphones />} label="Support & Contact Us" onClick={() => setActiveTab('support')} />
-      <SidebarItem icon={<FileText />} label="Terms & Policies" onClick={() => setActiveTab('terms')} />
-      <SidebarItem icon={<Save />} label="Saved Floorplan" onClick={() => setActiveTab('savedFloorplan')} />
-
+      <SidebarItem icon={<UserCog />} label="Profile Settings" onClick={() => handleTabChange('profile')} />
+      <SidebarItem icon={<Headphones />} label="Support & Contact Us" onClick={() => handleTabChange('support')} />
+      <SidebarItem icon={<FileText />} label="Terms & Policies" onClick={() => handleTabChange('terms')} />
+      <SidebarItem icon={<Save />} label="Saved Floorplan" onClick={() => handleTabChange('savedFloorplan')} />
 
       <div className="pt-4">
         <button onClick={handleLogout} className="w-full flex justify-center items-center gap-2 text-red-600 bg-red-100 hover:bg-red-200 font-semibold py-3 rounded-md">
@@ -92,7 +101,7 @@ export default function ProfilePage() {
           activeTab ? (
             <div className="bg-white rounded-2xl shadow p-6 w-full">
               {/* Back Button */}
-              <button onClick={() => setActiveTab(null)} className="text-gray-600 text-sm mb-4 hover:underline">← Back</button>
+              <button on Click={() => handleTabChange(null)} className="text-gray-600 text-sm mb-4 hover:underline">← Back</button>
               {renderContent()}
             </div>
           ) : (

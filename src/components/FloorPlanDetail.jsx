@@ -59,7 +59,7 @@ export default function FloorPlanDetail() {
               {floor3dImages.map((url, i) => (
                 <img
                   key={i}
-                  src={`${url.replace(/^\/+/, "")}`}
+                  src={`${import.meta.env.VITE_BASE_URL}${url.replace(/^\/+/, "")}`}
                   alt={`3D-${i}`}
                   className="w-64 h-48 object-cover rounded shadow"
                 />
@@ -80,7 +80,7 @@ export default function FloorPlanDetail() {
                     {el.image.map((img, i) => (
                       <img
                         key={i}
-                        src={`${img.replace(/^\/+/, "")}`}
+                        src={`${import.meta.env.VITE_BASE_URL}${img.replace(/^\/+/, "")}`}
                         alt={`${el.name}-${i}`}
                         className="w-64 h-64 object-cover rounded border"
                       />

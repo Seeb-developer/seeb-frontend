@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Calendar } from "lucide-react"; // optional icon
+import { Calendar } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -11,10 +11,10 @@ export default function FloorPlanList() {
     
     useEffect(() => {
         axios
-            .get(`${import.meta.env.VITE_BASE_URL}floor-plans/user-id/${userDetail.id}`) // adjust endpoint
+            .get(`${import.meta.env.VITE_BASE_URL}floor-plans/user-id/${userDetail.id}`)
             .then((res) => {
                 if (res.data.status === 200) {
-                    setPlans(res.data.data);
+                    setPlans(res.data.data.reverse());
                 }
             })
             .catch((err) => console.error("Failed to fetch plans", err));

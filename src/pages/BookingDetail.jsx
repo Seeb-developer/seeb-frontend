@@ -87,7 +87,7 @@ export default function BookingDetail() {
             <div className="mb-4">
               <h3 className="text-xl font-semibold text-indigo-600">{srv.service_name}</h3>
               <div className="text-gray-700 mt-2 space-y-1">
-                <p><span className="font-medium">Size:</span> {srv.value}</p>
+                <p><span className="font-medium">Size:</span> {srv.value} {srv.price_type === 'unit' ? 'Unit' : 'Sq. Ft.'}</p>
                 <p><span className="font-medium">Rate:</span> ₹{srv.rate}</p>
                 <p><span className="font-medium">Total:</span> <span className="text-green-600 font-semibold">₹{total.toFixed(2)}</span></p>
               </div>
@@ -159,11 +159,11 @@ export default function BookingDetail() {
       </div>
 
       {/* Payment Button */}
-      {bk.payment_status === "pending" && (
+      {/* {bk.payment_status === "pending" && (
         <button className="mt-6 bg-green-600 text-white py-3 px-6 rounded-md font-semibold w-full">
           💸 Pay Now
         </button>
-      )}
+      )} */}
 
       <button
         onClick={() => {

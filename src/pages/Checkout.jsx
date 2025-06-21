@@ -185,7 +185,7 @@ export default function CheckoutPage() {
             {item.service_name}
           </h3>
 
-          <div className="flex items-center gap-1">
+          <div className="">
             <span className="font-medium text-gray-600">Addons:</span>
             {item.addons && JSON.parse(item.addons).length > 0 ? (
               <div className="flex flex-wrap gap-2 mt-1">

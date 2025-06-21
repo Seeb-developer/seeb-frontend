@@ -13,18 +13,19 @@ const CartItem = ({ item, onDelete, onEdit }) => {
     : [];
 
   return (
-    <div className="bg-white rounded-xl shadow p-4 mb-6 flex flex-col lg:flex-row justify-between items-start lg:items-center">
-      <div className="flex gap-5 items-start bg-white">
+    <div className="bg-white rounded-xl shadow p-4 mb-6 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+      {/* Image + Content */}
+      <div className="flex flex-col sm:flex-row gap-4 w-full">
+        {/* Image */}
         <img
           src={`${import.meta.env.VITE_BASE_URL}/${imageList[0] || "placeholder.png"}`}
           alt={item.service_name}
-          className="w-24 h-24 object-cover rounded-lg border border-gray-100"
+          className="w-24 h-24 object-cover rounded-lg border border-gray-200 flex-shrink-0"
         />
 
-        <div className="flex flex-col gap-1 text-sm text-gray-700 w-full">
-          <h3 className="text-base lg:text-lg font-semibold text-gray-900">
-            {item.service_name}
-          </h3>
+        {/* Details */}
+        <div className="flex-1 flex flex-col gap-1 text-sm text-gray-700">
+          <h3 className="text-base md:text-lg font-semibold text-gray-900">{item.service_name}</h3>
 
           <div>
             <span className="font-medium text-gray-600">Addons:</span>{' '}
@@ -35,9 +36,8 @@ const CartItem = ({ item, onDelete, onEdit }) => {
                     key={index}
                     className="bg-purple-100 text-purple-700 px-2 py-1 rounded-full text-xs"
                   >
-                    {addon.name} ({addon.qty} {addon.price_type === "square_feet"
-                ? `sq ft`
-                : `unit(s)`})
+                    {addon.name} ({addon.qty}{" "}
+                    {addon.price_type === "square_feet" ? "sq ft" : "unit(s)"})
                   </span>
                 ))}
               </div>
@@ -47,7 +47,7 @@ const CartItem = ({ item, onDelete, onEdit }) => {
           </div>
 
           <p>
-            <span className="font-medium text-gray-600">Type:</span>{' '}            
+            <span className="font-medium text-gray-600">Type:</span>{" "}
             <span className="text-gray-800 font-medium">
               {item.rate_type === "square_feet"
                 ? `${item.value} sq ft`
@@ -56,8 +56,7 @@ const CartItem = ({ item, onDelete, onEdit }) => {
           </p>
 
           <p>
-            <span className="font-medium text-gray-600">Rate:</span>{' '}
-            ₹{item.rate}
+            <span className="font-medium text-gray-600">Rate:</span> ₹{item.rate}
           </p>
 
           <p className="text-sm text-red-600 font-bold mt-1">
@@ -66,8 +65,14 @@ const CartItem = ({ item, onDelete, onEdit }) => {
         </div>
       </div>
 
-      <div className="flex gap-3 mt-4 lg:mt-0">
-        <button className="text-blue-600 hover:text-blue-800" onClick={() => { onEdit(item) }}><Edit2 size={20} /></button>
+      {/* Action Buttons */}
+      <div className="flex gap-4 justify-end self-end md:self-center">
+        <button
+          className="text-blue-600 hover:text-blue-800"
+          onClick={() => onEdit(item)}
+        >
+          <Edit2 size={20} />
+        </button>
         <button
           className="text-red-600 hover:text-red-800"
           onClick={() => onDelete(item.id)}
@@ -76,6 +81,7 @@ const CartItem = ({ item, onDelete, onEdit }) => {
         </button>
       </div>
     </div>
+
   );
 };
 

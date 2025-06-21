@@ -130,6 +130,7 @@ export default function AIDesignGenerator() {
             const res = await axios.post(`${import.meta.env.VITE_BASE_URL}freepik-api/image-generate`, {
                 user_id: userId,
                 prompt: promptText,
+                type: "search"
             });
 
             if (res.data.data?.images && Array.isArray(res.data.data.images)) {

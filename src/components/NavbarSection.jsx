@@ -43,12 +43,12 @@ export function Navbar() {
     <>
       {/* Desktop Navbar */}
       <nav className="bg-black text-white px-6 py-2 md:flex justify-between items-center hidden sticky top-0 w-full z-50">
-        <div className="flex items-center space-x-3">
-          <Link to='/'><img src="/logo.png" alt="Logo" className="h-20 w-20" /></Link>
-          <div>
+        <div className="flex items-center space-x-3 mb-1">
+          <Link to='/'><img src="/logo_name.png" alt="Logo" className="h-16 " /></Link>
+          {/* <div>
             <span className="font-bold text-2xl">SEEB</span>
             <span className="block text-gray-300 text-sm">Pune, Maharashtra</span>
-          </div>
+          </div> */}
         </div>
         <div className="space-x-6 text-base font-medium flex">
 
@@ -85,15 +85,15 @@ export function Navbar() {
 
       {/* Mobile Top Header */}
       <nav className="bg-black text-white px-4 py-2 flex items-center space-x-4 md:hidden">
-        <img src="/logo.png" alt="Logo" className="h-14 w-14" />
-        <div className="flex gap-4">
+        <img src="/logo_name.png" alt="Logo" className="h-14" />
+        {/* <div className="flex gap-4">
           <span className="font-bold text-xl leading-tight">SEEB</span>
           <span className="font-medium text-lg">Pune, Maharashtra</span>
-        </div>
+        </div> */}
       </nav>
 
       {/* Mobile Bottom Navigation */}
-      <div className="fixed bottom-0 w-full bg-white border-t border-gray-200 flex justify-around items-center py-2 md:hidden z-50">
+      <div className="fixed bottom-0 w-full bg-white border-t border-gray-200 flex justify-around items-center  pt-3 pb-2 md:hidden z-50">
 
         <Link to="/" className={` ${isActive("/") ? "text-yellow-400" : "hover:text-yellow-400"} flex flex-col items-center `}>
           <Home size={25} />
