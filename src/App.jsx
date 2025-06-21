@@ -34,7 +34,7 @@ function AppContent() {
   const location = useLocation();
 
   // Hide Navbar and Footer for floorplan routes
-  const hideLayout = location.pathname.startsWith('/floorplan') || location.pathname.startsWith('/lp');
+  const hideLayout = location.pathname.startsWith('/floorplan') || location.pathname.startsWith('/landing-page');
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
