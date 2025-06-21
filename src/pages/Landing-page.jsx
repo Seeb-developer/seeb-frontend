@@ -118,21 +118,17 @@ const LandingPage = () => {
                         <h2 className="text-3xl md:text-5xl font-bold text-[#facc15]">How SEEB Works – Full Control in Your Hands</h2>
                         <div className="relative max-w-4xl mx-auto">
                             <div className="aspect-video bg-black/50 rounded-2xl border border-[#facc15]/20 overflow-hidden backdrop-blur-sm">
-                                <div className="aspect-video bg-black/50 rounded-2xl border border-[#facc15]/20 overflow-hidden backdrop-blur-sm">
-                                    <video
-                                        className="w-full h-full object-cover rounded-2xl"
-                                        src="/promo-1.mp4"
-                                        autoPlay
-                                        muted
-                                        playsInline
-                                        loop
-                                        preload="auto"
-                                        controls
-                                    />
-                                </div>
-
+                                <iframe
+                                    className="w-full h-full rounded-2xl"
+                                    src="https://www.youtube.com/embed/YmL_n61Ko2Q?autoplay=1&mute=1&loop=1&playlist=YmL_n61Ko2Q&controls=1&playsinline=1"
+                                    title="YouTube video"
+                                    frameBorder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    allowFullScreen
+                                />
                             </div>
                         </div>
+
                         <div className="max-w-3xl mx-auto space-y-6">
                             <p className="text-lg text-gray-300 leading-relaxed text-center">
                                 Floor plan, design, booking — sab kuch ek app mein. Jo dikhega wahi banega.
@@ -175,16 +171,16 @@ const LandingPage = () => {
                                         {service.name}
                                     </h3> */}
 
-                                   <div>
-                                     <img
+                                    <div>
+                                        <img
                                             src={service.image}
                                             alt={service.name}
                                             className="rounded-xl mb-2 h-44 object-cover"
                                         />
                                         <h3 className="text-white font-semibold text-sm md:text-base">
-                                        {service.name}
-                                    </h3>
-                                   </div>
+                                            {service.name}
+                                        </h3>
+                                    </div>
                                 </div>
 
                             ))}
@@ -376,7 +372,7 @@ const LandingPage = () => {
                 </div>
             </section>
 
-            <section id="video-testimonial" className="py-20 bg-black text-center px-4">
+            {/* <section id="video-testimonial" className="py-20 bg-black text-center px-4">
                 <div className="max-w-7xl mx-auto space-y-10">
                     <h2 className="text-3xl md:text-5xl font-bold text-[#facc15]">
                         What Our Customers Say
@@ -386,7 +382,6 @@ const LandingPage = () => {
                     </p>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10">
-                        {/* Video 1 */}
                         <div className="rounded-xl overflow-hidden shadow-lg border border-[#facc15]/20">
                             <iframe
                                 className="w-full aspect-video"
@@ -397,7 +392,6 @@ const LandingPage = () => {
                             />
                         </div>
 
-                        {/* Video 2 */}
                         <div className="rounded-xl overflow-hidden shadow-lg border border-[#facc15]/20">
                             <iframe
                                 className="w-full aspect-video"
@@ -409,7 +403,7 @@ const LandingPage = () => {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section> */}
 
 
             {/* App Download Section */}
@@ -460,7 +454,7 @@ const LandingPage = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {[
                                 { icon: <Phone className='h-8 w-8' />, title: 'Toll-Free', description: '18005703133', action: 'Call Now', url: 'tel:18005703133' },
-                                { icon: <MessageCircle className='h-8 w-8' />, title: 'WhatsApp', description: 'Chat Now', action: 'Start Chat', url: 'https://wa.me/918005703133' },
+                                { icon: <MessageCircle className='h-8 w-8' />, title: 'WhatsApp', description: 'Chat Now', action: 'Start Chat', url: 'https://wa.me/917709899729' },
                                 { icon: <MapPin className='h-8 w-8' />, title: 'Visit Us', description: 'S.No 29/13b, Wadachiwadi Road, Jakat Naka, Undri, Pune, Maharashtra Pin: 411060', action: 'Get Directions', url: 'https://maps.app.goo.gl/ywxA2kr2kLzz2PLW7' }
                             ].map((option, index) => (
                                 <div
