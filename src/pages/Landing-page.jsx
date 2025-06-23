@@ -545,7 +545,7 @@ const LandingPage = () => {
 
       <div className="pt-12">
         <p className="text-gray-400 text-center border-t border-[#facc15]/20 pt-8">
-          © 2024 SEEB App. All rights reserved.
+          © 2024 SEEB DESIGN PVT LTD. All rights reserved.
         </p>
       </div>
     </div>
