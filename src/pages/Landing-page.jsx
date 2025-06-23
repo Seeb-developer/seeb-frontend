@@ -522,15 +522,15 @@ const LandingPage = () => {
         {[
           {
             label: 'Factory Address',
-            address: `Plot No. 56, Sector 10, PCNTDA,\nNear Jyoti Hotel, Bhosari,\nPune, Maharashtra - 411026`
-          },
-          {
-            label: 'Head Office Address',
             address: `S.No. 29/13B, Wadachiwadi Road,\nJakat Naka, Undri,\nPune, Maharashtra - 411060`
           },
           {
+            label: 'Head Office Address',
+            address: `WTC Tower 2, Floor 2,\nOffice No. 217, Kharadi,\nPune, Maharashtra - 411014`
+          },
+          {
             label: 'Experience Center Address',
-            address: `WTC Tower 2, Floor 2,\nShop 217, Kharadi,\nPune, Maharashtra - 411014`
+            address: `Royale Heritage Mall, Upper Ground Floor,\n Shop No. 10, NIBM, Undri,\n Pune, Maharashtra 411048`
           }
         ].map((item, idx) => (
           <div
