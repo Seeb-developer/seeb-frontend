@@ -32,12 +32,7 @@ export function ServicesGrid() {
   };
 
   return (
-    <section className="py-8 px-4 sm:px-6 md:px-10">
-      <h2 className="text-center mb-6 text-2xl sm:text-3xl md:text-5xl font-bold text-gray-900">
-        Explore Our Services
-      </h2>
-
-
+    <section className="pb-8 px-4 sm:px-6 md:px-10">
       {loading ? (
         <p className="text-center py-10">Loading services...</p>
       ) : error ? (

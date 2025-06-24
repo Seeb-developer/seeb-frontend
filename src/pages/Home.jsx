@@ -18,6 +18,9 @@ const Home = () => {
   return (
     <>
       <HeroSection />
+      <h2 className="text-center my-8 text-2xl sm:text-3xl md:text-5xl font-bold text-gray-900">
+        Explore Our Services
+      </h2>
       <ServicesGrid />
       <OurProcess />
       <VideoSlider />

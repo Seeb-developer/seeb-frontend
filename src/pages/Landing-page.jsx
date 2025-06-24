@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Download, ArrowDown, ArrowRight, Phone, Menu, X, MessageCircle, MapPin, Users, Play } from 'lucide-react';
+import ContactFormModal from '../components/ContactFormModal';
+import { ServicesGrid } from '../components/ServicesGridSection';
 
 const LandingPage = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isModalOpen, setModalOpen] = useState(false);
+
 
     useEffect(() => {
         const handleScroll = () => {
@@ -12,6 +16,14 @@ const LandingPage = () => {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+        useEffect(() => {
+        const interval = setInterval(() => {
+          setModalOpen(true);
+        }, 15000); // 15000ms = 15 seconds
+
+        return () => clearInterval(interval); // Cleanup on unmount
+      }, []);
 
     const scrollToSection = (href) => {
         if (href === '#') {
@@ -49,10 +61,10 @@ const LandingPage = () => {
         <div className="min-h-screen bg-gradient-to-b from-[#0e0e0e] to-[#1a1a1a] text-white">
             <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-black/80 backdrop-blur-md' : 'bg-transparent'}`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-28">
-                    <div>
+                    <a href='/landing-page'>
                         <img src="/logo_name.png" alt="" className='h-16' />
-                    <p className='text-sm'>Designing Dreams, Crafting Space.</p>
-                    </div>
+                        <p className='text-sm'>Designing Dreams, Crafting Space.</p>
+                    </a>
                     {/* <div className="hidden md:flex space-x-8">
                         {navItems.map((item) => (
                             <button key={item.label} onClick={() => scrollToSection(item.href)} className="text-white hover:text-[#facc15] px-3 py-2 text-base font-medium transition-colors">
@@ -90,9 +102,9 @@ const LandingPage = () => {
                     <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold text-white mt-4">
                         Sirf SEEB App Se
                     </h2>
-                    <p className="text-lg md:text-xl text-gray-300 max-w-4xl mx-auto mt-6 leading-relaxed">
+                    {/* <p className="text-lg md:text-xl text-gray-300 font-medium max-w-4xl mx-auto mt-6 leading-relaxed">
                         Create your floor plan → Select your style → View 3D designs → Book only the services you need.
-                    </p>
+                    </p> */}
                     <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-10">
                         {/* <button className="bg-[#facc15] text-black font-semibold px-8 py-4 rounded-full text-lg hover:bg-[#facc15]/90 transition-all duration-300 hover:scale-105 flex items-center"
                             onClick={() => window.open('https://play.google.com/store/apps/details?id=your.android.app', '_blank')}
@@ -112,7 +124,7 @@ const LandingPage = () => {
                             </svg> Whatsapp
                         </button>
                         <button className="border border-[#facc15] text-[#facc15] px-8 py-4 rounded-full text-lg hover:bg-[#facc15] hover:text-black transition-all duration-300 hover:scale-105 flex items-center"
-                            onClick={() => window.open('tel:18005703133')}
+                            onClick={() => window.location.href = 'tel:18005703133'}
                         >
                             <Phone className="mr-2 h-5 w-5" />  Call Now
                         </button>
@@ -125,6 +137,43 @@ const LandingPage = () => {
                 </div>
             </section>
 
+            {/* steps Section */}
+            <section id="steps" className="py-20 bg-black text-center">
+                <h2 className="text-3xl md:text-5xl font-bold text-[#facc15] mb-16">How It Works</h2>
+
+                <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 px-6">
+                    {[
+                        {
+                            title: '1. Select Room',
+                            image: '/screens/png-1.png',
+                        },
+                        {
+                            title: '2. Create Floor Plan',
+                            image: '/screens/png-2.png',
+                        },
+                        {
+                            title: '3. Select Style',
+                            image: '/screens/png-3.png',
+                        },
+                        {
+                            title: '4. View 3D Design',
+                            image: '/screens/png-4.png',
+                        },
+
+                    ].map((step, index) => (
+                        <div key={index} className="flex flex-col items-center space-y-4">
+                            <div className="h-96 flex items-center justify-center">
+                                <img
+                                    src={step.image}
+                                    alt={step.title}
+                                    className="object-contain w-full h-full rounded-md"
+                                />
+                            </div>
+                            <h3 className="text-white text-lg font-semibold">{step.title}</h3>
+                        </div>
+                    ))}
+                </div>
+            </section>
 
             {/* Video Section */}
             <section id="welcome-video" className="py-20 relative">
@@ -145,7 +194,7 @@ const LandingPage = () => {
                         </div>
 
                         <div className="max-w-3xl mx-auto space-y-6">
-                            <p className="text-lg text-gray-300 leading-relaxed text-center">
+                            <p className="text-lg font-medium text-gray-300 leading-relaxed text-center">
                                 Floor plan, design, booking — sab kuch ek app mein. Jo dikhega wahi banega.
                             </p>
                             <div className="flex justify-center">
@@ -163,7 +212,7 @@ const LandingPage = () => {
 
 
             {/* Services Section */}
-            <section id="services" className="py-20 relative">
+            {/* <section id="services" className="py-20 relative">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center space-y-12">
                         <h2 className="text-3xl md:text-5xl font-bold text-[#facc15]">
@@ -174,8 +223,8 @@ const LandingPage = () => {
                                 <div
                                     key={index}
                                     className="text-center space-y-3 backdrop-blur-sm hover:border-[#facc15]/50 transition-all duration-300 hover:scale-105 cursor-pointer"
-                                >
-                                    {/* <div className="flex justify-center">
+                                > */}
+            {/* <div className="flex justify-center">
                                         <img
                                             src={service.image}
                                             alt={service.name}
@@ -186,7 +235,7 @@ const LandingPage = () => {
                                         {service.name}
                                     </h3> */}
 
-                                    <div>
+            {/* <div>
                                         <img
                                             src={service.image}
                                             alt={service.name}
@@ -216,6 +265,12 @@ const LandingPage = () => {
                         </div>
                     </div>
                 </div>
+            </section> */}
+
+
+            <section className='text-black'>
+                <h2 className='text-3xl md:text-5xl font-bold text-[#facc15] text-center mb-12'>Execution is Our Backbone – Design is Free</h2>
+                <ServicesGrid />
             </section>
 
             {/* Floor Plan Section */}
@@ -471,86 +526,95 @@ const LandingPage = () => {
 
 
             {/* Support / Chat Section */}
-           <section id="support" className="py-20 relative">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div className="text-center space-y-12">
-      <h2 className="text-3xl md:text-5xl font-bold text-[#facc15]">
-        Need Help? We're Here.
-      </h2>
+            <section id="support" className="py-20 relative">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center space-y-12">
+                        <h2 className="text-3xl md:text-5xl font-bold text-[#facc15]">
+                            Need Help? We're Here.
+                        </h2>
 
-      {/* Centered contact cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 justify-center max-w-3xl mx-auto">
-        {[
-          {
-            icon: <Phone className="h-8 w-8" />,
-            title: 'Toll-Free',
-            description: '18005703133',
-            action: 'Call Now',
-            url: 'tel:18005703133'
-          },
-          {
-            icon: <MessageCircle className="h-8 w-8" />,
-            title: 'WhatsApp',
-            description: 'Chat Now',
-            action: 'Start Chat',
-            url: 'https://wa.me/917709899729'
-          }
-        ].map((option, index) => (
-          <div
-            key={index}
-            className="bg-black/40 border border-[#facc15]/20 rounded-2xl p-6 text-center backdrop-blur-sm hover:border-[#facc15]/50 transition-all duration-300 hover:scale-105"
-          >
-            <div className="text-[#facc15] flex justify-center mb-4">
-              {option.icon}
-            </div>
-            <h3 className="text-white font-semibold text-lg">{option.title}</h3>
-            <p className="text-gray-300 text-sm mb-4">{option.description}</p>
-            <a
-              href={option.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block border border-[#facc15] text-[#facc15] hover:bg-[#facc15] hover:text-black w-full py-2 rounded-md transition-all duration-300 text-center"
+                        {/* Centered contact cards */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 justify-center max-w-3xl mx-auto">
+                            {[
+                                {
+                                    icon: <Phone className="h-8 w-8" />,
+                                    title: 'Toll-Free',
+                                    description: '18005703133',
+                                    action: 'Call Now',
+                                    url: 'tel:18005703133'
+                                },
+                                {
+                                    icon: <MessageCircle className="h-8 w-8" />,
+                                    title: 'WhatsApp',
+                                    description: 'Chat Now',
+                                    action: 'Start Chat',
+                                    url: 'https://wa.me/917709899729'
+                                }
+                            ].map((option, index) => (
+                                <div
+                                    key={index}
+                                    className="bg-black/40 border border-[#facc15]/20 rounded-2xl p-6 text-center backdrop-blur-sm hover:border-[#facc15]/50 transition-all duration-300 hover:scale-105"
+                                >
+                                    <div className="text-[#facc15] flex justify-center mb-4">
+                                        {option.icon}
+                                    </div>
+                                    <h3 className="text-white font-semibold text-lg">{option.title}</h3>
+                                    <p className="text-gray-300 text-sm mb-4">{option.description}</p>
+                                    <a
+                                        href={option.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="block border border-[#facc15] text-[#facc15] hover:bg-[#facc15] hover:text-black w-full py-2 rounded-md transition-all duration-300 text-center"
+                                    >
+                                        {option.action}
+                                    </a>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Address Cards */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            {[
+                                {
+                                    label: 'Factory Address',
+                                    address: `S.No. 29/13B, Wadachiwadi Road,\nJakat Naka, Undri,\nPune, Maharashtra - 411060`
+                                },
+                                {
+                                    label: 'Head Office Address',
+                                    address: `WTC Tower 2, Floor 2,\nOffice No. 217, Kharadi,\nPune, Maharashtra - 411014`
+                                },
+                                {
+                                    label: 'Experience Center Address',
+                                    address: `Royale Heritage Mall, Upper Ground Floor,\n Shop No. 10, NIBM, Undri,\n Pune, Maharashtra 411048`
+                                }
+                            ].map((item, idx) => (
+                                <div
+                                    key={idx}
+                                    className="bg-black/40 border border-[#facc15]/20 rounded-2xl p-6 text-left backdrop-blur-sm hover:border-[#facc15]/50 transition-all duration-300 hover:scale-105"
+                                >
+                                    <h4 className="text-[#facc15] font-semibold text-lg mb-2">{item.label}</h4>
+                                    <p className="text-gray-300 text-sm whitespace-pre-line">{item.address}</p>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="pt-12">
+                            <p className="text-gray-400 text-center border-t border-[#facc15]/20 pt-8">
+                                © 2024 SEEB DESIGN PVT LTD. All rights reserved.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* <button
+                onClick={() => setModalOpen(true)}
+                className="bg-[#facc15] text-black px-6 py-3 rounded-full font-semibold hover:bg-[#facc15]/90 transition"
             >
-              {option.action}
-            </a>
-          </div>
-        ))}
-      </div>
+                Contact Us
+            </button> */}
 
-      {/* Address Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {[
-          {
-            label: 'Factory Address',
-            address: `S.No. 29/13B, Wadachiwadi Road,\nJakat Naka, Undri,\nPune, Maharashtra - 411060`
-          },
-          {
-            label: 'Head Office Address',
-            address: `WTC Tower 2, Floor 2,\nOffice No. 217, Kharadi,\nPune, Maharashtra - 411014`
-          },
-          {
-            label: 'Experience Center Address',
-            address: `Royale Heritage Mall, Upper Ground Floor,\n Shop No. 10, NIBM, Undri,\n Pune, Maharashtra 411048`
-          }
-        ].map((item, idx) => (
-          <div
-            key={idx}
-            className="bg-black/40 border border-[#facc15]/20 rounded-2xl p-6 text-left backdrop-blur-sm hover:border-[#facc15]/50 transition-all duration-300 hover:scale-105"
-          >
-            <h4 className="text-[#facc15] font-semibold text-lg mb-2">{item.label}</h4>
-            <p className="text-gray-300 text-sm whitespace-pre-line">{item.address}</p>
-          </div>
-        ))}
-      </div>
-
-      <div className="pt-12">
-        <p className="text-gray-400 text-center border-t border-[#facc15]/20 pt-8">
-          © 2024 SEEB DESIGN PVT LTD. All rights reserved.
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
+            <ContactFormModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
 
         </div>
     );
