@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
-import {PlayCircle } from 'lucide-react';
+import { PlayCircle } from 'lucide-react';
 import Slider from 'react-slick';
 import Modal from 'react-modal';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-
-
 const videos = [
-  { id: 1, thumbnail: "/interior-bg.jpeg", url: "https://www.w3schools.com/html/mov_bbb.mp4" },
-  { id: 2, thumbnail: "/interior-bg.jpeg", url: "https://www.w3schools.com/html/movie.mp4" },
-  { id: 3, thumbnail: "/interior-bg.jpeg", url: "https://www.w3schools.com/html/mov_bbb.mp4" }
+  { id: 1, thumbnail: "/yt-thumbnail/yt-2.jpg", url: "https://www.youtube.com/embed/zNBREw-llPc" },
+  { id: 2, thumbnail: "/yt-thumbnail/yt-1.jpg", url: "https://www.youtube.com/embed/YmL_n61Ko2Q" },
+  { id: 3, thumbnail: "/yt-thumbnail/yt-2.jpg", url: "https://www.youtube.com/embed/zNBREw-llPc" }
 ];
 
 export function VideoSlider() {
@@ -31,43 +29,23 @@ export function VideoSlider() {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: 3, // default for desktop
+    slidesToShow: 3,
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 2500,
     arrows: false,
     responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 3, // desktop
-          slidesToScroll: 1,
-        }
-      },
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1,
-        }
-      },
-      {
-        breakpoint: 480,
-        settings: {
-          slidesToShow: 1, // mobile
-          slidesToScroll: 1,
-        }
-      }
+      { breakpoint: 1024, settings: { slidesToShow: 3 } },
+      { breakpoint: 768, settings: { slidesToShow: 2 } },
+      { breakpoint: 480, settings: { slidesToShow: 1 } }
     ]
   };
-  
 
   return (
     <>
-      {/* Video Carousel */}
       <section className="py-10 px-4 sm:px-6 md:px-12 lg:px-20 bg-white">
         <h2 className="text-center text-3xl sm:text-4xl font-bold text-gray-800 mb-8">Watch How It Works</h2>
-        <div className=" mx-auto">
+        <div className="mx-auto">
           <Slider {...sliderSettings}>
             {videos.map((video) => (
               <div key={video.id} className="px-4">
@@ -87,7 +65,7 @@ export function VideoSlider() {
           </Slider>
         </div>
 
-        {/* Video Modal */}
+        {/* Modal with YouTube iframe */}
         <Modal
           isOpen={modalIsOpen}
           onRequestClose={closeModal}
@@ -95,16 +73,22 @@ export function VideoSlider() {
           overlayClassName="Overlay"
           ariaHideApp={false}
         >
-          <div className="bg-white p-4 rounded-lg w-[90%] max-w-3xl relative">
+          <div className="bg-white rounded-lg w-[90%] max-w-4xl relative">
             <button
               onClick={closeModal}
               className="absolute top-2 right-2 text-red-600 font-bold text-xl"
             >✕</button>
             {activeVideo && (
-              <video controls autoPlay className="w-full rounded-md">
-                <source src={activeVideo} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
+              <div className="aspect-video w-full">
+                <iframe
+                  className="w-full h-full rounded-md"
+                  src={`${activeVideo}?autoplay=1`}
+                  title="YouTube video"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
             )}
           </div>
         </Modal>
