@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Download, ArrowDown, ArrowRight, Phone, Menu, X, MessageCircle, MapPin, Users, Play } from 'lucide-react';
+import { Download, ArrowDown, ArrowRight, Phone, MessageCircle} from 'lucide-react';
 import ContactFormModal from '../components/ContactFormModal';
 import { ServicesGrid } from '../components/ServicesGridSection';
 
@@ -20,7 +20,7 @@ const LandingPage = () => {
         useEffect(() => {
         const interval = setInterval(() => {
           setModalOpen(true);
-        }, 15000); // 15000ms = 15 seconds
+        }, 20000); // 15000ms = 15 seconds
 
         return () => clearInterval(interval); // Cleanup on unmount
       }, []);
