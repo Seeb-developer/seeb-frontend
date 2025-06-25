@@ -43,13 +43,13 @@ const LandingPage = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    //     useEffect(() => {
-    //     const interval = setInterval(() => {
-    //       setModalOpen(true);
-    //     }, 20000); // 15000ms = 15 seconds
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            setModalOpen(true);
+        }, 7000); // 7000ms = 7 seconds
 
-    //     return () => clearInterval(interval); // Cleanup on unmount
-    //   }, []);
+        return () => clearTimeout(timeout); // Cleanup on unmount
+    }, []);
 
     const scrollToSection = (href) => {
         if (href === '#') {
@@ -133,7 +133,7 @@ const LandingPage = () => {
                     </p> */}
                     <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-10">
                         {/* <button className="bg-[#facc15] text-black font-semibold px-8 py-4 rounded-full text-lg hover:bg-[#facc15]/90 transition-all duration-300 hover:scale-105 flex items-center"
-                            onClick={() => window.open('https://play.google.com/store/apps/details?id=your.android.app', '_blank')}
+                            onClick={() => window.open('https://play.google.com/store/apps/details?id=com.seeb.design', '_blank')}
                         >
                             <Download className="mr-2 h-5 w-5" /> Download App (Android)
                         </button>
@@ -162,40 +162,27 @@ const LandingPage = () => {
                     <ArrowDown className="text-[#facc15] h-8 w-8" />
                 </div>
             </section>
-
+            
             {/* steps Section */}
             <section id="steps" className="py-20 bg-black text-center">
                 <h2 className="text-3xl md:text-5xl font-bold text-[#facc15] mb-16">How It Works</h2>
 
-                <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 px-6">
+                <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 px-4 sm:px-6 lg:px-8">
                     {[
-                        {
-                            title: '1. Select Room',
-                            image: '/screens/png-1.png',
-                        },
-                        {
-                            title: '2. Create Floor Plan',
-                            image: '/screens/png-2.png',
-                        },
-                        {
-                            title: '3. Select Style',
-                            image: '/screens/png-3.png',
-                        },
-                        {
-                            title: '4. View 3D Design',
-                            image: '/screens/png-4.png',
-                        },
-
+                        { title: '1. Select Room', image: '/screens/png-1.png' },
+                        { title: '2. Create Floor Plan', image: '/screens/png-2.png' },
+                        { title: '3. Select Style', image: '/screens/png-3.png' },
+                        { title: '4. View 3D Design', image: '/screens/png-4.png' },
                     ].map((step, index) => (
                         <div key={index} className="flex flex-col items-center space-y-4">
-                            <div className="h-[500px] flex items-center justify-center">
+                            <div className="w-full max-w-[300px] h-auto mx-auto">
                                 <img
                                     src={step.image}
                                     alt={step.title}
-                                    className="object-contain w-full h-full"
+                                    className="w-full h-auto object-contain rounded-lg shadow-md"
                                 />
                             </div>
-                            <h3 className="text-white text-lg font-semibold">{step.title}</h3>
+                            <h3 className="text-white text-base md:text-lg font-semibold">{step.title}</h3>
                         </div>
                     ))}
                 </div>
@@ -235,7 +222,6 @@ const LandingPage = () => {
                     </div>
                 </div>
             </section>
-
 
             {/* Services Section */}
             {/* <section id="services" className="py-20 relative">
@@ -528,12 +514,12 @@ const LandingPage = () => {
                             ))}
                         </div>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                            {/* <button
+                            <button
                                 className="bg-[#facc15] text-black hover:bg-[#facc15]/90 px-8 py-4 text-lg font-semibold rounded-full transition-all duration-300 hover:scale-105 flex items-center"
-                                onClick={() => window.open('https://play.google.com/store/apps/details?id=your.android.app', '_blank')}
+                                onClick={() => window.open('https://play.google.com/store/apps/details?id=com.seeb.design', '_blank')}
                             >
                                 <Download className="mr-2 h-5 w-5" /> Download Android
-                            </button> */}
+                            </button>
 
                             <button
                                 className="border border-[#facc15] text-[#facc15] hover:bg-[#facc15] hover:text-black px-8 py-4 text-lg font-semibold rounded-full transition-all duration-300 hover:scale-105 flex items-center"

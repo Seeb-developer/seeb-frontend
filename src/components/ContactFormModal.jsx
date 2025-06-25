@@ -57,7 +57,7 @@ const ContactFormModal = ({ isOpen, onClose }) => {
         >
           <X className="h-6 w-6" />
         </button>
-        <h2 className="text-[#facc15] text-2xl font-bold mb-4">Contact Us Now</h2>
+        <h2 className="text-[#facc15] text-2xl font-bold mb-4">Get A Free Estimate</h2>
         {success && (
           <p className="text-green-400 text-sm mb-4">Thank you! We'll contact you soon.</p>
         )}
@@ -89,20 +89,20 @@ const ContactFormModal = ({ isOpen, onClose }) => {
             required
             className="w-full px-4 py-2 rounded bg-black border border-gray-600 text-white focus:outline-none focus:border-[#facc15]"
           />
-          <textarea
+          {/* <textarea
             name="message"
             placeholder="Your Message"
             value={formData.message}
             onChange={handleChange}
             required
             className="w-full px-4 py-2 rounded bg-black border border-gray-600 text-white h-32 resize-none focus:outline-none focus:border-[#facc15]"
-          ></textarea>
+          ></textarea> */}
           <button
             type="submit"
             disabled={submitting}
             className="w-full bg-[#facc15] text-black font-semibold py-3 rounded hover:bg-[#facc15]/90 transition"
           >
-            {submitting ? 'Sending...' : 'Send Message'}
+            {submitting ? 'Sending...' : 'Request A Call Back'}
           </button>
         </form>
       </div>

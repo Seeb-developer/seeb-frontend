@@ -6,9 +6,9 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 const videos = [
-  { id: 1, thumbnail: "/yt-thumbnail/yt-2.jpg", url: "https://www.youtube.com/embed/zNBREw-llPc" },
-  { id: 2, thumbnail: "/yt-thumbnail/yt-1.jpg", url: "https://www.youtube.com/embed/YmL_n61Ko2Q" },
-  { id: 3, thumbnail: "/yt-thumbnail/yt-2.jpg", url: "https://www.youtube.com/embed/zNBREw-llPc" }
+  { id: 1, thumbnail: "https://img.youtube.com/vi/zNBREw-llPc/maxresdefault.jpg", url: "https://www.youtube.com/embed/zNBREw-llPc" },
+  { id: 2, thumbnail: "https://img.youtube.com/vi/YmL_n61Ko2Q/maxresdefault.jpg", url: "https://www.youtube.com/embed/YmL_n61Ko2Q" },
+  { id: 3, thumbnail: "https://img.youtube.com/vi/Dc3zWtLfkHg/maxresdefault.jpg", url: "https://www.youtube.com/embed/Dc3zWtLfkHg" }
 ];
 
 export function VideoSlider() {
@@ -53,7 +53,7 @@ export function VideoSlider() {
                   <img
                     src={video.thumbnail}
                     alt="Video Thumbnail"
-                    className="w-full object-contain rounded-xl"
+                    className="w-full h-80 object-cover rounded-xl"
                     onClick={() => openModal(video.url)}
                   />
                   <div className="absolute inset-0 h-full w-full bg-black bg-opacity-40 flex items-center justify-center rounded-xl">
