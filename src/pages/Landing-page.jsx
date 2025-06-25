@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Download, ArrowDown, ArrowRight, Phone, MessageCircle} from 'lucide-react';
+import { Download, ArrowDown, ArrowRight, Phone, MessageCircle } from 'lucide-react';
 import ContactFormModal from '../components/ContactFormModal';
 import { ServicesGrid } from '../components/ServicesGridSection';
 
@@ -8,6 +8,32 @@ const LandingPage = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isModalOpen, setModalOpen] = useState(false);
 
+    const [showAll, setShowAll] = useState(false);
+
+    const comparisonData = [
+        ["Instant Floor Plan & 3D Design", "✅ Done in minutes via app", "❌ 2–7 days after site visit", "❌ Usually not available"],
+        ["Style-Based Room Design (100+ themes)", "✅ Wall-wise, element-wise AI", "⚠ Limited catalogs & options", "❌ No design assistance"],
+        ["Execution Team", "✅ Verified Skilled Teams", "⚠ Subcontracted labor", "⚠ Unknown local teams"],
+        ["Budget Estimate", "✅ Real-time cost preview", "❌ Shared after design discussion", "❌ Often manual + variable"],
+        ["Transparency", "✅ Full breakdown of work & price", "⚠ Confusing packages", "❌ No breakdown or clarity"],
+        ["Experience Center Support", "✅ Yes, in major cities", "⚠ Sometimes available", "❌ Not available"],
+        ["Execution Speed", "⚡ 10–45 days", "45–90 days", "30–90 days"],
+        ["Affordability", "₹₹ Pay only for what you need", "₹₹₹ 40–60% higher", "₹ Low cost, but low guarantee"],
+        ["Revisions / Changes", "✅ Digital changes anytime", "⚠ Complex or chargeable", "❌ Not possible"],
+        ["App Control", "✅ Full control via mobile app", "❌ Mostly offline", "❌ Manual calls"],
+        ["Factory Finish & Warranty", "✅ 10 yrs furniture, 1 yr work", "✅ Usually 5–10 yrs", "❌ No guarantee"],
+        ["Material Options", "✅ All major Indian brands", "⚠ Limited to partner vendors", "⚠ Only what vendor sources"],
+        ["Payment Flexibility", "✅ Stage-wise payments", "⚠ Milestone-based but rigid", "⚠ Lump sum, advance-heavy"],
+        ["Support Availability", "✅ Live chat + call + WhatsApp", "✅ Call-based support", "❌ No dedicated support"],
+        ["Customer Feedback System", "✅ Built-in rating & feedback", "⚠ Not always collected", "❌ No formal review system"],
+        ["Design Ownership", "✅ All designs belong to user", "⚠ Agency owns base design", "❌ No design ownership"],
+        ["Quotation Validity", "✅ 30-day lock on quotes", "⚠ 7–15 day validity", "❌ No written quote timeline"],
+        ["Custom Furniture Options", "✅ Factory-made, customized", "⚠ Semi-custom; some modular", "❌ Site-built only"],
+        ["Digital Walkthroughs", "✅ Auto-generated for each design", "⚠ Manually shown or emailed", "❌ Not available"],
+        ["Live Project Tracking", "✅ Track tasks & visits via app", "⚠ Site engineer updates manually", "❌ No digital tracking"]
+    ];
+
+    const visibleData = showAll ? comparisonData : comparisonData.slice(0, 10);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -17,13 +43,13 @@ const LandingPage = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-        useEffect(() => {
-        const interval = setInterval(() => {
-          setModalOpen(true);
-        }, 20000); // 15000ms = 15 seconds
+    //     useEffect(() => {
+    //     const interval = setInterval(() => {
+    //       setModalOpen(true);
+    //     }, 20000); // 15000ms = 15 seconds
 
-        return () => clearInterval(interval); // Cleanup on unmount
-      }, []);
+    //     return () => clearInterval(interval); // Cleanup on unmount
+    //   }, []);
 
     const scrollToSection = (href) => {
         if (href === '#') {
@@ -162,11 +188,11 @@ const LandingPage = () => {
 
                     ].map((step, index) => (
                         <div key={index} className="flex flex-col items-center space-y-4">
-                            <div className="h-96 flex items-center justify-center">
+                            <div className="h-[500px] flex items-center justify-center">
                                 <img
                                     src={step.image}
                                     alt={step.title}
-                                    className="object-contain w-full h-full rounded-md"
+                                    className="object-contain w-full h-full"
                                 />
                             </div>
                             <h3 className="text-white text-lg font-semibold">{step.title}</h3>
@@ -352,46 +378,43 @@ const LandingPage = () => {
             <section id="comparison" className="py-20 relative">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center space-y-12">
-                        <h2 className="text-3xl md:text-5xl font-bold text-[#facc15]">
-                            SEEB vs Others
-                        </h2>
-                        <div className="max-w-5xl mx-auto">
-                            <div className="bg-black/40 border border-[#facc15]/20 rounded-2xl overflow-hidden backdrop-blur-sm">
-                                <div className="grid grid-cols-3 bg-[#facc15]/10 border-b border-[#facc15]/20">
-                                    <div className="p-6 text-[#facc15] font-bold text-lg">Feature</div>
-                                    <div className="p-6 text-[#facc15] font-bold text-lg text-center">SEEB </div>
-                                    <div className="p-6 text-[#facc15] font-bold text-lg text-center">Others </div>
+                        <h2 className="text-3xl md:text-5xl font-bold text-[#facc15]">SEEB vs Others</h2>
+                        <div className="max-w-full overflow-x-auto">
+                            <div className="min-w-[900px] bg-black/40 border border-[#facc15]/20 rounded-2xl overflow-hidden backdrop-blur-sm">
+                                {/* Table Header */}
+                                <div className="grid grid-cols-4 bg-[#facc15]/10 border-b border-[#facc15]/20">
+                                    <div className="p-4 font-bold text-[#facc15] text-left">Feature / Service</div>
+                                    <div className="p-4 font-bold text-[#facc15] text-center">SEEB App</div>
+                                    <div className="p-4 font-bold text-[#facc15] text-center">Traditional Companies</div>
+                                    <div className="p-4 font-bold text-[#facc15] text-center">Local Contractors</div>
                                 </div>
-                                {[
-                                    { feature: 'Design Before Booking', seeb: '✅ Yes', others: '❌ No' },
-                                    { feature: 'Book by Service', seeb: '✅ Yes', others: '❌ Package only' },
-                                    { feature: 'Floor Plan Included', seeb: '✅ Free', others: '❌ Paid' },
-                                    { feature: 'In-House Team', seeb: '✅ Skilled', others: '⚠️ Vendors' },
-                                    { feature: 'Price', seeb: '✅ 40–60% Less', others: '❌ Expensive' },
-                                    { feature: 'Real Execution + Factory', seeb: '✅ Both', others: '⚠️ Furniture only' },
-                                ].map((row, index, array) => (
-                                    <div key={row.feature} className={`grid grid-cols-3 ${index !== array.length - 1 ? 'border-b border-[#facc15]/10' : ''} hover:bg-[#facc15]/5 transition-colors duration-200`}>
-                                        <div className="p-6 text-white font-medium">{row.feature}</div>
-                                        <div className="p-6 text-center text-green-400 font-semibold">{row.seeb}</div>
-                                        <div className="p-6 text-center text-red-400 font-semibold">{row.others}</div>
+
+                                {/* Dynamic Rows */}
+                                {visibleData.map(([feature, seeb, traditional, local], index) => (
+                                    <div
+                                        key={index}
+                                        className="grid grid-cols-4 border-t border-[#facc15]/10 hover:bg-[#facc15]/5 transition duration-200"
+                                    >
+                                        <div className="p-4 text-white text-left">{feature}</div>
+                                        <div className="p-4 text-green-400 text-center">{seeb}</div>
+                                        <div className="p-4 text-yellow-400 text-center">{traditional}</div>
+                                        <div className="p-4 text-red-400 text-center">{local}</div>
                                     </div>
                                 ))}
                             </div>
+                            <div className="text-center mt-6">
+                                <button
+                                    onClick={() => setShowAll(!showAll)}
+                                    className="text-lg text-[#facc15] border-b-2 border-[#facc15] hover:text-white transition duration-200"
+                                >
+                                    {showAll ? "Show Less" : "Show More"}
+                                </button>
+                            </div>
                         </div>
                     </div>
-                    <div className="text-center mt-8">
-                        <a
-                            href="/seeb_comparison.pdf" // change to your actual file path
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-block bg-[#facc15] text-black font-semibold px-6 py-3 rounded-full hover:bg-[#facc15]/90 transition duration-300"
-                        >
-                            View Full Comparison PDF
-                        </a>
-                    </div>
-
                 </div>
             </section>
+
 
             {/* Offer Banner Section */}
             <section id="offer" className="py-12 relative ">
