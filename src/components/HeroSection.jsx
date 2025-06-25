@@ -30,7 +30,7 @@ export function HeroSection() {
         <div className="flex flex-col justify-center items-center text-center px-6 py-10 sm:py-14 rounded-2xl bg-black/50">
           <img src="/design.png" alt="floorplan" className="w-48 sm:w-48 md:w-56 lg:w-80 mb-4 object-contain" />
           <h1 className="text-white text-xl sm:text-2xl md:text-4xl font-bold mb-3 capitalize">
-            Get Interior Designs with AI
+            Design Smarter - Free Room Design with SEEB
           </h1>
           <p className="text-gray-200 text-sm sm:text-base max-w-xl mb-4">
             Instantly generate design ideas for your home, office, sofa and more with AI-powered creativity.
@@ -51,10 +51,10 @@ export function HeroSection() {
         <div className="flex flex-col justify-center items-center text-center px-6 py-10 sm:py-14 rounded-2xl bg-black/50">
           <img src="/floorplan.png" alt="floorplan" className="w-44 sm:w-48 md:w-56 lg:w-60 mb-4 object-contain" />
           <h1 className="text-white text-xl sm:text-2xl md:text-4xl font-bold mb-3 capitalize">
-            Create your own floor plan in seeb web/app
+            Create A Free Floor plan - Design Smarter, Spend Smarter
           </h1>
           <p className="text-gray-200 text-sm sm:text-base max-w-xl mb-4">
-            Seeb lets you create floor plans for each room or space individually. Simply draw and input dimensions for your bedroom, living room, Office, Shops, or any space one at a time. This space-wise approach helps you visualize and customize every corner of your home with precision.
+            Draw floor plans for any space. Enter dimensions and customize every space with ease.
           </p>
           <button className='btn btn-secondary' onClick={() => {
             !token ? setShowAuthModal(true) : setShowModal(true)
