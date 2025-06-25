@@ -53,7 +53,7 @@ export function VideoSlider() {
                   <img
                     src={video.thumbnail}
                     alt="Video Thumbnail"
-                    className="w-full h-80 object-cover rounded-xl"
+                    className="w-full object-cover rounded-xl"
                     onClick={() => openModal(video.url)}
                   />
                   <div className="absolute inset-0 h-full w-full bg-black bg-opacity-40 flex items-center justify-center rounded-xl">

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { GoogleGenAI, Modality } from "@google/genai";
+import { useSelector } from "react-redux";
 
 
 export default function ImageGeneratorPage() {
@@ -17,6 +18,8 @@ export default function ImageGeneratorPage() {
         gemini: false,
         leonardo: false,
     });
+
+    const userDetail = useSelector((state) => state.user.userInfo);
 
     const updateImage = (source, newImages) => {
         setImages((prev) => ({ ...prev, [source]: newImages }));
@@ -56,7 +59,7 @@ export default function ImageGeneratorPage() {
 
         try {
             const res = await axios.post(`${import.meta.env.VITE_BASE_URL}freepik-api/image-generate`, {
-                user_id: 150,
+                user_id: userDetail?.id,
                 prompt,
             });
 

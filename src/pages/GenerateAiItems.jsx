@@ -106,7 +106,7 @@ export default function GenerateAIItems() {
 
 
       const res = await axios.post(`${import.meta.env.VITE_BASE_URL}freepik-api/image-generate`, {
-        user_id: 150,
+        user_id: userDetail.id,
         prompt,
         type: "floorplan"
       });
@@ -173,6 +173,8 @@ export default function GenerateAIItems() {
       setGeneratedImages((prev) => ({ ...prev, [itemName]: imageUrls }));
     } catch (err) {
       console.error(err);
+      alert("Image generation failed: " + (err.response?.data.message || "Unknown error"));
+
     } finally {
       setLoadingItem(null);
     }
@@ -256,7 +258,7 @@ export default function GenerateAIItems() {
 
       const chatData = await finalPromptResponse.json();
       const finalPrompt = chatData.choices?.[0]?.message?.content?.trim();
-      console.log("Final Prompt:", finalPrompt);
+      // console.log("Final Prompt:", finalPrompt);
 
       if (!finalPrompt) throw new Error("Prompt generation failed");
 
@@ -264,7 +266,7 @@ export default function GenerateAIItems() {
       // freepik.ai
 
       const res = await axios.post(`${import.meta.env.VITE_BASE_URL}freepik-api/image-generate`, {
-        user_id: 150,
+        user_id: userDetail.id,
         prompt: finalPrompt,
         type: "floorplan"
       });
@@ -332,7 +334,7 @@ export default function GenerateAIItems() {
       setGeneratedImages((prev) => ({ ...prev, ["final-room"]: imageUrls }));
     } catch (err) {
       console.error(err);
-      alert("Final room image generation failed.");
+      alert("Image generation failed: " + (err.response?.data.message || "Unknown error"));
     } finally {
       setLoadingItem(null);
     }

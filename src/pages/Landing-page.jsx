@@ -162,7 +162,7 @@ const LandingPage = () => {
                     <ArrowDown className="text-[#facc15] h-8 w-8" />
                 </div>
             </section>
-            
+
             {/* steps Section */}
             <section id="steps" className="py-20 bg-black text-center">
                 <h2 className="text-3xl md:text-5xl font-bold text-[#facc15] mb-16">How It Works</h2>
@@ -235,8 +235,8 @@ const LandingPage = () => {
                                 <div
                                     key={index}
                                     className="text-center space-y-3 backdrop-blur-sm hover:border-[#facc15]/50 transition-all duration-300 hover:scale-105 cursor-pointer"
-                                > */}
-            {/* <div className="flex justify-center">
+                                >
+                                    <div className="flex justify-center">
                                         <img
                                             src={service.image}
                                             alt={service.name}
@@ -245,9 +245,9 @@ const LandingPage = () => {
                                     </div>
                                     <h3 className="text-white font-semibold text-sm md:text-base">
                                         {service.name}
-                                    </h3> */}
+                                    </h3>
 
-            {/* <div>
+                                    <div>
                                         <img
                                             src={service.image}
                                             alt={service.name}
@@ -278,7 +278,6 @@ const LandingPage = () => {
                     </div>
                 </div>
             </section> */}
-
 
             <section className='text-black'>
                 <h2 className='text-3xl md:text-5xl font-bold text-[#facc15] text-center mb-12'>Execution is Our Backbone – Design is Free</h2>
@@ -315,7 +314,7 @@ const LandingPage = () => {
                         </div>
                         <div className="relative">
                             <div className="bg-black/40 border border-[#facc15]/20 rounded-2xl p-8 backdrop-blur-sm">
-                                <img src="/fp-2.png" alt="floorplan-image" className='w-full rounded-md' />
+                                <img src="/fp-2.png" alt="floorplan-image" className='w-full h-full rounded-md object-contain' />
                             </div>
                         </div>
                     </div>

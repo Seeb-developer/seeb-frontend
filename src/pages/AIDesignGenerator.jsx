@@ -137,7 +137,8 @@ export default function AIDesignGenerator() {
                 setGeneratedImages(prev => [...prev, ...res.data.data.images]);
             }
         } catch (err) {
-            console.error("Image generation failed", err);
+            console.error("Image generation failed: ", err.response?.data.message);
+            alert(err.response?.data.message || "Image generation failed");
         }
         setIsGenerating(false);
     };
