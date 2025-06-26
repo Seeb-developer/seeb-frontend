@@ -55,14 +55,19 @@ const LandingPage = () => {
         return () => clearTimeout(timeout); // Cleanup on unmount
     }, []);
 
-    useEffect(() => {
-        if (hash) {
-            const element = document.querySelector(hash);
-            if (element) {
-                element.scrollIntoView();
-            }
+  useEffect(() => {
+    if (hash) {
+      setTimeout(() => {
+        const el = document.querySelector(hash);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          const scrollTop = window.pageYOffset + rect.top;
+          const centerOffset = scrollTop - (window.innerHeight / 2) + (el.offsetHeight / 2);
+          window.scrollTo({ top: centerOffset, behavior: "smooth" });
         }
-    }, [hash]);
+      }, 100); // small delay to ensure section is rendered
+    }
+  }, [hash]);
 
     const scrollToSection = (href) => {
         if (href === '#') {
