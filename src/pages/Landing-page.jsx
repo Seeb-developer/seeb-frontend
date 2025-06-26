@@ -279,7 +279,7 @@ const LandingPage = () => {
                 </div>
             </section> */}
 
-            <section className='text-black'>
+            <section id="services" className='text-black'>
                 <h2 className='text-3xl md:text-5xl font-bold text-[#facc15] text-center mb-12'>Execution is Our Backbone – Design is Free</h2>
                 <ServicesGrid />
             </section>
