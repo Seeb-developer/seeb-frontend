@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Download, ArrowDown, ArrowRight, Phone, MessageCircle } from 'lucide-react';
 import ContactFormModal from '../components/ContactFormModal';
 import { ServicesGrid } from '../components/ServicesGridSection';
+import { useLocation } from "react-router-dom";
 
 const LandingPage = () => {
     const [isScrolled, setIsScrolled] = useState(false);
@@ -33,6 +34,9 @@ const LandingPage = () => {
         ["Live Project Tracking", "✅ Track tasks & visits via app", "⚠ Site engineer updates manually", "❌ No digital tracking"]
     ];
 
+    const { hash } = useLocation();
+
+
     const visibleData = showAll ? comparisonData : comparisonData.slice(0, 10);
 
     useEffect(() => {
@@ -50,6 +54,15 @@ const LandingPage = () => {
 
         return () => clearTimeout(timeout); // Cleanup on unmount
     }, []);
+
+    useEffect(() => {
+        if (hash) {
+            const element = document.querySelector(hash);
+            if (element) {
+                element.scrollIntoView();
+            }
+        }
+    }, [hash]);
 
     const scrollToSection = (href) => {
         if (href === '#') {
