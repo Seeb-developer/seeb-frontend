@@ -19,10 +19,6 @@ import AIDesignGenerator from './pages/AIDesignGenerator';
 import BlogList from './pages/BlogList';
 import BlogDetail from './pages/BlogDetail';
 import NotFound from './pages/NotFound';
-import AOS from 'aos';
-import 'aos/dist/aos.css';
-import { FloorPlan_fabric } from './pages/fabric';
-import KanvaNew from './pages/kanva-new';
 import GenerateAIItems from './pages/GenerateAiItems';
 import CartPage from './pages/cart';
 import DesignTips from './pages/tips';
@@ -61,12 +57,9 @@ function AppContent() {
           <Route path="/blog" element={<BlogList />} />
           <Route path="/blog/:blogId" element={<BlogDetail />} />
           <Route path="*" element={<NotFound />} />
-          {/* <Route path="/fabric" element={<FloorPlan_fabric />} /> */}
-          {/* <Route path="/kanva" element={<KanvaNew />} /> */}
           <Route path="/ai-images" element={<ImageGeneratorPage />} />
           <Route path="/saved-floorplan/:id" element={<FloorPlanDetail />} />
           <Route path="/landing-page" element={<LandingPage />} />
-
 
         </Routes>
       </div>
@@ -76,13 +69,6 @@ function AppContent() {
 }
 
 function App() {
-  useEffect(() => {
-    AOS.init({
-      duration: 800,
-      once: true,
-    });
-  }, []);
-
   return (
     <Router basename="/">
       <AppContent />

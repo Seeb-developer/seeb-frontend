@@ -17,7 +17,7 @@ export default function FloorPlanDetail() {
   if (!plan) return <div className="p-10">Loading...</div>;
 
   const floor3dImages = JSON.parse(plan.floor3d_image || "[]");
-  const elements = JSON.parse(plan.elements_json || "[]");
+  const elements = JSON.parse(plan.elements_json || "{}");
 
   return (
     <div className="min-h-screen bg-gray-50 py-10 px-6 sm:px-12">
@@ -41,7 +41,7 @@ export default function FloorPlanDetail() {
             <p className="text-sm text-gray-500">Size: {plan.room_size} ft</p>
             <div className="grid grid-cols-2 gap-3 text-sm">
               <p><strong>Style:</strong> {plan.style_name || "N/A"}</p>
-              <p><strong>Design Instruction:</strong> {plan.name || "Untitled"}</p>
+              <p><strong>Design Instruction:</strong> {plan.name || "—"}</p>
               <p><strong>Primary Color:</strong> {plan.primary_color || "—"}</p>
               <p><strong>Accent Color:</strong> {plan.accent_color || "—"}</p>
               <p><strong>Created:</strong> {new Date(plan.created_at).toLocaleDateString("en-IN", {
@@ -69,19 +69,19 @@ export default function FloorPlanDetail() {
         )}
 
         {/* Elements Preview */}
-        {elements.length > 0 && (
+        {Object.keys(elements).length > 0 && (
           <div className="mt-10">
             <h2 className="text-xl font-semibold mb-4 text-gray-700">Design Elements</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {elements.map((el, index) => (
-                <div key={index} className="bg-gray-100 p-4 rounded-lg shadow-sm">
-                  <h3 className="font-semibold text-gray-700 mb-2 capitalize">{el.name}</h3>
+              {Object.entries(elements).map(([name, urls]) => (
+                <div key={name} className="bg-gray-100 p-4 rounded-lg shadow-sm">
+                  <h3 className="font-semibold text-gray-700 mb-2 capitalize">{name}</h3>
                   <div className="flex gap-2 flex-wrap">
-                    {el.image.map((img, i) => (
+                    {urls.map((url, index) => (
                       <img
-                        key={i}
-                        src={`${import.meta.env.VITE_BASE_URL}${img.replace(/^\/+/, "")}`}
-                        alt={`${el.name}-${i}`}
+                        key={index}
+                        src={`${import.meta.env.VITE_BASE_URL}${url.replace(/^\/+/, "")}`}
+                        alt={`${name}-${index}`}
                         className="w-64 h-64 object-cover rounded border"
                       />
                     ))}

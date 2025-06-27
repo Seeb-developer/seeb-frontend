@@ -376,7 +376,7 @@ export default function GenerateAIItems() {
       uploadedURLs.floor3d_image = finalRoomImages;
 
       // Upload all item images
-      const elements = [];
+      const elements = {};
 
       for (const item of items) {
         const name = item.name;
@@ -387,15 +387,9 @@ export default function GenerateAIItems() {
             img.replace("https://backend.seeb.in/", "")
           );
 
-          elements.push({
-            name,
-            image: cleanedImages, // Now holds cleaned relative URLs
-          });
+          elements[name] = cleanedImages;
         }
       }
-
-
-
 
       const payload = {
         user_id: userDetail.id,
