@@ -57,11 +57,10 @@ export function ServiceList() {
       }
     });
 
-
   };
 
   if (loading) return <p className="text-center py-10">Loading services...</p>;
-  if (error) return <p className="text-center text-red-500 py-10">Failed to load services.</p>;
+  if (error) return <p className="text-center text-gray-600 py-10">{error.response.data.messages.error}</p>;
 
   return (
     <div className="px-4 py-4 space-y-4">
