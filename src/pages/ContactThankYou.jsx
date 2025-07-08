@@ -1,11 +1,16 @@
+import React, { useEffect } from 'react';
 const ThankYouPage = () => {
-    const whatsappNumber = '917709899729'; 
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
+    const whatsappNumber = '917709899729';
     const message = 'Hi, I just submitted the contact form on your website and would like to talk now.';
 
     const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 
     return (
-        <div className="min-h-[80vh] flex flex-col items-center justify-center bg-white px-4 text-center">
+        <div className="h-[80vh] bg-white flex flex-col items-center justify-center px-4 py-10 text-center">
             <h1 className="text-4xl font-bold text-gray-800 mb-4">Thank You!</h1>
             <p className="text-lg text-gray-600 mb-8">
                 Our team will contact you soon. Want to talk now?
