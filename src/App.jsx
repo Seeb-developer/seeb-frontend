@@ -9,7 +9,7 @@ import Privacy from './pages/Privacy';
 import Refund from './pages/Refund';
 import FloorPlan from './pages/FloorPlan';
 import CheckoutPage from './pages/Checkout';
-import ThankYouPage from './pages/Thankyou';
+import BookingThankYouPage from './pages/BookingConfirmed';
 import MyBookings from './pages/MyBookings';
 import BookingDetail from './pages/BookingDetail';
 import Footer from './components/FooterSection';
@@ -25,6 +25,8 @@ import DesignTips from './pages/tips';
 import ImageGeneratorPage from './pages/ImageGenerator';
 import FloorPlanDetail from './components/FloorPlanDetail';
 import LandingPage from './pages/Landing-page';
+import Test from './components/Test';
+import ThankYouPage from './pages/ContactThankYou';
 
 function AppContent() {
   const location = useLocation();
@@ -49,17 +51,21 @@ function AppContent() {
           <Route path="/floorplan/:roomId/:roomName" element={<FloorPlan />} />
           <Route path="/generate-ai-items" element={<GenerateAIItems />} />
           <Route path="/checkout" element={<CheckoutPage />} />
-          <Route path="/thank-you" element={<ThankYouPage />} />
+          <Route path="/booking-confirmed" element={<BookingThankYouPage />} />
           <Route path="/my-bookings" element={<MyBookings />} />
           <Route path="/booking-detail" element={<BookingDetail />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/design-generate" element={<AIDesignGenerator />} />
           <Route path="/blog" element={<BlogList />} />
           <Route path="/blog/:blogId" element={<BlogDetail />} />
-          <Route path="*" element={<NotFound />} />
           <Route path="/ai-images" element={<ImageGeneratorPage />} />
           <Route path="/saved-floorplan/:id" element={<FloorPlanDetail />} />
           <Route path="/landing-page" element={<LandingPage />} />
+          <Route path="/test" element={<Test />} />
+          <Route path="/thank-you" element={<ThankYouPage />} />
+
+
+          <Route path="*" element={<NotFound />} />
 
         </Routes>
       </div>

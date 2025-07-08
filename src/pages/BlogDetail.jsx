@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import BlogContactFormModal from "../components/BlogContactFormModal";
 
 export default function BlogDetail() {
   const { blogId } = useParams();
   const [blog, setBlog] = useState(null);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     axios.get(`${import.meta.env.VITE_BASE_URL}blog/single-blog/${blogId}`)
@@ -70,9 +70,12 @@ export default function BlogDetail() {
                 <p className="mb-4 text-base sm:text-lg">
                   {section.description}
                 </p>
-                <button className="bg-red-500 text-white font-bold px-6 py-2 rounded-full hover:bg-red-600 transition" onClick={() => window.open(`${section.section_link}`, "_blank")}>
-                  {section.cta_text || "Learn More"}
+                <button className="bg-red-500 text-white font-bold px-6 py-2 rounded-full hover:bg-red-600 transition"
+                  onClick={() => setShowModal(true)}>
+                  {section.cta_text || "Get in Touch"}
                 </button>
+                <BlogContactFormModal isOpen={showModal} onClose={() => setShowModal(false)} />
+             
               </div>
             </div>
           ) : (<>
