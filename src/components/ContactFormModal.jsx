@@ -72,14 +72,18 @@ const ContactFormModal = ({ isOpen, onClose }) => {
             className="w-full px-4 py-2 rounded bg-black border border-gray-600 text-white focus:outline-none focus:border-[#facc15]"
           />
           <input
-            type="text"
+            type="tel"
             name="contact_number"
             placeholder="Contact Number"
             value={formData.contact_number}
             onChange={handleChange}
             required
+            pattern="^[6-9]\d{9}$"
+            maxLength={10}
+            title="Please enter a valid 10-digit mobile number"
             className="w-full px-4 py-2 rounded bg-black border border-gray-600 text-white focus:outline-none focus:border-[#facc15]"
           />
+
           <input
             type="email"
             name="email_id"
@@ -89,14 +93,7 @@ const ContactFormModal = ({ isOpen, onClose }) => {
             required
             className="w-full px-4 py-2 rounded bg-black border border-gray-600 text-white focus:outline-none focus:border-[#facc15]"
           />
-          {/* <textarea
-            name="message"
-            placeholder="Your Message"
-            value={formData.message}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-2 rounded bg-black border border-gray-600 text-white h-32 resize-none focus:outline-none focus:border-[#facc15]"
-          ></textarea> */}
+          
           <button
             type="submit"
             disabled={submitting}

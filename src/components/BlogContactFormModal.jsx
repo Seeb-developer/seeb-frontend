@@ -60,7 +60,7 @@ const BlogContactFormModal = ({ isOpen, onClose }) => {
                 </button>
                 <h2 className="text-2xl font-bold mb-4 text-gray-800">Let’s Transform Your Space, Together</h2>
                 <p className="text-gray-600 mb-4">Tell us a few quick details and our expert will contact you with a personalized interior plan.</p>
-             
+
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <input
                         type="text"
@@ -72,12 +72,15 @@ const BlogContactFormModal = ({ isOpen, onClose }) => {
                         className="w-full px-4 py-2 rounded border border-gray-300 text-gray-800 focus:outline-none focus:border-yellow-500"
                     />
                     <input
-                        type="text"
+                        type="tel"
                         name="contact_number"
                         placeholder="Contact Number"
                         value={formData.contact_number}
                         onChange={handleChange}
                         required
+                        pattern="^[6-9]\d{9}$"
+                        maxLength={10}
+                        title="Please enter a valid 10-digit mobile number"
                         className="w-full px-4 py-2 rounded border border-gray-300 text-gray-800 focus:outline-none focus:border-yellow-500"
                     />
                     <input
@@ -89,7 +92,7 @@ const BlogContactFormModal = ({ isOpen, onClose }) => {
                         required
                         className="w-full px-4 py-2 rounded border border-gray-300 text-gray-800 focus:outline-none focus:border-yellow-500"
                     />
-                     <input
+                    <input
                         type="text"
                         name="city"
                         placeholder="City"
