@@ -58,14 +58,16 @@ export default function BlogDetail() {
           {/* CTA Section */}
           {section.cta_text ? (
             <div
-              className="rounded-xl overflow-hidden mt-10 mb-4"
+              className=" flex items-center w-full rounded-xl overflow-hidden mt-10 mb-4 cursor-pointer hover:shadow-xl transition duration-300"
               style={{
                 backgroundImage: `url(${import.meta.env.VITE_BASE_URL}/${section.banner_image})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
+                height: "300px"
               }}
+              onClick={() => setShowModal(true)}
             >
-              <div className="bg-black/40 p-8 sm:p-12 text-white">
+              <div className=" p-8 sm:p-12 text-white">
                 <h3 className="text-2xl sm:text-3xl font-semibold mb-2">{section.title}</h3>
                 <p className="mb-4 text-base sm:text-lg">
                   {section.description}
@@ -74,9 +76,10 @@ export default function BlogDetail() {
                   onClick={() => setShowModal(true)}>
                   {section.cta_text || "Get in Touch"}
                 </button>
-                <BlogContactFormModal isOpen={showModal} onClose={() => setShowModal(false)} />
-             
+
               </div>
+              <BlogContactFormModal isOpen={showModal} onClose={() => setShowModal(false)} />
+
             </div>
           ) : (<>
             <h2 className="text-xl sm:text-2xl font-semibold mb-6">{section.title}</h2>
