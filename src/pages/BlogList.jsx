@@ -26,9 +26,10 @@ export default function BlogList() {
       <h2 className="sm:text-5xl text-3xl font-bold mb-8 text-center">Latest Blogs</h2>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {blogs.map((blog) => (
-          <div
+          <Link
             key={blog.id}
-            className="bg-white rounded-xl shadow hover:shadow-xl transition duration-300 overflow-hidden"
+            to={`/blog/${blog.id}`}
+            className="block bg-white rounded-xl shadow hover:shadow-xl transition duration-300 overflow-hidden"
           >
             <img
               src={`${import.meta.env.VITE_BASE_URL}/${blog.blog_image}`}
@@ -47,7 +48,7 @@ export default function BlogList() {
                 Read More →
               </Link>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </section>
