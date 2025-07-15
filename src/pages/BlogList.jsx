@@ -41,12 +41,11 @@ export default function BlogList() {
               <p className="text-gray-600 text-sm line-clamp-4">
                 {blog.description}
               </p>
-              <Link
-                to={`/blog/${blog.id}`}
+              <p
                 className="inline-block mt-4 text-blue-600 font-medium "
               >
                 Read More →
-              </Link>
+              </p>
             </div>
           </Link>
         ))}

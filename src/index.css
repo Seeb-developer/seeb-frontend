@@ -25,3 +25,11 @@
     }
   }
   
+.blog-content a {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.blog-content a:hover {
+  color: #1d4ed8;
+}
