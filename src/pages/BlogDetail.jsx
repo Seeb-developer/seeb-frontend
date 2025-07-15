@@ -14,7 +14,7 @@ export default function BlogDetail() {
       .then((res) => {
         if (res.data.status === 200) {
           setBlog(res.data.data);
-          console.log("Blog Detail Response:", res.data.data);
+          // console.log("Blog Detail Response:", res.data.data);
 
         }
       })
@@ -47,8 +47,8 @@ export default function BlogDetail() {
       )}
 
       {/* Blog Description */}
-      <div className="text-gray-800 leading-relaxed whitespace-pre-line mb-10 text-base sm:text-lg">
-        {blog.description}
+      <div className="text-gray-800 leading-relaxed whitespace-pre-line mb-10 text-base sm:text-lg" dangerouslySetInnerHTML={{ __html: blog.description }}>
+        {/* {blog.description} */}
       </div>
 
       {/* Sections */}
@@ -69,8 +69,8 @@ export default function BlogDetail() {
             >
               <div className=" p-8 sm:p-12 text-white">
                 <h3 className="text-2xl sm:text-3xl font-semibold mb-2">{section.title}</h3>
-                <p className="mb-4 text-base sm:text-lg">
-                  {section.description}
+                <p className="mb-4 text-base sm:text-lg" dangerouslySetInnerHTML={{ __html: section.description }}>
+                  {/* {section.description} */}
                 </p>
                 <button className="bg-red-500 text-white font-bold px-6 py-2 rounded-full hover:bg-red-600 transition"
                   onClick={() => setShowModal(true)}>
@@ -92,8 +92,8 @@ export default function BlogDetail() {
               />
             )}
 
-            <div className="text-gray-700 whitespace-pre-line mb-4 text-sm sm:text-base">
-              {section.description}
+            <div className="text-gray-700 whitespace-pre-line mb-4 text-sm sm:text-base" dangerouslySetInnerHTML={{ __html: section.description }}>
+              {/* {section.description} */}
             </div>
 
             {/* Sub-sections */}
@@ -101,7 +101,9 @@ export default function BlogDetail() {
               JSON.parse(section.sub_sections).map((sub, index) => (
                 <div key={index} className="mb-6 ml-2 sm:ml-4 border-l-4 border-blue-500 pl-4">
                   <h3 className="text-lg font-medium mb-2">{sub.title}</h3>
-                  <p className="text-gray-700 whitespace-pre-line text-sm sm:text-base">{sub.description}</p>
+                  <p className="text-gray-700 whitespace-pre-line text-sm sm:text-base" dangerouslySetInnerHTML={{ __html: sub.description }}>
+                    {/* {sub.description} */}
+                    </p>
                   {sub.images && (
                     <img
                       src={`${import.meta.env.VITE_BASE_URL}/${sub.images}`}
