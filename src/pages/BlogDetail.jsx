@@ -67,17 +67,17 @@ export default function BlogDetail() {
               }}
               onClick={() => setShowModal(true)}
             >
-              <div className=" p-8 sm:p-12 text-white">
+              {/* <div className=" p-8 sm:p-12 text-white">
                 <h3 className="text-2xl sm:text-3xl font-semibold mb-2">{section.title}</h3>
-                <p className="blog-content mb-4 text-base sm:text-lg" dangerouslySetInnerHTML={{ __html: section.description }}>
-                  {/* {section.description} */}
+                <p className="blog-content mb-4 text-base sm:text-lg">
+                  {section.description}
                 </p>
                 <button className="bg-red-500 text-white font-bold px-6 py-2 rounded-full hover:bg-red-600 transition"
                   onClick={() => setShowModal(true)}>
                   {section.cta_text || "Get in Touch"}
                 </button>
 
-              </div>
+              </div> */}
               <BlogContactFormModal isOpen={showModal} onClose={() => setShowModal(false)} />
 
             </div>
