@@ -59,14 +59,19 @@ export default function BlogDetail() {
           {section.cta_text ? (
             <div
               className=" flex items-center w-full rounded-xl overflow-hidden mt-10 mb-4 cursor-pointer hover:shadow-xl transition duration-300"
-              style={{
-                backgroundImage: `url(${import.meta.env.VITE_BASE_URL}/${section.banner_image})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                height: "300px"
-              }}
+              // style={{
+              //   backgroundImage: `url(${import.meta.env.VITE_BASE_URL}/${section.banner_image})`,
+              //   backgroundSize: "cover",
+              //   backgroundPosition: "center",
+              //   height: "300px"
+              // }}
               onClick={() => setShowModal(true)}
             >
+              <img src={`${import.meta.env.VITE_BASE_URL}/${section.banner_image}`} alt="cta image" style={{
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                maxHeight: "350px"
+              }} />
               {/* <div className=" p-8 sm:p-12 text-white">
                 <h3 className="text-2xl sm:text-3xl font-semibold mb-2">{section.title}</h3>
                 <p className="blog-content mb-4 text-base sm:text-lg">
@@ -103,7 +108,7 @@ export default function BlogDetail() {
                   <h3 className="text-lg font-medium mb-2">{sub.title}</h3>
                   <p className="blog-content text-gray-700 whitespace-pre-line text-sm sm:text-base" dangerouslySetInnerHTML={{ __html: sub.description }}>
                     {/* {sub.description} */}
-                    </p>
+                  </p>
                   {sub.images && (
                     <img
                       src={`${import.meta.env.VITE_BASE_URL}/${sub.images}`}
