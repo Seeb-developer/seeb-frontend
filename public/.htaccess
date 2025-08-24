@@ -2,13 +2,31 @@
 
 # If your app is in a subfolder, set this to that path, e.g. /myapp/
 # and also change the SPA fallback below to /myapp/index.html
+# Enable Rewrite
 RewriteEngine On
 RewriteBase /
 
-# 1) Serve real files or directories as-is (assets, images, etc.)
+# ✅ Allow existing files and directories to load normally
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
+
+# ✅ Redirect everything else to index.html (SPA fallback)
+# This ensures refresh or opening in new tab works on client routes like /policies/terms
+RewriteRule . /index.html [L]
+
+# --- Extra Best Practices ---
+
+# Cache busting for Vite hashed assets
+<IfModule mod_headers.c>
+  <FilesMatch "\.(js|mjs|css|json|png|jpg|jpeg|gif|svg|ico|webp|woff2?|ttf|eot|otf|wasm)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+
+  <Files "index.html">
+    Header set Cache-Control "no-store"
+  </Files>
+</IfModule>
 
 # 2) SPA fallback: send everything else to index.html
 #    This fixes refresh + open-in-new-tab on client routes.
