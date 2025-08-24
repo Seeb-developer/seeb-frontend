@@ -3,6 +3,7 @@ import { OurProcess } from '../components/ProcessSection';
 import VideoSlider from '../components/VideoSliderSection';
 import { HeroSection } from '../components/HeroSection';
 import { ServicesGrid } from '../components/ServicesGridSection';
+import { ServicesList } from '../components/ServicesListSection';
 
 const Home = () => {
   // useEffect(() => {
@@ -18,6 +19,7 @@ const Home = () => {
   return (
     <>
       <HeroSection />
+      <ServicesList />
       <h2 className="text-center my-8 text-2xl sm:text-3xl md:text-5xl font-bold text-gray-900">
         Explore Our Services
       </h2>
