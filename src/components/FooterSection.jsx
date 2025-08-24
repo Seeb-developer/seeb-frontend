@@ -51,21 +51,21 @@ const Footer = () => {
                 {/* Contact Info */}
                 <div className='flex md:justify-center'>
                     <div>
-                        <h3 className="text-lg font-semibold mb-2">Addresses</h3>
+                        <h3 className="text-lg font-semibold mb-2">Office Address</h3>
                         {/* <p className="text-base text-gray-300 mb-2">Address: 📍 S.No 29/13b, Wadachiwadi Road, Jakat Naka, Undri, Pune, Maharashtra Pin: 411060</p> */}
                         {/* <p className="text-base text-gray-300 mb-2">Tel: 📞 18005703133</p>
                             <p className="text-base text-gray-300 mb-2">Email: 📧 info@seeb.in</p> */}
-                        <div className="mb-4">
+                        {/* <div className="mb-4">
                             <p className="text-sm font-medium text-white">Factory Address</p>
                             <p className="text-base text-gray-300 whitespace-pre-line">
                                 S.No. 29/13B, Wadachiwadi Road,
                                 {"\n"}Jakat Naka, Undri,
                                 {"\n"}Pune, Maharashtra - 411060
                             </p>
-                        </div>
+                        </div> */}
 
                         <div className="mb-4">
-                            <p className="text-sm font-medium text-white">Head Office Address</p>
+                            {/* <p className="text-sm font-medium text-white">Head Office Address</p> */}
                             <p className="text-base text-gray-300 whitespace-pre-line">
                                 WTC Tower 2, Floor 2,
                                 {"\n"}Office No. 217, Kharadi,
@@ -73,14 +73,14 @@ const Footer = () => {
                             </p>
                         </div>
 
-                        <div className="mb-4">
+                        {/* <div className="mb-4">
                             <p className="text-sm font-medium text-white">Experience Center Address</p>
                             <p className="text-base text-gray-300 whitespace-pre-line">
                                 Royale Heritage Mall, Upper Ground Floor,
                                 {"\n"}Shop No. 10, NIBM, Undri,
                                 {"\n"}Pune, Maharashtra - 411048
                             </p>
-                        </div>
+                        </div> */}
 
                     </div>
                 </div>
