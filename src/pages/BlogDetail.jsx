@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import BlogContactFormModal from "../components/BlogContactFormModal";
+import { Helmet } from "react-helmet";
 
 export default function BlogDetail() {
   const { blogId } = useParams();
@@ -32,6 +33,26 @@ export default function BlogDetail() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 bg-white">
+       <Helmet>
+        <title>{blog.title} | Seeb Blog</title>
+        <meta name="description" content={blog.meta_description || blog.description?.slice(0, 150)} />
+        <meta name="keywords" content={blog.keywords || "interior design, AI interiors, Seeb blog"} />
+        <link rel="canonical" href={`https://seeb.in/blog/${blog.id}`} />
+
+        {/* Open Graph */}
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={blog.title} />
+        <meta property="og:description" content={blog.meta_description || blog.description?.slice(0, 150)} />
+        <meta property="og:image" content={`${import.meta.env.VITE_BASE_URL}/${blog.blog_image}`} />
+        <meta property="og:url" content={`https://seeb.in/blog/${blog.id}`} />
+        <meta property="og:site_name" content="Seeb" />
+
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={blog.title} />
+        <meta name="twitter:description" content={blog.meta_description || blog.description?.slice(0, 150)} />
+        <meta name="twitter:image" content={`${import.meta.env.VITE_BASE_URL}/${blog.blog_image}`} />
+      </Helmet>
       {/* Blog Header */}
       <h1 className="text-2xl sm:text-3xl font-bold mb-4">{blog.title}</h1>
       <p className="text-sm text-gray-500 mb-6">

@@ -4,9 +4,34 @@ export default function AboutUs() {
   return (
     <>
       <Helmet>
-        <title>About Us - Seeb</title>
-        <meta name="description" content="Learn about Seeb interior design services." />
-        <meta name="keywords" content="interior design, Seeb, about us" />
+        {/* Primary Meta Tags */}
+        <title>About Us - Seeb | AI-Powered Interior Design</title>
+        <meta
+          name="description"
+          content="Learn about Seeb, India’s first AI-powered interior design platform. Discover how we design smarter, execute faster, and make dream homes affordable."
+        />
+        <meta name="keywords" content="Seeb, interior design, AI interior, home renovation, modular kitchen, false ceiling, Pune interiors, Bangalore interiors" />
+        <meta name="author" content="Seeb Design Pvt Ltd" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://seeb.in/about" />
+
+        {/* Open Graph */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://seeb.in/about" />
+        <meta property="og:title" content="About Us - Seeb | AI-Powered Interior Design" />
+        <meta property="og:description" content="Learn about Seeb, India’s first AI-powered interior design platform. Discover how we design smarter, execute faster, and make dream homes affordable." />
+        <meta property="og:image" content="https://seeb.in/about-img.jpg" />
+        <meta property="og:site_name" content="Seeb" />
+
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content="https://seeb.in/about" />
+        <meta name="twitter:title" content="About Us - Seeb | AI-Powered Interior Design" />
+        <meta name="twitter:description" content="Learn about Seeb, India’s first AI-powered interior design platform. Discover how we design smarter, execute faster, and make dream homes affordable." />
+        <meta name="twitter:image" content="https://seeb.in/about-img.jpg" />
+
+        {/* Favicon */}
+        <link rel="icon" href="/favicon.png" type="image/png" />
       </Helmet>
       <div className="bg-gray-50 min-h-screen py-16 px-4 sm:px-8 lg:px-16">
         <div className="max-w-7xl mx-auto">
