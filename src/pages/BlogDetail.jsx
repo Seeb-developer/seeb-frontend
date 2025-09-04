@@ -36,7 +36,7 @@ export default function BlogDetail() {
        <Helmet>
         <title>{blog.title} | Seeb Blog</title>
         <meta name="description" content={blog.meta_description || blog.description?.slice(0, 150)} />
-        <meta name="keywords" content={blog.keywords || "interior design, AI interiors, Seeb blog"} />
+        <meta name="keywords" content={blog.title || "interior design, AI interiors, Seeb blog"} />
         <link rel="canonical" href={`https://seeb.in/blog/${blog.id}`} />
 
         {/* Open Graph */}
