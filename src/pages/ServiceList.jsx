@@ -30,7 +30,7 @@ export function ServiceList() {
 
   const handleAction = (service) => {
     // console.log("service",service);
-    
+
     if (!token) {
       setShowAuthModal(true);
     } else {
@@ -50,9 +50,8 @@ export function ServiceList() {
 
   const handleCardClick = (service) => {
     // navigate(`/service-detail/${service.id}/room/${roomId}`);
-    navigate("/service-detail", {
+    navigate(`/service-detail/${service.id}`, {
       state: {
-        serviceId: service.id,
         roomId: roomId
       }
     });
@@ -97,15 +96,15 @@ export function ServiceList() {
           return (
             <div key={service.id} className="bg-white rounded-xl shadow relative overflow-hidden " onClick={() => handleCardClick(service)}>
               {/* <Carousel showThumbs={false} showStatus={false} infiniteLoop autoPlay> */}
-                {/* {images?.map((img, index) => ( */}
-                  {/* <div key={index}> */}
-                    <img
-                      src={`${import.meta.env.VITE_BASE_URL}${images[0]}`}
-                      alt="Service"
-                      className="h-60 sm:h-72  w-full object-cover rounded-xl"
-                    />
-                  {/* </div> */}
-                {/* ))} */}
+              {/* {images?.map((img, index) => ( */}
+              {/* <div key={index}> */}
+              <img
+                src={`${import.meta.env.VITE_BASE_URL}${images[0]}`}
+                alt="Service"
+                className="h-60 sm:h-72  w-full object-cover rounded-xl"
+              />
+              {/* </div> */}
+              {/* ))} */}
               {/* </Carousel> */}
 
               <div className="p-3 bg-black text-white absolute w-full bottom-0 rounded-b-xl opacity-95 z-30">

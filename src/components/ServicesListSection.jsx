@@ -42,8 +42,13 @@ export function ServicesList() {
   };
 
   const handleCardClick = (service) => {
-    navigate("/service-detail", {
-      state: { serviceId: service.id, roomId: 1 },
+    // navigate("/service-detail", {
+    //   state: { serviceId: service.id, roomId: 1 },
+    // });
+    navigate(`/service-detail/${service.id}`, {
+      state: {
+        roomId: 1
+      }
     });
   };
 

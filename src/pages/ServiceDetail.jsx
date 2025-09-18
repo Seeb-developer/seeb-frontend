@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useGet } from '../hooks/useGet';
 import { Carousel } from 'react-responsive-carousel';
 import ServiceBookingModal from "../components/ServiceBookingModal";
@@ -12,7 +12,8 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 export function ServiceDetail() {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const { serviceId, roomId } = state || {};
+  const { serviceId } = useParams();
+  const { roomId } = state || {};
 
   const [modalOpen, setModalOpen] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -46,6 +47,7 @@ export function ServiceDetail() {
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error loading service</p>;
+  // if (!serviceId) return <p>Error Loading Service</p>;
 
   return (
     <div className="px-4 md:px-10 py-8 relative">
