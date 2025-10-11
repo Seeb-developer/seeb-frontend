@@ -42,9 +42,12 @@ const Footer = () => {
                 <div className='flex md:justify-center'>
                     <div>
                          <h3 className="text-lg font-semibold mb-2">Contact Us</h3>
-                        {/* <p className="text-base text-gray-300 mb-2">Address: 📍 S.No 29/13b, Wadachiwadi Road, Jakat Naka, Undri, Pune, Maharashtra Pin: 411060</p> */}
-                        <p className="text-base text-gray-300 mb-2">Tel: 📞 18005703133</p>
-                            <p className="text-base text-gray-300 mb-2">Email: 📧 info@seeb.in</p>
+                        <p className="text-base text-gray-300 mb-2">
+                            Tel: <a href="tel:18005703133" className="text-yellow-400 hover:underline">📞 18005703133</a>
+                        </p>
+                        <p className="text-base text-gray-300 mb-2">
+                            Email: <a href="mailto:info@seeb.in" className="text-yellow-400 hover:underline">📧 info@seeb.in</a>
+                        </p>
                     </div>
                 </div>
 
@@ -84,6 +87,34 @@ const Footer = () => {
 
                     </div>
                 </div>
+            </div>
+
+            {/* App Store & Play Store Links */}
+            <div className="flex gap-4 justify-center mt-10">
+                <a
+                    href="https://apps.apple.com/in/app/seeb-design/id6747076134" // Replace with your App Store link
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 hover:text-yellow-400"
+                >
+                    {/* App Store SVG */}
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                        <path d="M17.564 13.063c-.025-2.604 2.127-3.85 2.222-3.908-1.211-1.77-3.093-2.013-3.755-2.04-1.6-.162-3.129.938-3.947.938-.818 0-2.077-.916-3.419-.892-1.759.027-3.384 1.025-4.287 2.606-1.837 3.183-.469 7.89 1.321 10.48.876 1.265 1.917 2.687 3.292 2.634 1.329-.053 1.83-.85 3.438-.85 1.608 0 2.053.85 3.45.825 1.432-.027 2.338-1.287 3.211-2.553.995-1.462 1.406-2.881 1.427-2.953-.031-.014-2.741-1.053-2.767-4.183zm-4.012-7.646c.72-.872 1.207-2.084 1.073-3.317-1.037.042-2.292.691-3.043 1.563-.667.776-1.255 2.021-1.032 3.211 1.174.091 2.282-.597 3.002-1.457z" fill="#fff"/>
+                    </svg>
+                    <span className="text-base">App Store</span>
+                </a>
+                <a
+                    href="https://play.google.com/store/apps/details?id=com.seeb.design" // Replace with your Play Store link
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 hover:text-yellow-400"
+                >
+                    {/* Play Store SVG */}
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                        <path d="M3.6 2.2l12.7 7.3-3.8 2.2-8.9-5.1c-.6-.3-.6-1.1 0-1.4zm0 19.6c-.6-.3-.6-1.1 0-1.4l8.9-5.1 3.8 2.2-12.7 7.3zm14.2-8.2l-3.8-2.2 3.8-2.2c.6-.3 1.4.1 1.4.8v4.8c0 .7-.8 1.1-1.4.8z" fill="#fff"/>
+                    </svg>
+                    <span className="text-base">Google Play</span>
+                </a>
             </div>
 
             {/* Bottom Bar */}
