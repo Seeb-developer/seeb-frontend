@@ -168,8 +168,8 @@ export function ServiceDetail() {
         <img
           src="/seebprocess.jpg"
           alt="Our Process"
-          style={{ height: "80vh", width: "80vw", objectFit: "contain" }}
-          // className="rounded-xl shadow-md"
+          className="rounded-xl shadow-md w-full max-w-4xl h-auto md:h-[60vh] object-contain"
+          style={{ maxHeight: '80vh' }}
         />
       </div>
 
