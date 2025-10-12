@@ -163,43 +163,55 @@ export function ServiceDetail() {
         </div>
       )}
 
+      {/* Process Image Section */}
+      <div className="mt-6 flex justify-center">
+        <img
+          src="/seebprocess.jpg"
+          alt="Our Process"
+          style={{ height: "80vh", width: "80vw", objectFit: "contain" }}
+          // className="rounded-xl shadow-md"
+        />
+      </div>
+
       {/* FAQ Section */}
       {faqLoading && <p>Loading FAQs...</p>}
       {faqError && <p>Failed to load FAQs</p>}
-      {faqData && faqData.length > 0 && (<div className="mt-12 max-w-4xl mx-auto">
-        <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Frequently Asked Questions</h2>
-        <div className="space-y-4">
-          {faqData.map((faq, index) => {
-            const isOpen = openFaqIndex === index;
-            return (
-              <div
-                key={index}
-                className="bg-white rounded-xl shadow-md p-4 cursor-pointer transition-all duration-300"
-                onClick={() => setOpenFaqIndex(isOpen ? null : index)}
-              >
-                <div className="flex justify-between items-center">
-                  <h3 className="font-semibold text-gray-800">{faq.question}</h3>
-                  <ChevronDown
-                    className={`w-5 h-5 transform transition-transform duration-300 ${isOpen ? "rotate-180" : ""
-                      }`}
-                  />
-                </div>
-
+      {faqData && faqData.length > 0 && (
+        <div className="mt-12 max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Frequently Asked Questions</h2>
+          <div className="space-y-4">
+            {faqData.map((faq, index) => {
+              const isOpen = openFaqIndex === index;
+              return (
                 <div
-                  className={`overflow-hidden transition-all duration-500 ease-in-out`}
-                  style={{
-                    maxHeight: isOpen ? "500px" : "0px",
-                    opacity: isOpen ? 1 : 0,
-                    transitionProperty: "max-height, opacity",
-                  }}
+                  key={index}
+                  className="bg-white rounded-xl shadow-md p-4 cursor-pointer transition-all duration-300"
+                  onClick={() => setOpenFaqIndex(isOpen ? null : index)}
                 >
-                  <p className="mt-2 text-gray-700 text-sm leading-relaxed">{faq.answer}</p>
+                  <div className="flex justify-between items-center">
+                    <h3 className="font-semibold text-gray-800">{faq.question}</h3>
+                    <ChevronDown
+                      className={`w-5 h-5 transform transition-transform duration-300 ${isOpen ? "rotate-180" : ""
+                        }`}
+                    />
+                  </div>
+
+                  <div
+                    className={`overflow-hidden transition-all duration-500 ease-in-out`}
+                    style={{
+                      maxHeight: isOpen ? "500px" : "0px",
+                      opacity: isOpen ? 1 : 0,
+                      transitionProperty: "max-height, opacity",
+                    }}
+                  >
+                    <p className="mt-2 text-gray-700 text-sm leading-relaxed">{faq.answer}</p>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-      </div>)}
+      )}
 
 
 
