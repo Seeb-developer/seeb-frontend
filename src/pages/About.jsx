@@ -49,11 +49,11 @@ export default function AboutUs() {
 
           {/* Full width hero image with tabs overlayed at the bottom */}
           <div className="w-full mb-8 relative">
-            <img
+            {/* <img
               src="/about-img.jpg"
               alt="About Seeb"
               className="w-full h-64 md:h-[420px] lg:h-[520px] object-cover rounded-2xl shadow-xl"
-            />
+            /> */}
 
             {/* Tabs / Options - overlay on image bottom */}
             <div className="absolute inset-x-0 bottom-4 flex justify-center px-4">
@@ -413,7 +413,7 @@ export default function AboutUs() {
           </div>
 
           {/* Rest of the page sections (optional) */}
-          <section className="mt-12">
+          {/* <section className="mt-12">
             <h2 className="text-3xl font-semibold text-blue-700 mb-4">What We Offer</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700">
               <div className="bg-white shadow-md p-6 rounded-xl">
@@ -466,7 +466,7 @@ export default function AboutUs() {
             <p className="text-base text-gray-600">
               To become India’s most trusted interior tech brand, enabling every homeowner to create meaningful spaces they’re proud to live in — without stress or compromise.
             </p>
-          </section>
+          </section> */}
         </div>
       </div>
     </>

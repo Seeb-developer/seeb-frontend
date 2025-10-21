@@ -60,7 +60,7 @@ const Home = () => {
         Explore Our Services
       </h2>
       <ServicesGrid />
-      <OurProcess />
+      {/* <OurProcess /> */}
       <VideoSlider />
     </>
   );
