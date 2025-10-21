@@ -67,15 +67,28 @@ export function ServiceDetail() {
               interval={2000}
               transitionTime={1000}
             >
-              {image.map((img, index) => (
-                <div key={index}>
-                  <img
-                    src={`${import.meta.env.VITE_BASE_URL}${img}?t=${Date.now()}`}
-                    alt={`Service ${index}`}
-                    className="h-60 sm:h-[500px] w-full object-cover"
-                  />
-                </div>
-              ))}
+              {image.map((img, index) => {
+                const fullUrl = `${import.meta.env.VITE_BASE_URL}${img}`;
+                const thumbUrl = `${fullUrl}?t=${Date.now()}`;
+                return (
+                  <div key={index}>
+                    <a
+                      href={fullUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title="Open image in new tab"
+                      className="block w-full h-full"
+                    >
+
+                      <img
+                        src={`${import.meta.env.VITE_BASE_URL}${img}?t=${Date.now()}`}
+                        alt={`Service ${index}`}
+                        className="h-60 sm:h-[500px] w-full object-cover"
+                      />
+                    </a>
+                  </div>
+                )
+              })}
             </Carousel>
           )}
         </div>
