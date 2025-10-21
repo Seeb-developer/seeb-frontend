@@ -72,7 +72,7 @@ function AppContent() {
       {!hideLayout && <Footer />}
 
       {/* Floating Call & WhatsApp buttons (right-bottom) */}
-      <div className="fixed right-4 bottom-6 z-50 flex flex-col gap-3">
+      <div className="fixed right-4 bottom-16 z-50 flex flex-col gap-3">
         <a
           href="tel:18005703133" /* replace with your phone */
           className="w-14 h-14 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-lg hover:scale-105 transform transition"
