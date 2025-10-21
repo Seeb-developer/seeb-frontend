@@ -24,6 +24,10 @@ export function ServiceDetail() {
 
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
 
+  // add gallery modal state
+  const [galleryOpen, setGalleryOpen] = useState(false);
+  const [galleryIndex, setGalleryIndex] = useState(0);
+
   const { data: service, isLoading, error } = useGet(`services/${serviceId}`);
   const image = JSON.parse(service?.image || "[]");
   const token = useSelector((state) => state.user.token);
@@ -49,6 +53,18 @@ export function ServiceDetail() {
   if (error) return <p>Error loading service</p>;
   // if (!serviceId) return <p>Error Loading Service</p>;
 
+  // keyboard navigation for gallery
+  useEffect(() => {
+    if (!galleryOpen) return;
+    const onKey = (e) => {
+      if (e.key === "Escape") setGalleryOpen(false);
+      if (e.key === "ArrowLeft") setGalleryIndex((i) => Math.max(0, i - 1));
+      if (e.key === "ArrowRight") setGalleryIndex((i) => Math.min(image.length - 1, i + 1));
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [galleryOpen, image.length]);
+
   return (
     <div className="px-4 md:px-10 py-8 relative">
       <div className="mb-6">
@@ -67,28 +83,23 @@ export function ServiceDetail() {
               interval={2000}
               transitionTime={1000}
             >
-              {image.map((img, index) => {
-                const fullUrl = `${import.meta.env.VITE_BASE_URL}${img}`;
-                const thumbUrl = `${fullUrl}?t=${Date.now()}`;
-                return (
-                  <div key={index}>
-                    <a
-                      href={fullUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      title="Open image in new tab"
-                      className="block w-full h-full"
-                    >
-
-                      <img
-                        src={`${import.meta.env.VITE_BASE_URL}${img}?t=${Date.now()}`}
-                        alt={`Service ${index}`}
-                        className="h-60 sm:h-[500px] w-full object-cover"
-                      />
-                    </a>
-                  </div>
-                )
-              })}
+              {image.map((img, index) => (
+                <div key={index}>
+                  <button
+                    type="button"
+                    onClick={() => { setGalleryIndex(index); setGalleryOpen(true); }}
+                    className="w-full h-full block"
+                    aria-label={`Open image ${index + 1}`}
+                  >
+                    <img
+                      src={`${import.meta.env.VITE_BASE_URL}${img}?t=${Date.now()}`}
+                      alt={`Service ${index}`}
+                      className="h-60 sm:h-[500px] w-full object-cover"
+                      loading="lazy"
+                    />
+                  </button>
+                </div>
+              ))}
             </Carousel>
           )}
         </div>
@@ -254,6 +265,69 @@ export function ServiceDetail() {
           onClose={() => setShowRegister(false)}
           onRegistered={() => alert("Registration successful!")}
         />
+      )}
+    
+      {/* Gallery Modal: shows full images and a scrollable thumbnail strip */}
+      {galleryOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4">
+          <button
+            onClick={() => setGalleryOpen(false)}
+            className="absolute top-4 right-4 text-white bg-white/10 rounded-full p-2 hover:bg-white/20"
+            aria-label="Close gallery"
+          >
+            ✕
+          </button>
+
+          <button
+            onClick={() => setGalleryIndex((i) => Math.max(0, i - 1))}
+            className="absolute left-4 md:left-8 text-white bg-black/40 rounded-full p-3 hover:scale-105"
+            aria-label="Previous image"
+          >
+            ‹
+          </button>
+
+          <button
+            onClick={() => setGalleryIndex((i) => Math.min(image.length - 1, i + 1))}
+            className="absolute right-4 md:right-8 text-white bg-black/40 rounded-full p-3 hover:scale-105"
+            aria-label="Next image"
+          >
+            ›
+          </button>
+
+          <div className="max-w-[95vw] max-h-[90vh] w-full flex flex-col items-center">
+            <div className="flex-1 flex items-center justify-center">
+              <img
+                src={`${import.meta.env.VITE_BASE_URL}${image[galleryIndex]}?t=${Date.now()}`}
+                alt={`Gallery ${galleryIndex + 1}`}
+                className="max-h-[80vh] max-w-[90vw] object-contain"
+                style={{ userSelect: "none" }}
+              />
+            </div>
+
+            {/* Thumbnails: horizontally scrollable */}
+            <div className="mt-4 w-full max-w-[95vw] overflow-x-auto">
+              <div className="flex gap-2 px-2">
+                {image.map((img, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setGalleryIndex(idx)}
+                    className={`flex-none rounded-md overflow-hidden border-2 ${idx === galleryIndex ? "border-blue-500" : "border-transparent"}`}
+                    aria-label={`Open thumbnail ${idx + 1}`}
+                  >
+                    <img
+                      src={`${import.meta.env.VITE_BASE_URL}${img}?t=${Date.now()}`}
+                      alt={`thumb-${idx}`}
+                      className="h-20 w-28 object-cover"
+                      loading="lazy"
+                    />
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-3 text-sm text-white/80">{galleryIndex + 1} / {image.length}</div>
+          </div>
+        </div>
       )}
     </div>
   );
