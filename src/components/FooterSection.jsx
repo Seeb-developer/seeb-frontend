@@ -29,7 +29,7 @@ const Footer = () => {
                         <a href="https://www.facebook.com/people/Seeb-Design-Smarter-Execute-Faster/61576196867264/" target="_blank" rel="noopener noreferrer">
                             <Facebook className="w-5 h-5 hover:text-yellow-400" />
                         </a>
-                        <a href="https://www.instagram.com/seeb_app?igsh=MXdnMzlqb2pidTgwZg==" target="_blank" rel="noopener noreferrer">
+                        <a href="https://www.instagram.com/seeb_app?igsh=dG56bGYxd2U5cWU1&utm_source=qr" target="_blank" rel="noopener noreferrer">
                             <Instagram className="w-5 h-5 hover:text-yellow-400" />
                         </a>
                         <a href="https://youtube.com/@seebapp?si=HQKJRMVD8plYmGb-" target="_blank" rel="noopener noreferrer">
