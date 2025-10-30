@@ -5,6 +5,7 @@ import { HeroSection } from '../components/HeroSection';
 import { ServicesGrid } from '../components/ServicesGridSection';
 import { ServicesList } from '../components/ServicesListSection';
 import { Helmet } from 'react-helmet';
+import CouponsSlider from '../components/CouponsSlider';
 
 const Home = () => {
   // useEffect(() => {
@@ -54,7 +55,9 @@ const Home = () => {
       </Helmet>
 
       <HeroSection />
-
+      
+      <CouponsSlider />
+      
       <ServicesList />
       <h2 className="text-center my-8 text-2xl sm:text-3xl md:text-5xl font-bold text-gray-900">
         Explore Our Services
