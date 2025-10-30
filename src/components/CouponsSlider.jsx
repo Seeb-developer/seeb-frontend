@@ -131,11 +131,11 @@ export default function CouponsSlider({ coupons }) {
   };
 
   const handleApply = (c) => {
-    if (!acceptedTerms[c.id]) {
-      // open terms modal to force user read/agree
-      openTermsModal(c, c.id);
-      return;
-    }
+    // if (!acceptedTerms[c.id]) {
+    //   // open terms modal to force user read/agree
+    //   openTermsModal(c, c.id);
+    //   return;
+    // }
     // proceed to checkout with coupon code in state
     navigate("/checkout", { state: { couponCode: c.coupon_code } });
   };
@@ -212,8 +212,8 @@ export default function CouponsSlider({ coupons }) {
 
                   <button
                     onClick={() => handleApply(c)}
-                    className={`ml-4 inline-block btn btn-primary ${!acceptedTerms[c.id] ? "opacity-60 cursor-not-allowed" : ""}`}
-                    aria-disabled={!acceptedTerms[c.id]}
+                    className={`ml-4 inline-block btn btn-primary`}
+                    // aria-disabled={!acceptedTerms[c.id]}
                   >
                     Apply
                   </button>
