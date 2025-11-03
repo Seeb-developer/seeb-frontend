@@ -60,7 +60,7 @@ function AppContent() {
           <Route path="/blog/:blogId" element={<BlogDetail />} />
           <Route path="/ai-images" element={<ImageGeneratorPage />} />
           <Route path="/saved-floorplan/:id" element={<FloorPlanDetail />} />
-          <Route path="/landing-page" element={<LandingPage />} />
+          {/* <Route path="/landing-page" element={<LandingPage />} /> */}
           <Route path="/test" element={<Test />} />
           <Route path="/thank-you" element={<ThankYouPage />} />
 
