@@ -54,9 +54,9 @@ const Home = () => {
         <link rel="icon" href="/favicon.png" type="image/png" />
       </Helmet>
 
+      <CouponsSlider />
       <HeroSection />
       
-      <CouponsSlider />
       
       <ServicesList />
       <h2 className="text-center my-8 text-2xl sm:text-3xl md:text-5xl font-bold text-gray-900">
