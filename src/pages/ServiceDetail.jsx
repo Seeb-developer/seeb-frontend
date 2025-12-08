@@ -65,6 +65,14 @@ export function ServiceDetail() {
     return () => window.removeEventListener("keydown", onKey);
   }, [galleryOpen, image.length]);
 
+  // ensure page opens from top when navigating to this service
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    // reset gallery to start when arriving on page
+    setGalleryIndex(0);
+    setGalleryOpen(false);
+  }, [serviceId]);
+
   return (
     <div className="px-4 md:px-10 py-8 relative">
       <div className="mb-6">
