@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Helmet } from "react-helmet";
+import ReactPlayer from 'react-player';
 
 export default function AboutUs() {
   const [active, setActive] = useState("about");
@@ -47,16 +48,28 @@ export default function AboutUs() {
       <div className="bg-gray-50 min-h-screen py-16 px-4 sm:px-8 lg:px-16">
         <div className="max-w-7xl mx-auto">
 
-          {/* Full width hero image with tabs overlayed at the bottom */}
+          {/* Full width hero video with tabs overlayed at the bottom */}
           <div className="w-full mb-8 relative">
-            {/* <img
-              src="/about-img.jpg"
-              alt="About Seeb"
-              className="w-full h-64 md:h-[420px] lg:h-[520px] object-cover rounded-2xl shadow-xl"
-            /> */}
+            <div className="w-full h-64 md:h-[420px] lg:h-[520px] rounded-2xl shadow-xl overflow-hidden bg-black">
+              <ReactPlayer
+                slot="media"
+                src="https://www.youtube.com/watch?v=X5juqDPDFJ0&t" // replace VIDEO_ID
+                controls={true}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  "--controls": "none",
+                }}
+                loop={true}
+                playing={true}
+                autoPlay={true}
+                // muted={true}
+                className="react-player"
+              />
+            </div>
 
-            {/* Tabs / Options - overlay on image bottom */}
-            <div className="absolute inset-x-0 bottom-4 flex justify-center px-4">
+            {/* Tabs / Options - overlay on video bottom */}
+            <div className=" inset-x-0 py-6 flex justify-center px-4">
               <div className="inline-flex bg-white/90 backdrop-blur-sm rounded-full shadow-md p-1">
                 {tabs.map((t) => (
                   <button
