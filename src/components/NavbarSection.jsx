@@ -45,7 +45,7 @@ export function Navbar() {
       <nav className="bg-black text-white px-6 py-2 md:flex justify-between items-center hidden sticky top-0 w-full z-50">
         <div className="">
           <Link to='/'><img src="/logo_name.png" alt="Logo" className="h-16 " /></Link>
-          <p className='text-sm'>Designing Dreams, Crafting Space.</p>          
+          <p className='text-sm'>Sab Aapke Control Mein!</p>          
         </div>
         <div className="space-x-6 text-base font-medium flex">
 
@@ -83,7 +83,8 @@ export function Navbar() {
       {/* Mobile Top Header */}
       <nav className="bg-black text-white px-4 py-2 md:hidden">
         <img src="/logo_name.png" alt="Logo" className="h-14" />
-        <p className='text-sm'>Designing Dreams, Crafting Space.</p>          
+        <p className='text-sm'>Sab Aapke Control Mein!</p>          
+        {/* <p className='text-sm'>Designing Dreams, Crafting Space.</p>           */}
 
         {/* <div className="flex gap-4">
           <span className="font-bold text-xl leading-tight">SEEB</span>
