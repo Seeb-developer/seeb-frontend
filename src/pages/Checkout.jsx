@@ -52,11 +52,23 @@ export default function CheckoutPage() {
   };
 
   const totalAmount = cartItems.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
-  const sgst = totalAmount * 0.09;
-  const cgst = totalAmount * 0.09;
+  const GST_RATE = 0.09; // 9% SGST and 9% CGST
+  const sgst = totalAmount * GST_RATE;
+  const cgst = totalAmount * GST_RATE;
   const baseGrandTotal = totalAmount + sgst + cgst;
   const discount = appliedCoupon?.discount ? parseFloat(appliedCoupon.discount) : 0;
-  const grandTotal = appliedCoupon?.finalAmount ? parseFloat(appliedCoupon.finalAmount) : baseGrandTotal;
+
+  // If backend returns appliedCoupon.finalAmount as amount before GST,
+  // include SGST and CGST on that amount when computing grandTotal.
+  let grandTotal;
+  if (appliedCoupon?.finalAmount != null) {
+    const amtBeforeGst = parseFloat(appliedCoupon.finalAmount);
+    const sgstOnApplied = amtBeforeGst * GST_RATE;
+    const cgstOnApplied = amtBeforeGst * GST_RATE;
+    grandTotal = amtBeforeGst + sgstOnApplied + cgstOnApplied;
+  } else {
+    grandTotal = baseGrandTotal;
+  }
 
   const handleBooking = async () => {
     try {
@@ -244,11 +256,32 @@ export default function CheckoutPage() {
               <div className="flex justify-between"><span>SGST (9%)</span><span>₹{sgst.toFixed(2)}</span></div>
               <div className="flex justify-between"><span>CGST (9%)</span><span>₹{cgst.toFixed(2)}</span></div>
 
+              {/* Coupon rows: show applied code (with remove) and discount as separate row */}
               {appliedCoupon && (
-                <div className="flex justify-between text-green-700 font-medium">
-                  <span>Coupon ({appliedCoupon.coupon_code})</span>
-                  <span>-₹{parseFloat(appliedCoupon.discount).toFixed(2)}</span>
-                </div>
+                <>
+                  <div className="flex justify-between items-center text-gray-800 font-medium">
+                    <div className="flex items-center gap-3">
+                      <span>Coupon Applied:</span>
+                      <span className="font-semibold bg-gray-100 px-2 py-1 rounded">{appliedCoupon.coupon_code}</span>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setAppliedCoupon(null)}
+                      aria-label="Remove coupon"
+                      className="ml-2 p-1 rounded-full bg-red-50 text-red-600 hover:bg-red-600 hover:text-white"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+
+                  <div className="flex justify-between text-green-700 font-medium mt-2">
+                    <span>Coupon Discount</span>
+                    <span>-₹{parseFloat(appliedCoupon.discount || 0).toFixed(2)}</span>
+                  </div>
+                </>
               )}
 
               <hr className="my-3" />
@@ -265,7 +298,7 @@ export default function CheckoutPage() {
               >
                 🎟️ View Coupons & Offers
               </button>
-              <span className="text-xs text-gray-500">Tap to apply</span>
+              <span className="text-xs text-gray-500">Click to apply</span>
             </div>
 
             <div className="mt-4 flex items-center gap-3">
