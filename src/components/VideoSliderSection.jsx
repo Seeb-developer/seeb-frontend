@@ -6,8 +6,8 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 const videos = [
-  { id: 1, thumbnail: "https://img.youtube.com/vi/zNBREw-llPc/maxresdefault.jpg", url: "https://www.youtube.com/embed/zNBREw-llPc" },
-  { id: 2, thumbnail: "https://img.youtube.com/vi/YmL_n61Ko2Q/maxresdefault.jpg", url: "https://www.youtube.com/embed/YmL_n61Ko2Q" },
+  { id: 1, thumbnail: "https://img.youtube.com/vi/X5juqDPDFJ0/maxresdefault.jpg", url: "https://www.youtube.com/embed/X5juqDPDFJ0" },
+  { id: 2, thumbnail: "https://img.youtube.com/vi/o2HENgrH4mE/maxresdefault.jpg", url: "https://www.youtube.com/embed/o2HENgrH4mE" },
   { id: 3, thumbnail: "https://img.youtube.com/vi/Dc3zWtLfkHg/maxresdefault.jpg", url: "https://www.youtube.com/embed/Dc3zWtLfkHg" }
 ];
 

@@ -40,7 +40,7 @@ export default function CouponsSlider({ coupons }) {
   };
 
   return (
-    <div >
+    <div>
       <style>{`
         .seeb-marquee { overflow:hidden; border-radius: .75rem; background: linear-gradient(90deg, #fff, #f8fafc); }
         .seeb-marquee__inner { display:flex; gap:2.5rem; align-items:center; white-space:nowrap; animation: seeb-marquee ${duration}s linear infinite; }

@@ -6,6 +6,7 @@ import { ServicesGrid } from '../components/ServicesGridSection';
 import { ServicesList } from '../components/ServicesListSection';
 import { Helmet } from 'react-helmet';
 import CouponsSlider from '../components/CouponsSlider';
+import LandingCarousal from '../components/Carousal/LandingCarousal';
 
 const Home = () => {
   // useEffect(() => {
@@ -20,16 +21,16 @@ const Home = () => {
 
   return (
     <>
-    <Helmet>
+      <Helmet>
         {/* Primary Meta Tags */}
         <title>Seeb - Designing Dreams, Crafting Spaces</title>
-        <meta 
-          name="description" 
-          content="Seeb is India’s first AI-powered interior design platform. Design, visualize, and build your dream spaces smarter, faster, and more affordably." 
+        <meta
+          name="description"
+          content="Seeb is India’s first AI-powered interior design platform. Design, visualize, and build your dream spaces smarter, faster, and more affordably."
         />
-        <meta 
-          name="keywords" 
-          content="Seeb, interior design, AI interior, home renovation, modular kitchen, false ceiling, Pune interiors, Bangalore interiors" 
+        <meta
+          name="keywords"
+          content="Seeb, interior design, AI interior, home renovation, modular kitchen, false ceiling, Pune interiors, Bangalore interiors"
         />
         <meta name="author" content="Seeb Design Pvt Ltd" />
         <meta name="robots" content="index, follow" />
@@ -55,16 +56,16 @@ const Home = () => {
       </Helmet>
 
       <CouponsSlider />
-      <HeroSection />
-      
-      
-      <ServicesList />
-      <h2 className="text-center my-8 text-2xl sm:text-3xl md:text-5xl font-bold text-gray-900">
-        Explore Our Services
-      </h2>
+      <LandingCarousal />
+
+      <h3 className="text-center mb-8 text-xl sm:text-2xl md:text-4xl font-bold text-gray-900">
+        Book 200+ interior services with fixed pricing and clear, hassle-free execution.
+      </h3>
       <ServicesGrid />
+      <ServicesList />
       {/* <OurProcess /> */}
       <VideoSlider />
+      <HeroSection />
     </>
   );
 };

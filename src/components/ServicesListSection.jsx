@@ -96,7 +96,7 @@ export function ServicesList() {
   const serviceKeywords = services?.map(s => s.name).join(", ");
 
   return (
-    <div className="py-10 px-4 sm:px-6 md:px-12 lg:px-20 bg-white">
+    <div className="py-2 px-4 sm:px-6 md:px-12 lg:px-12 bg-white">
       <Helmet>
         <title>Seeb Services - AI-Powered Interior Design</title>
         <meta
@@ -147,7 +147,7 @@ export function ServicesList() {
           className="
               overflow-x-auto overflow-y-visible
               [scrollbar-width:none] [-ms-overflow-style:none]
-              py-6 sm:py-10
+              py-2 sm:py-6
             "
           style={{
             scrollbarWidth: "none",
@@ -158,7 +158,7 @@ export function ServicesList() {
               div::-webkit-scrollbar { display: none; }
             `}</style>
 
-          <div className="flex gap-6 sm:px-6">
+          <div className="flex gap-6 sm:px-0 lg:px-0">
             {services?.map((service) => {
               const images = JSON.parse(service.image || "[]");
               const imgSrc =

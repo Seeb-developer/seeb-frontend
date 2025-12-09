@@ -69,22 +69,22 @@ export default function AboutUs() {
             </div>
 
             {/* Tabs / Options - overlay on video bottom */}
-            <div className=" inset-x-0 py-6 flex justify-center px-4">
-              <div className="inline-flex bg-white/90 backdrop-blur-sm rounded-full shadow-md p-1">
-                {tabs.map((t) => (
-                  <button
-                    key={t.key}
-                    onClick={() => setActive(t.key)}
-                    aria-pressed={active === t.key}
-                    className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${active === t.key
-                      ? "bg-blue-700 text-white shadow-md"
-                      : "text-gray-700 hover:bg-gray-100"
-                      }`}
-                  >
-                    {t.label}
-                  </button>
-                ))}
-              </div>
+          </div>
+          <div className=" inset-x-0 py-2 flex justify-center px-4">
+            <div className="inline-flex bg-white/90 backdrop-blur-sm rounded-full shadow-md p-1">
+              {tabs.map((t) => (
+                <button
+                  key={t.key}
+                  onClick={() => setActive(t.key)}
+                  aria-pressed={active === t.key}
+                  className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${active === t.key
+                    ? "bg-blue-700 text-white shadow-md"
+                    : "text-gray-700 hover:bg-gray-100"
+                    }`}
+                >
+                  {t.label}
+                </button>
+              ))}
             </div>
           </div>
 

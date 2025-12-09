@@ -5,6 +5,9 @@ import AuthModal from '../components/AuthModal';
 import RegistrationModal from '../components/RegistrationModal';
 import { fetchCart } from '../store/cartSlice';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
+import { RoomModal } from "../components/RoomModal";
+import { useGet } from '../hooks/useGet';
+
 
 export function Navbar() {
   const dispatch = useDispatch();
@@ -15,6 +18,9 @@ export function Navbar() {
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [userId, setUserId] = useState(null);
   const [mobile, setMobile] = useState("");
+
+  const [showRoomModal, setShowRoomModal] = useState(false);
+  const { data: roomData, loading, error } = useGet(`rooms`, showRoomModal);
 
   // ✅ Get Redux state
   const cartItems = useSelector((state) => state.cart.items);
@@ -38,6 +44,23 @@ export function Navbar() {
     }
   }, [token]);
 
+    const handleAiDesignClick = () => {
+    if (!token) {
+      setShowAuthModal(true);
+    } else {
+      Navigate("/design-generate");
+    }
+  };
+
+  const handleCreateFloorClick = () => {
+    if (!token) {
+      setShowAuthModal(true);
+    } else {
+      setShowRoomModal(true);
+    }
+  };
+
+
 
   return (
     <>
@@ -45,11 +68,38 @@ export function Navbar() {
       <nav className="bg-black text-white px-6 py-2 md:flex justify-between items-center hidden sticky top-0 w-full z-50">
         <div className="">
           <Link to='/'><img src="/logo_name.png" alt="Logo" className="h-16 " /></Link>
-          <p className='text-sm'>Sab Aapke Control Mein!</p>          
+          <p className='text-sm'>Sab Aapke Control Mein!</p>
         </div>
         <div className="space-x-6 text-base font-medium flex">
 
           {/* <Link to="/" className={`flex items-center gap-2 ${isActive("/") ? "text-yellow-400" : "hover:text-yellow-400"}`}> <Home className="w-5 h-5" />Home</Link> */}
+
+          <button
+            type="button"
+            onClick={handleAiDesignClick}
+            className={`flex items-center gap-2 ${isActive("/design-generate") ? "text-yellow-400" : "hover:text-yellow-400"
+              }`}
+          >
+            <span className="w-5 h-5">
+              <BookOpen className="w-5 h-5" />
+            </span>
+            AI Designs
+          </button>
+
+          <button
+            type="button"
+            onClick={handleCreateFloorClick}
+            className={`flex items-center gap-2 ${
+              // If floor plan is on home or some path, adjust this check as needed
+              isActive("/about") ? "text-yellow-400" : "hover:text-yellow-400"
+              }`}
+          >
+            <span className="w-5 h-5">
+              <Home className="w-5 h-5" />
+            </span>
+            Create Floor Plans
+          </button>
+
 
           <Link to="/about" className={`flex items-center gap-2 ${isActive("/about") ? "text-yellow-400" : "hover:text-yellow-400"}`}>
             <span className="w-5 h-5"><FileText className="w-5 h-5" />
@@ -83,7 +133,7 @@ export function Navbar() {
       {/* Mobile Top Header */}
       <nav className="bg-black text-white px-4 py-2 md:hidden">
         <img src="/logo_name.png" alt="Logo" className="h-14" />
-        <p className='text-sm'>Sab Aapke Control Mein!</p>          
+        <p className='text-sm'>Sab Aapke Control Mein!</p>
         {/* <p className='text-sm'>Designing Dreams, Crafting Space.</p>           */}
 
         {/* <div className="flex gap-4">
@@ -150,6 +200,16 @@ export function Navbar() {
           onRegistered={() => {
             alert("Registration successful! Please login again.");
           }}
+        />
+      )}
+
+      {showRoomModal && (
+        <RoomModal
+          isOpen={showRoomModal}
+          onClose={() => setShowRoomModal(false)}
+          rooms={roomData || []}
+          loading={loading}
+          error={error}
         />
       )}
     </>
