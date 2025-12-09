@@ -91,7 +91,7 @@ export function Navbar() {
             onClick={handleCreateFloorClick}
             className={`flex items-center gap-2 ${
               // If floor plan is on home or some path, adjust this check as needed
-              isActive("/about") ? "text-yellow-400" : "hover:text-yellow-400"
+              isActive("/floorplan") ? "text-yellow-400" : "hover:text-yellow-400"
               }`}
           >
             <span className="w-5 h-5">
