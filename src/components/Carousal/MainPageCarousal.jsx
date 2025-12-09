@@ -33,7 +33,7 @@ const MainPageCarousal = ({ MainBanners, SkeletonLoad }) => {
                     style={{ height: "50vh", width: "100vw" }}
                   >
                     <div className="flex justify-center">
-                      <GiSofa style={{ fontSize: 300, color: "#bfbfbf" }} />
+                      {/* <img src="/logo_name.png" alt="Logo" className="h-16 " /> */}
                     </div>
                   </Skeleton.Node>
                 </div>
