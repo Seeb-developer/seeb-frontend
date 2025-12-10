@@ -30,7 +30,7 @@ const Home = () => {
         />
         <meta
           name="keywords"
-          content="Seeb, interior design, AI interior, home renovation, modular kitchen, false ceiling, Pune interiors, Bangalore interiors, Seeb Pune, Seeb Design, affordable interior design, Seeb"
+          content="Seeb, interior design, AI interior, home renovation, modular kitchen, false ceiling, Pune interiors, Bangalore interiors, Seeb Pune, Seeb Design, affordable interior design."
         />
         <meta name="author" content="Seeb Design Pvt Ltd" />
         <meta name="robots" content="index, follow" />
