@@ -43,7 +43,7 @@ export function VideoSlider() {
 
   return (
     <>
-      <section className="py-10 px-4 sm:px-6 md:px-12 lg:px-20 bg-white">
+      <section className="pb-10 px-4 sm:px-6 md:px-12 lg:px-20 bg-white">
         <h2 className="text-center text-3xl sm:text-4xl font-bold text-gray-800 mb-8">Watch How It Works</h2>
         <div className="mx-auto">
           <Slider {...sliderSettings}>
