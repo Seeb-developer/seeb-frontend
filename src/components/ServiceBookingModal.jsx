@@ -295,14 +295,14 @@ const ServiceBookingModal = ({ isOpen, onClose, selectedService, roomId }) => {
                                             className="w-full text-left px-4 py-3 bg-gray-100 hover:bg-gray-200 font-semibold flex justify-between items-center"
                                         >
                                             <span className="text-blue-600">{group.name}</span>
-                                            <ChevronDown
+                                            {/* <ChevronDown
                                                 className={`w-5 h-5 transform transition-transform duration-300 ${isOpen ? "rotate-180" : ""
                                                     }`}
-                                            />
+                                            /> */}
                                         </button>
 
-                                        {isOpen && (
-                                            <div className="p-4 bg-white overflow-hidden transition-all duration-500 ease-in-out">
+                                        {/* {isOpen && ( */}
+                                            <div className="bg-white overflow-hidden transition-all duration-500 ease-in-out">
                                                 {group.addons.map((addon) => {
                                                     const isRequired = addon.is_required === "1";
                                                     const isChecked = selectedAddons.hasOwnProperty(addon.id);
@@ -318,7 +318,7 @@ const ServiceBookingModal = ({ isOpen, onClose, selectedService, roomId }) => {
                                                     return (
                                                         <label
                                                             key={addon.id}
-                                                            className="flex justify-between items-start mb-3 border rounded-md p-3 cursor-pointer hover:bg-gray-50"
+                                                            className="flex justify-between items-start mb-3  rounded-md p-3 cursor-pointer hover:bg-gray-50"
                                                         >
                                                             <div className="flex items-start">
                                                                 <input
@@ -373,7 +373,7 @@ const ServiceBookingModal = ({ isOpen, onClose, selectedService, roomId }) => {
                                                     );
                                                 })}
                                             </div>
-                                        )}
+                                        {/* )} */}
                                     </div>
                                 );
                             })}

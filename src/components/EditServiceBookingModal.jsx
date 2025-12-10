@@ -300,80 +300,81 @@ const EditServiceBookingModal = ({ isOpen, onClose, serviceItem, editingItem, ro
                                             className="w-full text-left px-4 py-3 bg-gray-100 hover:bg-gray-200 font-semibold flex justify-between items-center"
                                         >
                                             <span className="text-blue-600">{group.name}</span>
-                                            <ChevronDown
+                                            {/* <ChevronDown
                                                 className={`w-5 h-5 transform transition-transform duration-300 ${isOpen ? "rotate-180" : ""
                                                     }`}
-                                            />
+                                            /> */}
                                         </button>
 
-                                        {isOpen && (<div className="p-4 bg-white overflow-hidden transition-all duration-500 ease-in-out">
-                                            {group.addons.map((addon) => {
-                                                const isRequired = addon.is_required === "1";
-                                                const isChecked = selectedAddons.hasOwnProperty(addon.id);
-                                                const baseQty = addon.qty ? Number(addon.qty) : 1;
-                                                const calculatedQty = addon.price_type === "square_feet"
-                                                    ? Math.ceil((parseFloat(baseQty || 0) / 100) * (width * height))
-                                                    : baseQty;
-                                                const addonQty = isChecked ? selectedAddons[addon.id] : calculatedQty;
+                                        {/* {isOpen && ( */}
+                                            <div className="bg-white overflow-hidden transition-all duration-500 ease-in-out">
+                                                {group.addons.map((addon) => {
+                                                    const isRequired = addon.is_required === "1";
+                                                    const isChecked = selectedAddons.hasOwnProperty(addon.id);
+                                                    const baseQty = addon.qty ? Number(addon.qty) : 1;
+                                                    const calculatedQty = addon.price_type === "square_feet"
+                                                        ? Math.ceil((parseFloat(baseQty || 0) / 100) * (width * height))
+                                                        : baseQty;
+                                                    const addonQty = isChecked ? selectedAddons[addon.id] : calculatedQty;
 
-                                                return (
-                                                    <label
-                                                        key={addon.id}
-                                                        className="flex justify-between items-start mb-2 border rounded-md p-3 cursor-pointer hover:bg-gray-50"
-                                                    >
-                                                        <div className="flex items-start">
-                                                            <input
-                                                                type="checkbox"
-                                                                className="mt-1 mr-3"
-                                                                checked={isRequired || isChecked}
-                                                                onChange={() => handleAddonToggle(addon.id, isChecked, addonQty)}
-                                                                disabled={isRequired}
-                                                            />
-                                                            <div className="text-sm">
-                                                                <div className="font-semibold">{addon.name}</div>
-                                                                <div className="text-gray-600">{addon.description}</div>
-                                                                <div className="text-xs mt-1 flex items-center gap-2 flex-wrap">
-                                                                    {(addon.price_type === "unit" && isChecked) ? (
-                                                                        <>
-                                                                            <button
-                                                                                type="button"
-                                                                                onClick={() => handleQtyChange(addon.id, -1)}
-                                                                                className="bg-gray-200 px-2 rounded"
-                                                                            >
-                                                                                −
-                                                                            </button>
-                                                                            <span>{addonQty}</span>
-                                                                            <button
-                                                                                type="button"
-                                                                                onClick={() => handleQtyChange(addon.id, 1)}
-                                                                                className="bg-gray-200 px-2 rounded"
-                                                                            >
-                                                                                +
-                                                                            </button>
-                                                                            <span className="ml-2">
-                                                                                | ₹{addon.price} per {addon.price_type.replace("_", " ")}
+                                                    return (
+                                                        <label
+                                                            key={addon.id}
+                                                            className="flex justify-between items-start mb-2 rounded-md p-3 cursor-pointer hover:bg-gray-50"
+                                                        >
+                                                            <div className="flex items-start">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    className="mt-1 mr-3"
+                                                                    checked={isRequired || isChecked}
+                                                                    onChange={() => handleAddonToggle(addon.id, isChecked, addonQty)}
+                                                                    disabled={isRequired}
+                                                                />
+                                                                <div className="text-sm">
+                                                                    <div className="font-semibold">{addon.name}</div>
+                                                                    <div className="text-gray-600">{addon.description}</div>
+                                                                    <div className="text-xs mt-1 flex items-center gap-2 flex-wrap">
+                                                                        {(addon.price_type === "unit" && isChecked) ? (
+                                                                            <>
+                                                                                <button
+                                                                                    type="button"
+                                                                                    onClick={() => handleQtyChange(addon.id, -1)}
+                                                                                    className="bg-gray-200 px-2 rounded"
+                                                                                >
+                                                                                    −
+                                                                                </button>
+                                                                                <span>{addonQty}</span>
+                                                                                <button
+                                                                                    type="button"
+                                                                                    onClick={() => handleQtyChange(addon.id, 1)}
+                                                                                    className="bg-gray-200 px-2 rounded"
+                                                                                >
+                                                                                    +
+                                                                                </button>
+                                                                                <span className="ml-2">
+                                                                                    | ₹{addon.price} per {addon.price_type.replace("_", " ")}
+                                                                                </span>
+                                                                            </>
+                                                                        ) : (
+                                                                            <span>
+                                                                                Qty: {addonQty} | ₹{addon.price} per {addon.price_type.replace("_", " ")}
                                                                             </span>
-                                                                        </>
-                                                                    ) : (
-                                                                        <span>
-                                                                            Qty: {addonQty} | ₹{addon.price} per {addon.price_type.replace("_", " ")}
-                                                                        </span>
-                                                                    )}
-                                                                    {isRequired && (
-                                                                        <span className="ml-2 text-red-500 font-medium">(Required)</span>
-                                                                    )}
+                                                                        )}
+                                                                        {isRequired && (
+                                                                            <span className="ml-2 text-red-500 font-medium">(Required)</span>
+                                                                        )}
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
 
-                                                        <div className="text-sm font-semibold text-right text-gray-700 whitespace-nowrap ml-4">
-                                                            ₹{(addonQty * addon.price).toFixed(2)}
-                                                        </div>
-                                                    </label>
-                                                );
-                                            })}
-                                        </div>
-                                        )}
+                                                            <div className="text-sm font-semibold text-right text-gray-700 whitespace-nowrap ml-4">
+                                                                ₹{(addonQty * addon.price).toFixed(2)}
+                                                            </div>
+                                                        </label>
+                                                    );
+                                                })}
+                                            </div>
+                                        {/* )} */}
                                     </div>
                                 );
                             }
