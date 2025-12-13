@@ -8,6 +8,7 @@ import RegistrationModal from "../components/RegistrationModal";
 import { useSelector } from 'react-redux';
 import { Sparkles, ShieldCheck, Star, CheckCircle, ChevronDown } from "lucide-react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { Helmet } from "react-helmet";
 
 export function ServiceDetail() {
   const navigate = useNavigate();
@@ -74,6 +75,34 @@ export function ServiceDetail() {
   }, [serviceId]);
 
   return (
+    <>
+    <Helmet>
+      <title>{service?.name} – SEEB</title>
+      <meta name="description" content={service?.description?.slice(0, 160)} />
+
+      {/* OpenGraph for product indexing */}
+      <meta property="og:title" content={service?.name} />
+      <meta property="og:description" content={service?.description} />
+      <meta property="og:image" content={`${import.meta.env.VITE_BASE_URL}${image[0]}`} />
+      <meta property="og:type" content="product" />
+
+      {/* Schema.org Product Markup */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org/",
+          "@type": "Product",
+          "name": service?.name,
+          "image": image.map((img) => `${import.meta.env.VITE_BASE_URL}${img}`),
+          "description": service?.description,
+          "offers": {
+            "@type": "Offer",
+            "price": service?.rate,
+            "priceCurrency": "INR",
+            "availability": "https://schema.org/InStock"
+          }
+        })}
+      </script>
+    </Helmet>
     <div className="px-4 md:px-10 py-8 relative">
       <div className="mb-6">
         <button className="text-gray-700 font-medium hover:underline" onClick={() => navigate(-1)}>&larr; Back</button>
@@ -338,5 +367,6 @@ export function ServiceDetail() {
         </div>
       )}
     </div>
+    </>
   );
 }
